@@ -1,6 +1,5 @@
 package sheetCalculator;
 
-
 import sheet.api.Sheet;
 import sheet.api.SheetCalculator;
 import sheet.cell.api.Cell;

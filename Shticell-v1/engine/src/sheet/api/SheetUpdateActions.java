@@ -1,10 +1,7 @@
 package sheet.api;
-
-import dto.SheetDto;
 import sheet.cell.api.Cell;
 import sheet.coordinate.api.Coordinate;
 
-import java.util.Map;
 
 public interface SheetUpdateActions {
 

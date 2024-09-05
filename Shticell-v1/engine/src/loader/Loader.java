@@ -28,18 +28,6 @@ import java.util.Map;
 
 public interface Loader {
 
-
-
      Sheet loadSheetFromXML(String filePath) throws SheetLoadingException;
-
-
-    /*
-    Sheet loadSheetFromXML(String filePath, SheetReadActions sheet) throws SheetLoadingException, ParserConfigurationException, SAXException, IOException;
-
-    void validateSheet(Document document) throws SheetLoadingException;
-
-    Sheet loadSheet(Document document);
-
-     */
 
 }
