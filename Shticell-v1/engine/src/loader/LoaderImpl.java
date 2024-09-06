@@ -5,9 +5,8 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 
 
-import loader.generated.STLSheet; // מחלקה שנוצרה על ידי JAXB
+import loader.generated.STLSheet;
 import sheet.api.Sheet;
-import sheet.api.SheetReadActions;
 import sheet.cell.api.Cell;
 import sheet.cell.impl.CellImpl;
 import sheet.coordinate.api.Coordinate;

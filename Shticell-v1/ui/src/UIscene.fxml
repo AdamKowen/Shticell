@@ -102,7 +102,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label prefHeight="23.0" prefWidth="74.0" text="cell value" />
+                  <Label text="Label" />
                </children>
             </GridPane>
          </content>

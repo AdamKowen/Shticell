@@ -1,4 +1,54 @@
-import dto.CellDto;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+import java.util.Objects;
+
+public class Main extends Application {
+
+    @Override
+    public void start(Stage primaryStage) {
+        try {
+            // טוען את קובץ ה-FXML
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("UIscene.fxml")));
+
+            // יצירת סצנה מה-FXML
+            Scene scene = new Scene(root);
+
+            // הגדרת כותרת
+            primaryStage.setTitle("My JavaFX Application");
+
+            // הגדרת הסצנה
+            primaryStage.setScene(scene);
+
+            // הצגת החלון
+            primaryStage.show();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+
+
+
+
+
+
+
+
+//Project part 1
+    /*
+
+
+    PROJECT PART ONE:
+
+    import dto.CellDto;
 import dto.SheetDto;
 import loader.SheetLoadingException;
 import org.xml.sax.SAXException;
@@ -14,9 +64,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Main {
-
-    private static SheetEngine sheetEngine;
 
     public static void main(String[] args) throws ParserConfigurationException, IOException, SheetLoadingException, SAXException {
         //  sheetEngine
@@ -343,4 +390,7 @@ public class Main {
 
 
 //      /Users/adamkowen/Documents/Java/Shticell P1/costume.xml
+
+
+     */
 
