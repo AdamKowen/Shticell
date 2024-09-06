@@ -1,5 +1,5 @@
 package sheet.cell.api;
-//
+////
 public interface EffectiveValue {
     CellType getCellType();
     Object getValue();
