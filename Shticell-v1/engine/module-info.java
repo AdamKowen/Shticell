@@ -5,7 +5,6 @@ module engine {
     exports expression.api;
     exports expression.parser;
     exports loader;
-    exports operateMenu;
     exports sheet.api;
     exports sheet.impl;
     exports sheet.cell.api;
