@@ -12,19 +12,19 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="558.0" prefWidth="919.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllerPack.Controller">
    <top>
       <VBox prefHeight="108.0" prefWidth="600.0">
          <children>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+            <HBox alignment="CENTER" prefHeight="33.0" prefWidth="793.0">
                <children>
                   <Label text="Shticell" />
                </children>
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button mnemonicParsing="false" text="Load File" />
-                  <Label prefHeight="26.0" prefWidth="216.0" text="loaded file" />
+                  <Button fx:id="LoadButton" mnemonicParsing="false" onAction="#loadButtonActionListener" text="Load File" />
+                  <Label fx:id="fileNameLabel" prefHeight="26.0" prefWidth="854.0" text="loaded file" />
                </children>
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
@@ -63,8 +63,7 @@
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2">
                                  <children>
-                                    <TextField />
-                                    <Button mnemonicParsing="false" text="Update value" />
+                                    <TextField fx:id="cellInputContentTextField" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3">
@@ -92,18 +91,15 @@
       </VBox>
    </left>
    <center>
-      <ScrollPane prefHeight="200.0" prefWidth="200.0">
+      <ScrollPane fx:id="sheetScrollPane" prefHeight="200.0" prefWidth="502.0">
          <content>
-            <GridPane prefHeight="52.0" prefWidth="130.0">
+            <GridPane fx:id="sheetGridPane" gridLinesVisible="true" minHeight="150.0" minWidth="250.0" prefHeight="303.0" prefWidth="518.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
-               <children>
-                  <Label text="Label" />
-               </children>
             </GridPane>
          </content>
       </ScrollPane>
