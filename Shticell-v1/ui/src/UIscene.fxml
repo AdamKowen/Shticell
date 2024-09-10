@@ -90,18 +90,7 @@
          </children>
       </VBox>
    </left>
-   <center>
-      <ScrollPane fx:id="sheetScrollPane" prefHeight="200.0" prefWidth="502.0">
-         <content>
-            <GridPane fx:id="sheetGridPane" gridLinesVisible="true" minHeight="150.0" minWidth="250.0" prefHeight="303.0" prefWidth="518.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-            </GridPane>
-         </content>
-      </ScrollPane>
-   </center>
+    <center>
+        <fx:include fx:id="sheetComponent" source="sheet.fxml" />
+    </center>
 </BorderPane>

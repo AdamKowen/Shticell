@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -21,9 +22,11 @@ import java.io.File;
 
 public class Controller {
 
-    SheetEngine sheetEngine = new SheetEngineImpl();
     private Label selectedLabel = null;
     private Coordinate selectedCoordinate = null;
+
+    SheetEngine sheetEngine = new SheetEngineImpl();
+
 
     @FXML
     private Button LoadButton;
@@ -32,13 +35,40 @@ public class Controller {
     private Label fileNameLabel;
 
     @FXML
-    private GridPane sheetGridPane;
+    private SheetController sheetComponentController;
 
-    @FXML
-    private ScrollPane sheetScrollPane;
+    //@FXML
+    //private ScrollPane sheetScrollPane;
 
     @FXML
     private TextField cellInputContentTextField;
+
+
+    @FXML
+    private void initialize() {
+        // Listener לשינויי הבחירה של התא
+        sheetComponentController.selectedCellProperty().addListener((observable, oldLabel, newLabel) -> {
+            if (newLabel != null) {
+                // כאשר נבחר תא חדש, עדכון תיבת הטקסט עם הערך שלו
+                String cellContent = newLabel.getText();
+                cellInputContentTextField.setText(cellContent);
+            }
+        });
+
+        // הוספת Listener ללחיצה על Enter בתיבת הטקסט
+        cellInputContentTextField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                // עדכון התא שנבחר בתוכן החדש
+                Coordinate selectedCoordinate = sheetComponentController.getSelectedCoordinate();
+                if (selectedCoordinate != null) {
+                    String newValue = cellInputContentTextField.getText();
+                    sheetComponentController.updateCellContent(selectedCoordinate, newValue);
+                }
+            }
+        });
+    }
+
+
 
     @FXML
     void loadButtonActionListener(ActionEvent event) {
@@ -55,7 +85,10 @@ public class Controller {
             try {
                 sheetEngine.loadSheetFromXML(file.getPath());
                 fileNameLabel.setText("Selected file: " + file.getName());
-                populateGrid();
+                // עדכון sheetController לאחר טעינת הקובץ
+                sheetComponentController.updateSheet(sheetEngine.getCurrentSheetDTO());
+
+                //populateGrid();
             } catch (Exception e) {
                 fileNameLabel.setText("an error occurred." + e.getMessage());
             }
@@ -65,7 +98,7 @@ public class Controller {
         }
     }
 
-
+    /*
     public void populateGrid() {
 // משתנה לשמירת התא המסומן הנוכחי
 
@@ -146,6 +179,8 @@ public class Controller {
 
         sheetGridPane.setGridLinesVisible(true);
     }
+
+     */
 
 
 
