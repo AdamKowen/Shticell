@@ -12,10 +12,15 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import loader.SheetLoadingException;
+import org.xml.sax.SAXException;
 import sheet.coordinate.api.Coordinate;
 import sheet.coordinate.impl.CoordinateCache;
 import sheetEngine.SheetEngine;
 import sheetEngine.SheetEngineImpl;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 
 public class SheetControllerImpl implements SheetController {
 
@@ -28,6 +33,10 @@ public class SheetControllerImpl implements SheetController {
     private UImodel uiModel;
 
     private Coordinate selectedCoordinate; // משתנה שומר על הקואורדינטה הנבחרת
+
+
+    SheetEngine sheetEngine = new SheetEngineImpl();
+
 
 
 
@@ -159,7 +168,9 @@ public class SheetControllerImpl implements SheetController {
 
 
     @Override
-    public void updateSheet(SheetDto sheetDto) {
+    public void updateSheet() {
+
+        SheetDto sheetDto = sheetEngine.getCurrentSheetDTO();
         // ניקוי ה-GridPane הקיים
         sheetGridPane.getChildren().clear();
 
@@ -236,7 +247,21 @@ public class SheetControllerImpl implements SheetController {
     @Override
     public void updateCellContent(Coordinate coordinate, String content) {
         // עדכון ה-StringProperty במודל UI במקום ה-Label
-        uiModel.updateCell(coordinate, content); // עדכון התוכן במודל UI
+
+        String Cell = coordinateToString(coordinate);
+        sheetEngine.updateCellValue(Cell, content);
+        // add exception!!!!!
+        SheetDto sheetDto = sheetEngine.getCurrentSheetDTO();
+        for (int row = 0; row < sheetDto.getNumOfRows(); row++) {
+            for (int col = 0; col < sheetDto.getNumOfColumns(); col++) {
+                Coordinate currcoordinate = CoordinateCache.createCoordinate(row, col);
+                CellDto cell = sheetDto.getCell(row, col);
+                // קישור ה-Label ל-StringProperty מתוך ה-UImodel
+                String cellValue = (cell != null && cell.getValue() != null && !cell.getValue().isEmpty()) ? cell.getValue() : "";
+                uiModel.updateCell(currcoordinate, cellValue);  // עדכון התא ב-UImodel
+            }
+        }
+
     }
 
 
@@ -276,6 +301,25 @@ public class SheetControllerImpl implements SheetController {
             return CoordinateCache.createCoordinate(rowIndex, colIndex);
         }
         return null;
+    }
+
+    @Override
+    public void loadSheetFromFile(String filename) throws ParserConfigurationException, IOException, SheetLoadingException, SAXException {
+        sheetEngine.loadSheetFromXML(filename);
+    }
+
+
+
+    private String coordinateToString(Coordinate coordinate) {
+        // המרת העמודה לאות (A, B, C, ...)
+        int column = coordinate.getColumn();
+        char columnLetter = (char) ('A' + column - 1); // המרה מ-1 ל-A, מ-2 ל-B וכדומה
+
+        // המרת השורה למספר (ללא שינוי)
+        int row = coordinate.getRow();
+
+        // חיבור האות למספר ויצירת המחרוזת הסופית
+        return String.valueOf(columnLetter) + row;
     }
 
 

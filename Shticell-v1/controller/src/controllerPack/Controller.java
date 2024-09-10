@@ -25,7 +25,6 @@ public class Controller {
     private Label selectedLabel = null;
     private Coordinate selectedCoordinate = null;
 
-    SheetEngine sheetEngine = new SheetEngineImpl();
 
 
     @FXML
@@ -83,10 +82,12 @@ public class Controller {
         if (file != null) {
             // מציג את שם הקובץ על הלייבל
             try {
-                sheetEngine.loadSheetFromXML(file.getPath());
+
+                sheetComponentController.loadSheetFromFile(file.getPath());
+                //sheetEngine.loadSheetFromXML(file.getPath());
                 fileNameLabel.setText("Selected file: " + file.getName());
                 // עדכון sheetController לאחר טעינת הקובץ
-                sheetComponentController.updateSheet(sheetEngine.getCurrentSheetDTO());
+                sheetComponentController.updateSheet();
 
                 //populateGrid();
             } catch (Exception e) {

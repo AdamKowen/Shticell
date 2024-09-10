@@ -4,9 +4,17 @@ import dto.SheetDto;
 import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import loader.SheetLoadingException;
+import org.xml.sax.SAXException;
 import sheet.coordinate.api.Coordinate;
+import sheetEngine.SheetEngine;
+import sheetEngine.SheetEngineImpl;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 
 public interface SheetController {
+
 
     // שינוי יישור של התאים
     void alignCells(Pos alignment);
@@ -26,7 +34,7 @@ public interface SheetController {
     // שינוי גובה של שורה מסוימת
     void changeSecondRowWidth(double width);
 
-    void updateSheet(SheetDto sheetDto);
+    void updateSheet();
 
 
     // החזרת הקואורדינטה של התא שנבחר
@@ -34,5 +42,8 @@ public interface SheetController {
 
     // החזרת ה-Property של התא הנבחר
     ObjectProperty<Label> selectedCellProperty();
+
+
+    void loadSheetFromFile(String filename) throws ParserConfigurationException, IOException, SheetLoadingException, SAXException;
 }
 
