@@ -164,9 +164,6 @@ public class SheetControllerImpl implements SheetController {
         rowConstraints.setPrefHeight(width);
         rowConstraints.setMaxHeight(width);
     }
-
-
-
     @Override
     public void updateSheet() {
 
@@ -181,6 +178,30 @@ public class SheetControllerImpl implements SheetController {
         final double cellWidth = 100.0; // רוחב קבוע לכל תא
         final double cellHeight = 30.0; // גובה קבוע לכל תא
 
+        // הוספת כותרות עמודות
+        for (int col = 0; col < sheetDto.getNumOfColumns(); col++) {
+            char columnLetter = (char) ('A' + col); // A, B, C וכו'
+            Label columnHeader = new Label(String.valueOf(columnLetter));
+            columnHeader.setStyle("-fx-alignment: CENTER; -fx-padding: 5px;"); // יישור למרכז
+            columnHeader.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE); // מקסימום גודל להתאמה מלאה
+
+            // החלת רקע ורוד
+            sheetGridPane.add(columnHeader, col + 1, 0); // הכותרת בשורה 0, עמודה col + 1 (הכותרת מתחילה מעמודה 1)
+            columnHeader.setStyle("-fx-background-color: lightpink; -fx-alignment: CENTER; -fx-padding: 5px;");
+        }
+
+        // הוספת כותרות שורות
+        for (int row = 0; row < sheetDto.getNumOfRows(); row++) {
+            Label rowHeader = new Label(String.valueOf(row + 1)); // 1, 2, 3 וכו'
+            rowHeader.setStyle("-fx-alignment: CENTER; -fx-padding: 5px;"); // יישור למרכז
+            rowHeader.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE); // מקסימום גודל להתאמה מלאה
+
+            // החלת רקע ורוד
+            sheetGridPane.add(rowHeader, 0, row + 1); // הכותרת בעמודה 0, שורה row + 1 (הכותרת מתחילה משורה 1)
+            rowHeader.setStyle("-fx-background-color: lightpink; -fx-alignment: CENTER; -fx-padding: 5px;");
+        }
+
+        // קביעת גודל השורות והעמודות
         for (int row = 0; row < sheetDto.getNumOfRows(); row++) {
             RowConstraints rowConstraints = new RowConstraints();
             rowConstraints.setPrefHeight(cellHeight); // גובה קבוע לשורות
@@ -193,9 +214,9 @@ public class SheetControllerImpl implements SheetController {
             sheetGridPane.getColumnConstraints().add(colConstraints);
         }
 
-        // הוספת התאים החדשים מה-sheetDto
-        for (int row = 0; row < sheetDto.getNumOfRows(); row++) {
-            for (int col = 0; col < sheetDto.getNumOfColumns(); col++) {
+        // הוספת התאים מה-sheetDto
+        for (int row = 1; row <= sheetDto.getNumOfRows(); row++) {
+            for (int col = 1; col <= sheetDto.getNumOfColumns(); col++) {
                 Coordinate coordinate = CoordinateCache.createCoordinate(row, col);
                 CellDto cell = sheetDto.getCell(row, col);
 
@@ -235,8 +256,8 @@ public class SheetControllerImpl implements SheetController {
                     }
                 });
 
-                // הוספת התווית לגריד
-                sheetGridPane.add(label, col, row);
+                // הוספת התווית לגריד, הזזה של תאים ב-GridPane לפי השורות והעמודות (+1 עבור הכותרות)
+                sheetGridPane.add(label, col , row );
             }
         }
 
@@ -320,6 +341,12 @@ public class SheetControllerImpl implements SheetController {
 
         // חיבור האות למספר ויצירת המחרוזת הסופית
         return String.valueOf(columnLetter) + row;
+    }
+
+
+    public String getSelectedCoordinateOriginalValue()
+    {
+        return sheetEngine.getCellDTO(coordinateToString(getSelectedCoordinate())).getOriginalValue();
     }
 
 

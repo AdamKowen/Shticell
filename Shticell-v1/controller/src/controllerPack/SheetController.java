@@ -40,6 +40,12 @@ public interface SheetController {
     // החזרת הקואורדינטה של התא שנבחר
     Coordinate getSelectedCoordinate();
 
+
+
+    // og text of cell
+    String getSelectedCoordinateOriginalValue();
+
+
     // החזרת ה-Property של התא הנבחר
     ObjectProperty<Label> selectedCellProperty();
 

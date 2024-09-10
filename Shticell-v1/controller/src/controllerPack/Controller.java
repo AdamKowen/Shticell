@@ -49,8 +49,8 @@ public class Controller {
         sheetComponentController.selectedCellProperty().addListener((observable, oldLabel, newLabel) -> {
             if (newLabel != null) {
                 // כאשר נבחר תא חדש, עדכון תיבת הטקסט עם הערך שלו
-                String cellContent = newLabel.getText();
-                cellInputContentTextField.setText(cellContent);
+                //String cellContent = newLabel.getText();
+                cellInputContentTextField.setText(sheetComponentController.getSelectedCoordinateOriginalValue());
             }
         });
 
