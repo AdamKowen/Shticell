@@ -36,6 +36,10 @@ public class Controller {
     @FXML
     private SheetController sheetComponentController;
 
+    @FXML
+    private SheetController sheetVersionController;
+
+
     //@FXML
     //private ScrollPane sheetScrollPane;
 

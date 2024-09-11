@@ -3,7 +3,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -23,16 +24,16 @@
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="LoadButton" mnemonicParsing="false" onAction="#loadButtonActionListener" text="Load File" />
-                  <Label fx:id="fileNameLabel" prefHeight="26.0" prefWidth="854.0" text="loaded file" />
+                  <Button fx:id="LoadButton" mnemonicParsing="false" onAction="#loadButtonActionListener" prefHeight="26.0" prefWidth="91.0" text="Load File" />
+                  <Label fx:id="fileNameLabel" prefHeight="26.0" prefWidth="836.0" text="loaded file" />
                </children>
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <GridPane prefHeight="40.0" prefWidth="600.0">
+                  <GridPane prefHeight="46.0" prefWidth="935.0">
                     <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="511.0" minWidth="10.0" prefWidth="490.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="296.0" minWidth="10.0" prefWidth="110.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="817.7888793945312" minWidth="10.0" prefWidth="773.8113403320312" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="296.0" minWidth="10.0" prefWidth="145.18865966796875" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -40,33 +41,32 @@
                      <children>
                         <GridPane>
                           <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.66038513183594" minWidth="10.0" prefWidth="127.29835510253906" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="348.93278884887695" minWidth="10.0" prefWidth="110.38442993164062" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="432.6155700683594" minWidth="10.0" prefWidth="336.873779296875" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="220.875" minWidth="10.0" prefWidth="197.126220703125" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <HBox prefHeight="100.0" prefWidth="200.0">
+                              <HBox prefHeight="45.0" prefWidth="143.0">
                                  <children>
                                     <Label text="Selected cell:" />
                                     <Label prefHeight="17.0" prefWidth="34.0" text="cell" />
                                  </children>
                               </HBox>
-                              <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+                              <HBox prefHeight="45.0" prefWidth="167.0" GridPane.columnIndex="1">
                                  <children>
                                     <Label text="Origina cell value: " />
-                                    <Label text="value" />
                                  </children>
                               </HBox>
-                              <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2">
+                              <HBox prefHeight="45.0" prefWidth="210.0" GridPane.columnIndex="2">
                                  <children>
-                                    <TextField fx:id="cellInputContentTextField" />
+                                    <TextField fx:id="cellInputContentTextField" prefHeight="26.0" prefWidth="319.0" />
                                  </children>
                               </HBox>
-                              <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3">
+                              <HBox prefHeight="45.0" prefWidth="181.0" GridPane.columnIndex="3">
                                  <children>
                                     <Label text="Last update cell value:" />
                                     <Label text="last version" />
@@ -74,7 +74,7 @@
                               </HBox>
                            </children>
                         </GridPane>
-                        <ComboBox prefWidth="150.0" GridPane.columnIndex="1" />
+                        <ComboBox prefHeight="26.0" prefWidth="101.0" GridPane.columnIndex="1" />
                      </children>
                   </GridPane>
                </children>
@@ -82,15 +82,20 @@
          </children>
       </VBox>
    </top>
-   <left>
-      <VBox prefHeight="200.0" prefWidth="100.0">
-         <children>
-            <HBox prefHeight="160.0" prefWidth="100.0" />
-            <HBox prefHeight="169.0" prefWidth="100.0" />
-         </children>
-      </VBox>
-   </left>
-    <center>
-        <fx:include fx:id="sheetComponent" source="sheet.fxml" />
-    </center>
+   <right>
+      <TabPane prefHeight="450.0" prefWidth="933.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab text="Current Sheet">
+               <content>
+                    <fx:include fx:id="sheetComponent" source="sheet.fxml" />
+               </content>
+            </Tab>
+          <Tab text="Previous Version Sheet">
+              <content>
+                  <fx:include fx:id="sheetVersion" source="sheet.fxml" />
+              </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </right>
 </BorderPane>

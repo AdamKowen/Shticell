@@ -8,6 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="javafx-swt" level="project" />
-    <orderEntry type="module" module-name="engine" />
+    <orderEntry type="module" module-name="engine" exported="" />
   </component>
 </module>

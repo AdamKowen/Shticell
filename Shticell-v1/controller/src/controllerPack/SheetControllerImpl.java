@@ -34,6 +34,7 @@ public class SheetControllerImpl implements SheetController {
 
     private Coordinate selectedCoordinate; // משתנה שומר על הקואורדינטה הנבחרת
 
+    private boolean readOnly = false;
 
     SheetEngine sheetEngine = new SheetEngineImpl();
 

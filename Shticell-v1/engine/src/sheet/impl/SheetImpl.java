@@ -24,7 +24,7 @@ public class SheetImpl implements Sheet {
     private Integer rowUnits;
     private Map<Coordinate, Cell> cellsInSheet;
     private Map<Integer, SheetDto> versionHistory;
-
+    private List<Integer> numCellChangedHistory;
 
 
     // Constructor
@@ -38,6 +38,7 @@ public class SheetImpl implements Sheet {
         this.rowUnits = rowUnits;
         this.cellsInSheet = cellsInSheet;
         this.versionHistory = new HashMap<>();
+        this.numCellChangedHistory = new ArrayList<>();
     }
 
     @Override
