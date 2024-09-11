@@ -112,7 +112,7 @@ public class SheetControllerImpl implements SheetController {
             label.setAlignment(alignment);
         }
     }
-
+///
 
     // פונקציה לסימון תאים שתלויים אחד בשני
     @Override
