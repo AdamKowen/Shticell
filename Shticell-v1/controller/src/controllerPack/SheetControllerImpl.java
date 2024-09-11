@@ -347,7 +347,12 @@ public class SheetControllerImpl implements SheetController {
 
     public String getSelectedCoordinateOriginalValue()
     {
-        return sheetEngine.getCellDTO(coordinateToString(getSelectedCoordinate())).getOriginalValue();
+        CellDto cell = sheetEngine.getCellDTO(coordinateToString(getSelectedCoordinate()));
+        if(cell != null)
+        {
+            return cell.getOriginalValue();
+        }
+        return ""; // this will
     }
 
 
