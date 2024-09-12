@@ -3,10 +3,7 @@ import dto.CellDto;
 import dto.SheetDto;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -19,6 +16,7 @@ import sheetEngine.SheetEngineImpl;
 
 
 import java.io.File;
+import java.util.List;
 
 public class Controller {
 
@@ -39,6 +37,9 @@ public class Controller {
     @FXML
     private SheetController sheetVersionController;
 
+
+    @FXML
+    private ComboBox<Object> versionComboBox;
 
     //@FXML
     //private ScrollPane sheetScrollPane;
@@ -66,7 +67,36 @@ public class Controller {
                 if (selectedCoordinate != null) {
                     String newValue = cellInputContentTextField.getText();
                     sheetComponentController.updateCellContent(selectedCoordinate, newValue);
+
+
+
+
+                    //Getting list for versions
+                    List<Integer> versions = sheetComponentController.getVersionList();
+                    // עבור על הרשימה ובנה מחרוזות עם מספרי גרסאות ומספרי שינויים
+                    for (int i = 0; i < versions.size(); i++) {
+                        int versionNumber = i + 1; // מספר הגרסה מתחיל מ-1
+                        int changes = versions.get(i); // מספר השינויים לאותה גרסה
+                        String versionText = "Version " + versionNumber + " - " + changes + " changes";
+
+                        // הוסף את המחרוזת ל-ComboBox
+                        versionComboBox.getItems().add(versionText);
+                    }
+
+
                 }
+            }
+        });
+
+
+        // הוסף מאזין לבחירה ב-ComboBox
+        versionComboBox.setOnAction(event -> {
+            // קבל את האינדקס של הבחירה (האינדקס תואם לסדר של הגרסאות)
+            int selectedIndex = versionComboBox.getSelectionModel().getSelectedIndex();
+
+            if (selectedIndex != -1) { // ודא שמשהו נבחר
+                // טען את הגרסה שנבחרה לפי האינדקס
+                sheetVersionController.updateSheet(sheetComponentController.getVersionDto(selectedIndex+1)); // לדוגמה, טען את הגרסה שנבחרה
             }
         });
     }
@@ -91,7 +121,22 @@ public class Controller {
                 //sheetEngine.loadSheetFromXML(file.getPath());
                 fileNameLabel.setText("Selected file: " + file.getName());
                 // עדכון sheetController לאחר טעינת הקובץ
-                sheetComponentController.updateSheet();
+                sheetComponentController.loadSheetCurrent();
+
+
+
+                // רוקן את ה-ComboBox לפני הוספת פריטים חדשים
+                versionComboBox.getItems().clear();
+                List<Integer> versions = sheetComponentController.getVersionList();
+                // עבור על הרשימה ובנה מחרוזות עם מספרי גרסאות ומספרי שינויים
+                for (int i = 0; i < versions.size(); i++) {
+                    int versionNumber = i + 1; // מספר הגרסה מתחיל מ-1
+                    int changes = versions.get(i); // מספר השינויים לאותה גרסה
+                    String versionText = "Version " + versionNumber + " - " + changes + " changes";
+
+                    // הוסף את המחרוזת ל-ComboBox
+                    versionComboBox.getItems().add(versionText);
+                }
 
                 //populateGrid();
             } catch (Exception e) {
@@ -101,6 +146,8 @@ public class Controller {
             // מציג הודעת שגיאה אם לא נבחר קובץ
             fileNameLabel.setText("No file selected or an error occurred.");
         }
+
+
     }
 
     /*

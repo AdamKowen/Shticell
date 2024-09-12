@@ -21,6 +21,7 @@ import sheetEngine.SheetEngineImpl;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.util.List;
 
 public class SheetControllerImpl implements SheetController {
 
@@ -166,9 +167,9 @@ public class SheetControllerImpl implements SheetController {
         rowConstraints.setMaxHeight(width);
     }
     @Override
-    public void updateSheet() {
+    public void updateSheet(SheetDto sheetDto) {
 
-        SheetDto sheetDto = sheetEngine.getCurrentSheetDTO();
+
         // ניקוי ה-GridPane הקיים
         sheetGridPane.getChildren().clear();
 
@@ -353,6 +354,32 @@ public class SheetControllerImpl implements SheetController {
             return cell.getOriginalValue();
         }
         return ""; // this will
+    }
+
+
+    public List<Integer> getVersionList()
+    {
+        return sheetEngine.getNumChangedCellsInAllVersions();
+    }
+
+
+    public void loadSheetVersion(int version)
+    {
+        SheetDto versionDTO = sheetEngine.getVersionDto(version);
+        updateSheet(versionDTO);
+    }
+
+
+    public void loadSheetCurrent()
+    {
+        SheetDto sheetDtoCurrent = sheetEngine.getCurrentSheetDTO();
+        updateSheet(sheetDtoCurrent);
+    }
+
+
+    public SheetDto getVersionDto(int version)
+    {
+        return sheetEngine.getVersionDto(version);
     }
 
     //

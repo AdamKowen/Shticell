@@ -74,7 +74,7 @@
                               </HBox>
                            </children>
                         </GridPane>
-                        <ComboBox prefHeight="26.0" prefWidth="101.0" GridPane.columnIndex="1" />
+                        <ComboBox fx:id="versionComboBox" prefHeight="26.0" prefWidth="101.0" visibleRowCount="15" GridPane.columnIndex="1" />
                      </children>
                   </GridPane>
                </children>

@@ -12,6 +12,7 @@ import sheetEngine.SheetEngineImpl;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.util.List;
 
 public interface SheetController {
 
@@ -34,7 +35,7 @@ public interface SheetController {
     // שינוי גובה של שורה מסוימת
     void changeSecondRowWidth(double width);
 
-    void updateSheet();
+    void updateSheet(SheetDto sheetDto);
 
 
     // החזרת הקואורדינטה של התא שנבחר
@@ -51,5 +52,14 @@ public interface SheetController {
 
 
     void loadSheetFromFile(String filename) throws ParserConfigurationException, IOException, SheetLoadingException, SAXException;
+
+
+    List<Integer> getVersionList();
+
+    void loadSheetVersion(int version);
+
+    void loadSheetCurrent();
+
+    SheetDto getVersionDto(int version);
 }
 
