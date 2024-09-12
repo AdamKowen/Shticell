@@ -71,6 +71,7 @@ public class Controller {
 
 
 
+                    versionComboBox.getItems().clear();
                     //Getting list for versions
                     List<Integer> versions = sheetComponentController.getVersionList();
                     // עבור על הרשימה ובנה מחרוזות עם מספרי גרסאות ומספרי שינויים
