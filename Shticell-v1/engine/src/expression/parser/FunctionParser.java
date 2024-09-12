@@ -53,6 +53,44 @@ public enum FunctionParser {
             }
         }
     },
+    AVERAGE {
+        @Override
+        public Expression parse(List<String> arguments) {
+            // AVERAGE can take a list of arguments, so no need for specific number validation
+
+            // Parse all arguments
+            List<Expression> expressions = new ArrayList<>();
+            for (String arg : arguments) {
+                expressions.add(parseExpression(arg.trim()));
+            }
+
+            // Validate argument types
+            for (Expression expr : expressions) {
+                if (!expr.getFunctionResultType().equals(CellType.NUMERIC) && !expr.getFunctionResultType().equals(CellType.UNKNOWN)) {
+                    throw new IllegalArgumentException("Invalid argument type for AVERAGE function. Expected NUMERIC, but got " + expr.getFunctionResultType());
+                }
+            }
+
+            // Create and return the AVERAGE expression
+            return new AverageExpression(expressions);
+        }
+    },
+    BIGGER {
+        @Override
+        public Expression parse(List<String> arguments) {
+            // Validations: there should be exactly two arguments
+            if (arguments.size() != 2) {
+                throw new IllegalArgumentException("Invalid number of arguments for BIGGER function. Expected 2, but got " + arguments.size());
+            }
+
+            // Parse arguments
+            Expression left = parseExpression(arguments.get(0).trim());
+            Expression right = parseExpression(arguments.get(1).trim());
+
+            // Create and return the BIGGER expression
+            return new BiggerExpression(left, right);
+        }
+    },
     PLUS {
         @Override
         public Expression parse(List<String> arguments) {
@@ -66,6 +104,136 @@ public enum FunctionParser {
             Expression right = parseExpression(arguments.get(1).trim());
 
             return new PlusExpression(left, right);
+        }
+    },
+    EQUAL {
+        @Override
+        public Expression parse(List<String> arguments) {
+            // Validations: there should be exactly two arguments
+            if (arguments.size() != 2) {
+                throw new IllegalArgumentException("Invalid number of arguments for EQUAL function. Expected 2, but got " + arguments.size());
+            }
+
+            // Parse arguments
+            Expression left = parseExpression(arguments.get(0).trim());
+            Expression right = parseExpression(arguments.get(1).trim());
+
+            // Create and return the EQUAL expression
+            return new EqualExpression(left, right);
+        }
+    },
+    IF {
+        @Override
+        public Expression parse(List<String> arguments) {
+            // Validations: there should be exactly three arguments
+            if (arguments.size() != 3) {
+                throw new IllegalArgumentException("Invalid number of arguments for IF function. Expected 3, but got " + arguments.size());
+            }
+
+            // Parse arguments
+            Expression condition = parseExpression(arguments.get(0).trim());
+            Expression thenExpr = parseExpression(arguments.get(1).trim());
+            Expression elseExpr = parseExpression(arguments.get(2).trim());
+
+
+            // Create and return the IF expression
+            return new IfExpression(condition, thenExpr, elseExpr);
+        }
+    },
+    LESS {
+        @Override
+        public Expression parse(List<String> arguments) {
+            // Validations: there should be exactly two arguments
+            if (arguments.size() != 2) {
+                throw new IllegalArgumentException("Invalid number of arguments for LESS function. Expected 2, but got " + arguments.size());
+            }
+
+            // Parse arguments
+            Expression left = parseExpression(arguments.get(0).trim());
+            Expression right = parseExpression(arguments.get(1).trim());
+
+
+            // Create and return the LESS expression
+            return new LessExpression(left, right);
+        }
+    },
+    NOT {
+        @Override
+        public Expression parse(List<String> arguments) {
+            // Validations: there should be exactly one argument
+            if (arguments.size() != 1) {
+                throw new IllegalArgumentException("Invalid number of arguments for NOT function. Expected 1, but got " + arguments.size());
+            }
+
+            // Parse the argument
+            Expression expr = parseExpression(arguments.get(0).trim());
+
+
+
+            // Create and return the NOT expression
+            return new NotExpression(expr);
+        }
+    },
+    OR {
+        @Override
+        public Expression parse(List<String> arguments) {
+            // Validations: there should be exactly two arguments
+            if (arguments.size() != 2) {
+                throw new IllegalArgumentException("Invalid number of arguments for OR function. Expected 2, but got " + arguments.size());
+            }
+
+            // Parse arguments
+            Expression left = parseExpression(arguments.get(0).trim());
+            Expression right = parseExpression(arguments.get(1).trim());
+
+            // Create and return the OR expression
+            return new OrExpression(left, right);
+        }
+    },
+    PERCENT {
+        @Override
+        public Expression parse(List<String> arguments) {
+            // Validations: there should be exactly two arguments
+            if (arguments.size() != 2) {
+                throw new IllegalArgumentException("Invalid number of arguments for PERCENT function. Expected 2, but got " + arguments.size());
+            }
+
+            // Parse arguments
+            Expression part = parseExpression(arguments.get(0).trim());
+            Expression whole = parseExpression(arguments.get(1).trim());
+
+            // Create and return the PERCENT expression
+            return new PercentExpression(part, whole);
+        }
+    },
+    UPPER_CASE {
+        @Override
+        public Expression parse(List<String> arguments) {
+            // validations of the function. it should have exactly one argument
+            if (arguments.size() != 1) {
+                throw new IllegalArgumentException("Invalid number of arguments for UPPER_CASE function. Expected 1, but got " + arguments.size());
+            }
+
+            // structure is good. parse arguments
+            Expression arg = parseExpression(arguments.get(0).trim());
+
+            // all is good. create the relevant function instance
+            return new UpperCaseExpression(arg);
+        }
+    },
+    SUM {
+        @Override
+        public Expression parse(List<String> arguments) {
+            // SUM can take a list of arguments, so no need for specific number validation
+
+            // Parse all arguments
+            List<Expression> expressions = new ArrayList<>();
+            for (String arg : arguments) {
+                expressions.add(parseExpression(arg.trim()));
+            }
+
+            // Create and return the SUM expression
+            return new SumExpression(expressions);
         }
     },
     MINUS {
@@ -83,6 +251,22 @@ public enum FunctionParser {
 
             // all is good. create the relevant function instance
             return new MinusExpression(left, right);
+        }
+    },
+    AND {
+        @Override
+        public Expression parse(List<String> arguments) {
+            // Validations: there should be exactly two arguments
+            if (arguments.size() != 2) {
+                throw new IllegalArgumentException("Invalid number of arguments for AND function. Expected 2, but got " + arguments.size());
+            }
+
+            // Parse arguments
+            Expression left = parseExpression(arguments.get(0).trim());
+            Expression right = parseExpression(arguments.get(1).trim());
+
+            // Create and return the AND expression
+            return new AndExpression(left, right);
         }
     },
     CONCAT {

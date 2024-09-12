@@ -27,9 +27,9 @@ public class PlusExpression implements Expression {
         EffectiveValue rightValue = right.eval(sheet);
 
         if (!leftValue.getCellType().equals(CellType.NUMERIC) || !rightValue.getCellType().equals(CellType.NUMERIC)) {
-            if (checkValidation(leftValue, rightValue)) {
+            if (checkValidation(leftValue, rightValue))
                 return new EffectiveValueImpl(CellType.STRING, "NaN");
-            } else {
+                 else {
                 throw new IllegalArgumentException("Invalid argument types for PLUS function. Expected NUMERIC, but got " + leftValue.getCellType() + " and " + rightValue.getCellType());
             }
         }
