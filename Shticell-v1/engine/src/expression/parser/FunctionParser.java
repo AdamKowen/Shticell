@@ -85,6 +85,22 @@ public enum FunctionParser {
             return new MinusExpression(left, right);
         }
     },
+    AND {
+        @Override
+        public Expression parse(List<String> arguments) {
+            // Validations: there should be exactly two arguments
+            if (arguments.size() != 2) {
+                throw new IllegalArgumentException("Invalid number of arguments for AND function. Expected 2, but got " + arguments.size());
+            }
+
+            // Parse arguments
+            Expression left = parseExpression(arguments.get(0).trim());
+            Expression right = parseExpression(arguments.get(1).trim());
+
+            // Create and return the AND expression
+            return new AndExpression(left, right);
+        }
+    },
     CONCAT {
         @Override
         public Expression parse(List<String> arguments) {
