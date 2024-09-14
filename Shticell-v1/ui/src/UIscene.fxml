@@ -98,4 +98,37 @@
         </tabs>
       </TabPane>
    </right>
+   <left>
+      <VBox prefHeight="450.0" prefWidth="133.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox prefHeight="364.0" prefWidth="133.0">
+               <children>
+                  <GridPane prefHeight="264.0" prefWidth="133.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="top left" textAlignment="CENTER" />
+                        <TextField fx:id="topLeftBox" GridPane.rowIndex="1" />
+                        <Label fx:id="bottonRight" text="bottom right" GridPane.rowIndex="2" />
+                        <TextField fx:id="bottonRightBox" GridPane.rowIndex="3" />
+                        <Button fx:id="sort" mnemonicParsing="false" text="sort" GridPane.rowIndex="4" />
+                        <Button fx:id="resetsort" mnemonicParsing="false" text="reset sort" GridPane.rowIndex="5" />
+                     </children>
+                  </GridPane>
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="133.0" />
+         </children>
+      </VBox>
+   </left>
 </BorderPane>

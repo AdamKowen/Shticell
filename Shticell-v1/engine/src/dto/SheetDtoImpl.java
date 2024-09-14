@@ -5,8 +5,8 @@ import sheet.cell.api.Cell;
 import sheet.coordinate.api.Coordinate;
 import sheet.coordinate.impl.CoordinateCache;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class SheetDtoImpl implements SheetDto{
     private int numOfColumns;
@@ -98,6 +98,118 @@ public class SheetDtoImpl implements SheetDto{
     // Function to get the current state of the sheet
     public Map<Coordinate, CellDto> getSheet() {
         return cellsInSheet;
+    }
+
+
+
+
+
+
+
+
+
+
+    // פונקציה למיון השורות בטווח מסוים על פי עמודות נבחרות
+    public List<Integer> sortRowsByColumns(Coordinate topLeft, Coordinate bottomRight, List<Character> columnChars) {
+        // ממירים את ה-characters של העמודות למספרי אינדקסים
+        List<Integer> columnIndices = convertColumnsToIndices(columnChars);
+
+        // שליפת השורות הרלוונטיות מהמפה לפי הטווח
+        Map<Integer, List<CellDto>> rowsInRange = getRowsInRange(topLeft, bottomRight);
+
+        // מיון השורות בטווח שנבחר בלבד
+        List<Integer> sortedRowNumbers = sortRowsByGivenColumns(rowsInRange, columnIndices);
+
+        return sortedRowNumbers;
+    }
+
+    // ממיר רשימת עמודות מסוג char למספרי עמודות
+    private List<Integer> convertColumnsToIndices(List<Character> columnChars) {
+        return columnChars.stream()
+                .map(c -> (int) c - 'A') // המרת כל עמודה לאינדקס מספרי (נניח ש-A מתחיל מ-0)
+                .collect(Collectors.toList());
+    }
+
+    // שליפת השורות בטווח שנבחר
+    private Map<Integer, List<CellDto>> getRowsInRange(Coordinate topLeft, Coordinate bottomRight) {
+        Map<Integer, List<CellDto>> rows = new HashMap<>();
+
+        for (int row = topLeft.getRow(); row <= bottomRight.getRow(); row++) {
+            List<CellDto> cellsInRow = new ArrayList<>();
+            for (int col = topLeft.getColumn(); col <= bottomRight.getColumn(); col++) {
+                Coordinate coord = CoordinateCache.createCoordinate(row,col);
+                if (cellsInSheet.containsKey(coord)) {
+                    cellsInRow.add(cellsInSheet.get(coord));
+                }
+            }
+            rows.put(row, cellsInRow);
+        }
+        return rows;
+    }
+
+
+    private List<Integer> sortRowsByGivenColumns(Map<Integer, List<CellDto>> rowsInRange, List<Integer> columnIndices) {
+        // קבלת כל מספרי השורות בסדר המקורי
+        List<Integer> allRows = cellsInSheet.keySet().stream()
+                .map(Coordinate::getRow)
+                .distinct()  // במקרה של שורות כפולות
+                .sorted()    // שמירה על סדר השורות המקורי
+                .collect(Collectors.toList());
+
+        // מיון השורות שנמצאות בטווח שנבחר
+        List<Integer> sortedRowNumbers = rowsInRange.keySet().stream()
+                .sorted((row1, row2) -> compareRowsByColumns(row1, row2, rowsInRange, columnIndices))
+                .collect(Collectors.toList());
+
+        // עדכון הרשימה הכללית עם השורות הממוינות במקום שלהן
+        int startRow = allRows.indexOf(sortedRowNumbers.get(0));  // מוצאים את המיקום הראשון בטווח
+        for (int i = 0; i < sortedRowNumbers.size(); i++) {
+            allRows.set(startRow + i, sortedRowNumbers.get(i));   // מחליפים את השורות הממוינות ברשימה הכללית
+        }
+
+        return allRows;
+    }
+
+
+    // פונקציה שמבצעת השוואה בין שתי שורות לפי עמודות נבחרות
+    private int compareRowsByColumns(int row1, int row2, Map<Integer, List<CellDto>> rowsInRange, List<Integer> columnIndices) {
+        // עבור כל עמודה שבחרנו, בודקים את הערכים שלה עבור כל שורה
+        for (Integer columnIndex : columnIndices) {
+            CellDto cell1 = getCellInRow(row1, columnIndex, rowsInRange);
+            CellDto cell2 = getCellInRow(row2, columnIndex, rowsInRange);
+
+            // מבצעים השוואה בין הערכים המספריים (אם הם קיימים)
+            int comparison = compareCells(cell1, cell2);
+            if (comparison != 0) {
+                return comparison; // אם יש תוצאה חיובית, מחזירים אותה
+            }
+        }
+        return 0; // אם כל הערכים זהים, לא משנים את הסדר
+    }
+
+    // שליפת תא מסוים משורה לפי אינדקס העמודה
+    private CellDto getCellInRow(int row, int column, Map<Integer, List<CellDto>> rowsInRange) {
+        List<CellDto> rowCells = rowsInRange.get(row);
+        if (column < rowCells.size()) {
+            return rowCells.get(column);
+        }
+        return null; // אם אין תא, מחזירים null
+    }
+
+    // השוואה בין שני תאים על בסיס ערכים מספריים
+    private int compareCells(CellDto cell1, CellDto cell2) {
+        if (cell1 == null || cell2 == null) {
+            return 0; // אם אין תאים להשוות, לא משנים את הסדר
+        }
+
+        // מיון לפי ערכים מספריים, נתעלם ממחרוזות ומערכים לא מספריים
+        try {
+            double value1 = Double.parseDouble(cell1.getValue());
+            double value2 = Double.parseDouble(cell2.getValue());
+            return Double.compare(value1, value2);
+        } catch (NumberFormatException e) {
+            return 0; // אם לא ניתן להמיר למספר, לא משנים את הסדר
+        }
     }
 
 }

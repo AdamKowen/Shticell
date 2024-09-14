@@ -2,6 +2,7 @@ package dto;
 
 import sheet.coordinate.api.Coordinate;
 
+import java.util.List;
 import java.util.Map;
 
 public interface SheetDto {
@@ -28,4 +29,10 @@ public interface SheetDto {
 
     // Function to get the current state of the sheet
     public Map<Coordinate, CellDto> getSheet();
+
+
+
+
+
+    public List<Integer> sortRowsByColumns(Coordinate topLeft, Coordinate bottomRight, List<Character> columnChars);
 }
