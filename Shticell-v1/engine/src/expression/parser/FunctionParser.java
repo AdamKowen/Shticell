@@ -56,23 +56,9 @@ public enum FunctionParser {
     AVERAGE {
         @Override
         public Expression parse(List<String> arguments) {
-            // AVERAGE can take a list of arguments, so no need for specific number validation
-
-            // Parse all arguments
-            List<Expression> expressions = new ArrayList<>();
-            for (String arg : arguments) {
-                expressions.add(parseExpression(arg.trim()));
-            }
-
-            // Validate argument types
-            for (Expression expr : expressions) {
-                if (!expr.getFunctionResultType().equals(CellType.NUMERIC) && !expr.getFunctionResultType().equals(CellType.UNKNOWN)) {
-                    throw new IllegalArgumentException("Invalid argument type for AVERAGE function. Expected NUMERIC, but got " + expr.getFunctionResultType());
-                }
-            }
-
+            String rangeName = (arguments.get(0).trim());
             // Create and return the AVERAGE expression
-            return new AverageExpression(expressions);
+            return new AverageExpression(rangeName);
         }
     },
     BIGGER {
