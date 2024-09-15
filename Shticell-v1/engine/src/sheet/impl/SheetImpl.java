@@ -6,6 +6,8 @@ import sheet.api.Sheet;
 import sheet.cell.api.Cell;
 import sheet.coordinate.api.*;
 import sheet.coordinate.impl.CoordinateCache;
+import sheet.range.api.Range;
+import sheet.range.boundaries.Boundaries;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +27,7 @@ public class SheetImpl implements Sheet {
     private Map<Coordinate, Cell> cellsInSheet;
     private Map<Integer, SheetDto> versionHistory;
     private List<Integer> numCellChangedHistory;
+    private Map<String, Range> ranges = new HashMap<>();
 
 
     // Constructor
@@ -39,6 +42,7 @@ public class SheetImpl implements Sheet {
         this.cellsInSheet = cellsInSheet;
         this.versionHistory = new HashMap<>();
         this.numCellChangedHistory = new ArrayList<>();
+        this.ranges = new HashMap<>();
     }
 
     @Override
@@ -224,5 +228,79 @@ public class SheetImpl implements Sheet {
 
         return false;
     }
+
+    public void addRange(String name, Range range) {
+        ranges.put(name,range);
+    }
+
+    public Range getRange(String name) {
+        return ranges.get(name);
+    }
+
+    public void removeRange(String name) {
+        ranges.remove(name);
+    }
+
+
+
+    // Get all cells in the range (returns a list of cells)
+    public List<Cell> getCellsInRange(String name) {
+        Cell topLeft=getCellByString(ranges.get(name).getBoundaries().getFrom());
+        Cell bottomRight= getCellByString(ranges.get(name).getBoundaries().getTo());
+
+        List<Cell> cells = new ArrayList<>();
+        for (int row = topLeft.getCoordinate().getRow(); row <= bottomRight.getCoordinate().getRow(); row++) {
+            for (int col = topLeft.getCoordinate().getColumn(); col <= bottomRight.getCoordinate().getColumn(); col++) {
+                cells.add(this.getCell(row, col));
+            }
+        }
+        return cells;
+    }
+
+    private Cell getCellByString(String s) {
+        if (s == null || s.length() != 2) {
+            throw new IllegalArgumentException("Invalid cell reference: " + s);
+        }
+
+        // Extract the column part (letters) and row part (numbers)
+        StringBuilder columnPart = new StringBuilder();
+        StringBuilder rowPart = new StringBuilder();
+
+        // Separate the column (letters) and row (numbers), can get A1 or 1A
+        for (char c : s.toCharArray()) {
+            if (Character.isLetter(c)) {
+                columnPart.append(c);
+            } else if (Character.isDigit(c)) {
+                rowPart.append(c);
+            } else {
+                throw new IllegalArgumentException("Invalid character in cell reference: " + s);
+            }
+        }
+
+        if (columnPart.isEmpty() || rowPart.length() == 0) {
+            throw new IllegalArgumentException("Invalid cell reference: " + s);
+        }
+
+        // Convert column (e.g., 'A') to a column number
+        int column = convertColumnStringToNumber(columnPart.toString());
+
+        // Convert row string to integer
+        int row = Integer.parseInt(rowPart.toString());
+
+        // Fetch and return the cell using the existing getCell method
+        return getCell(row, column);
+    }
+
+    // Helper method to convert column string (e.g., "A", "AB") to a column number
+    private int convertColumnStringToNumber(String columnString) {
+        int columnNumber = 0;
+        for (int i = 0; i < columnString.length(); i++) {
+            char c = Character.toUpperCase(columnString.charAt(i));
+            columnNumber = columnNumber * 26 + (c - 'A' + 1);
+        }
+        return columnNumber;
+    }
+
+
 
 }
