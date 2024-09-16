@@ -12,6 +12,9 @@ import sheet.cell.impl.CellImpl;
 import sheet.coordinate.api.Coordinate;
 import sheet.coordinate.impl.CoordinateImpl;
 import sheet.impl.SheetImpl;
+import sheet.range.api.Range;
+import sheet.range.boundaries.Boundaries;
+import sheet.range.impl.RangeImpl;
 
 import java.io.File;
 import java.util.HashMap;
@@ -72,10 +75,11 @@ public class LoaderImpl implements Loader {
         int numColumns = stlSheet.getSTLLayout().getColumns();
         int columnUnits = stlSheet.getSTLLayout().getSTLSize().getColumnWidthUnits();
         int rowUnits = stlSheet.getSTLLayout().getSTLSize().getRowsHeightUnits();
-
+        //     HashMap<String ,Range>= stlSheet.getSTLRanges().getSTLRange()
         Map<Coordinate, Cell> cellsInSheet = new HashMap<>();
+        Map<String, Range> rangesInSheet = new HashMap<>();
 
-        Sheet newSheet = new SheetImpl(name, numColumns, numRows, columnUnits, rowUnits, cellsInSheet);
+        Sheet newSheet = new SheetImpl(name, numColumns, numRows, columnUnits, rowUnits, cellsInSheet,rangesInSheet);
 
         for (loader.generated.STLCell stlCell : stlSheet.getSTLCells().getSTLCell()) {
             int row = stlCell.getRow();
@@ -90,8 +94,24 @@ public class LoaderImpl implements Loader {
             cellsInSheet.put(coordinate, cell);
         }
 
+
+        for (loader.generated.STLRange stlRange : stlSheet.getSTLRanges().getSTLRange()) {
+            if(stlRange!=null) {
+                String from = stlRange.getSTLBoundaries().getFrom();
+                String to = stlRange.getSTLBoundaries().getTo();
+                Boundaries newBoundaries = new Boundaries(from, to);
+
+                String rangeName = stlRange.getName();
+
+                Range resRange = new RangeImpl(newBoundaries, rangeName);
+                rangesInSheet.put(rangeName, resRange);
+            }
+
+        }
+
         // החזרת אובייקט Sheet מלא בנתונים
         return newSheet;
+
     }
 
 }

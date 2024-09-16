@@ -70,9 +70,9 @@ public enum FunctionParser {
             }
 
             // Parse arguments
+           // System.out.println(arguments.get(0).trim());
             Expression left = parseExpression(arguments.get(0).trim());
             Expression right = parseExpression(arguments.get(1).trim());
-
             // Create and return the BIGGER expression
             return new BiggerExpression(left, right);
         }
@@ -213,6 +213,8 @@ public enum FunctionParser {
             // SUM can take a list of arguments, so no need for specific number validation
 
             String rangeName = (arguments.get(0).trim());
+
+
             // Create and return the SUM expression
             return new SumExpression(rangeName);
         }

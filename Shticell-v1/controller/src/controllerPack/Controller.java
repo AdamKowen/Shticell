@@ -155,6 +155,7 @@ public class Controller {
                 //populateGrid();
             } catch (Exception e) {
                 fileNameLabel.setText("an error occurred." + e.getMessage());
+                e.printStackTrace();
             }
         } else {
             // מציג הודעת שגיאה אם לא נבחר קובץ

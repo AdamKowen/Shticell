@@ -93,6 +93,7 @@ public class CellImpl implements Cell {
         // it can be {PLUS, 4, 5} OR {CONCAT, hello, world}
         Expression expression = FunctionParser.parseExpression(originalValue);
 
+
         return expression.doesContainRef();
     }
 

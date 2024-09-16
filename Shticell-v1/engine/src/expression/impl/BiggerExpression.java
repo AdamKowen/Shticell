@@ -20,8 +20,10 @@ public class BiggerExpression implements Expression {
 
     @Override
     public EffectiveValue eval(SheetReadActions sheet) {
+
         EffectiveValue leftValue = left.eval(sheet);
         EffectiveValue rightValue = right.eval(sheet);
+
 
         // Validate argument types
         if (!leftValue.getCellType().equals(CellType.NUMERIC)|| (!rightValue.getCellType().equals(CellType.NUMERIC))) {

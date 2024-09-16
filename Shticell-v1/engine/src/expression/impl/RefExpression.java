@@ -32,10 +32,21 @@ public class RefExpression implements Expression {
             }
             else
             {
+
                 return new EffectiveValueImpl(CellType.UNKNOWN, null); //empty cell
             }
         }
+        if(refCell.getExpression() instanceof SumExpression){
+            SumExpression resE=(SumExpression)refCell.getExpression();
+            return resE.eval(sheet);
+        }
+        else if(refCell.getExpression() instanceof AverageExpression){
+            AverageExpression avg =(AverageExpression)refCell.getExpression();
+            return avg.eval(sheet);
+        }
+
         return refCell.getEffectiveValue();
+
     }
 
     @Override
@@ -62,4 +73,6 @@ public class RefExpression implements Expression {
     {
         dependencies.add(this.getRefValue());
     }
+
+
 }
