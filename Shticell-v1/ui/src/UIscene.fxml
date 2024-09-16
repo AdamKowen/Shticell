@@ -120,7 +120,7 @@
                         <Label text="top left" textAlignment="CENTER" />
                         <TextField fx:id="topLeftBox" GridPane.rowIndex="1" />
                         <Label fx:id="bottonRight" text="bottom right" GridPane.rowIndex="2" />
-                        <TextField fx:id="bottonRightBox" GridPane.rowIndex="3" />
+                        <TextField fx:id="bottomRightBox" GridPane.rowIndex="3" />
                         <Button fx:id="sort" mnemonicParsing="false" text="sort" GridPane.rowIndex="4" />
                         <Button fx:id="resetsort" mnemonicParsing="false" text="reset sort" GridPane.rowIndex="5" />
                      </children>

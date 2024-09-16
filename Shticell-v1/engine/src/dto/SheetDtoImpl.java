@@ -212,4 +212,15 @@ public class SheetDtoImpl implements SheetDto{
         }
     }
 
+
+    public List<Integer> resetSoretedOrder()
+    {
+        List<Integer> order = new ArrayList<>();
+        for(int i = 1; i <= numOfRows; i++)
+        {
+            order.add(i);
+        }
+        return order;
+    }
+
 }

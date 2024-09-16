@@ -35,4 +35,6 @@ public interface SheetDto {
 
 
     public List<Integer> sortRowsByColumns(Coordinate topLeft, Coordinate bottomRight, List<Character> columnChars);
+
+    public List<Integer> resetSoretedOrder();
 }
