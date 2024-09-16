@@ -3,6 +3,7 @@ package expression.impl;
 
 import expression.api.Expression;
 import sheet.api.SheetReadActions;
+import sheet.cell.api.Cell;
 import sheet.cell.api.CellType;
 import sheet.cell.api.EffectiveValue;
 import sheet.cell.impl.EffectiveValueImpl;
@@ -11,19 +12,26 @@ import sheet.coordinate.api.Coordinate;
 import java.util.List;
 
 public class SumExpression implements Expression {
-    private final List<Expression> range;
+    private final String rangeName;
 
-    public SumExpression(List<Expression> range) {
-        this.range = range;
+    public SumExpression(String rangeName) {
+        this.rangeName = rangeName;
     }
 
     @Override
     public EffectiveValue eval(SheetReadActions sheet) {
         double sum = 0;
-        for (Expression expr : range) {
-            if(expr.eval(sheet).getCellType()== CellType.NUMERIC)
-              sum += expr.eval(sheet).extractValueWithExpectation(Double.class);
+        try {
+            List<Cell> cellsInRange = sheet.getCellsInRange(rangeName);
+            for (Cell cell :cellsInRange ) {
+                Expression expr= cell.getExpression();
+                if(expr.eval(sheet).getCellType()== CellType.NUMERIC)
+                    sum += expr.eval(sheet).extractValueWithExpectation(Double.class);
+            }
+        }catch (Exception e){
+            System.out.println("Range not found"+e.getMessage());
         }
+
         return new EffectiveValueImpl(CellType.NUMERIC, sum);
     }
 

@@ -212,14 +212,9 @@ public enum FunctionParser {
         public Expression parse(List<String> arguments) {
             // SUM can take a list of arguments, so no need for specific number validation
 
-            // Parse all arguments
-            List<Expression> expressions = new ArrayList<>();
-            for (String arg : arguments) {
-                expressions.add(parseExpression(arg.trim()));
-            }
-
+            String rangeName = (arguments.get(0).trim());
             // Create and return the SUM expression
-            return new SumExpression(expressions);
+            return new SumExpression(rangeName);
         }
     },
     MINUS {
@@ -463,11 +458,6 @@ public enum FunctionParser {
 
         return parts;
     }
-
-    public static void main(String[] args) {
-
-    }
-
     public static Coordinate createCoordinateFromString(String trim) {
         try {
             // חילוץ מספרים ואותיות מהקלט
@@ -485,6 +475,12 @@ public enum FunctionParser {
             return null;
         }
     }
+
+    public static void main(String[] args) {
+
+    }
+
+
 
 }
 //
