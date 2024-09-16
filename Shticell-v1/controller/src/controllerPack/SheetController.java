@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import loader.SheetLoadingException;
 import org.xml.sax.SAXException;
 import sheet.coordinate.api.Coordinate;
+import sheet.coordinate.impl.CoordinateImpl;
 import sheetEngine.SheetEngine;
 import sheetEngine.SheetEngineImpl;
 
@@ -61,5 +62,9 @@ public interface SheetController {
     void loadSheetCurrent();
 
     SheetDto getVersionDto(int version);
+
+    void sortRowsInRange(Coordinate topLeft, Coordinate bottomRight);
+
+    void resetSorting();
 }
 

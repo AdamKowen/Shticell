@@ -16,11 +16,13 @@ import loader.SheetLoadingException;
 import org.xml.sax.SAXException;
 import sheet.coordinate.api.Coordinate;
 import sheet.coordinate.impl.CoordinateCache;
+import sheet.coordinate.impl.CoordinateImpl;
 import sheetEngine.SheetEngine;
 import sheetEngine.SheetEngineImpl;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SheetControllerImpl implements SheetController {
@@ -39,6 +41,7 @@ public class SheetControllerImpl implements SheetController {
 
     SheetEngine sheetEngine = new SheetEngineImpl();
 
+    private List<Integer> sortedRowOrder;
 
 
 
@@ -106,6 +109,7 @@ public class SheetControllerImpl implements SheetController {
 
 
 
+
     @Override
     public void alignCells(Pos alignment) {
         for (Node node : sheetGridPane.getChildren().filtered(node -> node instanceof Label)) {
@@ -166,6 +170,109 @@ public class SheetControllerImpl implements SheetController {
         rowConstraints.setPrefHeight(width);
         rowConstraints.setMaxHeight(width);
     }
+
+    @Override
+    public void updateSheet(SheetDto sheetDto) {
+        // ניקוי ה-GridPane הקיים
+        sheetGridPane.getChildren().clear();
+
+        // קביעת גודל הגריד לפי מספר השורות והעמודות של הגיליון
+        sheetGridPane.getRowConstraints().clear();
+        sheetGridPane.getColumnConstraints().clear();
+
+        final double cellWidth = 100.0; // רוחב קבוע לכל תא
+        final double cellHeight = 30.0; // גובה קבוע לכל תא
+
+        // הוספת כותרות עמודות
+        for (int col = 0; col < sheetDto.getNumOfColumns(); col++) {
+            char columnLetter = (char) ('A' + col); // A, B, C וכו'
+            Label columnHeader = new Label(String.valueOf(columnLetter));
+            columnHeader.setStyle("-fx-alignment: CENTER; -fx-padding: 5px;");
+            columnHeader.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+            // החלת רקע ורוד
+            sheetGridPane.add(columnHeader, col + 1, 0);
+            columnHeader.setStyle("-fx-background-color: lightpink; -fx-alignment: CENTER; -fx-padding: 5px;");
+        }
+
+        // הוספת כותרות שורות לפי הסדר המודפס
+        for (int rowIndex = 0; rowIndex < sortedRowOrder.size(); rowIndex++) {
+            int actualRow = sortedRowOrder.get(rowIndex);  // שורה לפי הסדר המודפס
+            Label rowHeader = new Label(String.valueOf(actualRow + 1)); // הדפסה לפי מספר השורה המקורי
+            rowHeader.setStyle("-fx-alignment: CENTER; -fx-padding: 5px;");
+            rowHeader.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+            // החלת רקע ורוד
+            sheetGridPane.add(rowHeader, 0, rowIndex + 1); // מיקום השורה +1 כי שורה 0 לכותרות
+            rowHeader.setStyle("-fx-background-color: lightpink; -fx-alignment: CENTER; -fx-padding: 5px;");
+        }
+
+        // קביעת גודל השורות והעמודות
+        for (int row = 0; row < sheetDto.getNumOfRows(); row++) {
+            RowConstraints rowConstraints = new RowConstraints();
+            rowConstraints.setPrefHeight(cellHeight); // גובה קבוע לשורות
+            sheetGridPane.getRowConstraints().add(rowConstraints);
+        }
+
+        for (int col = 0; col < sheetDto.getNumOfColumns(); col++) {
+            ColumnConstraints colConstraints = new ColumnConstraints();
+            colConstraints.setPrefWidth(cellWidth); // רוחב קבוע לעמודות
+            sheetGridPane.getColumnConstraints().add(colConstraints);
+        }
+
+        // הוספת התאים לפי סדר השורות המודפסות
+        for (int rowIndex = 0; rowIndex < sortedRowOrder.size(); rowIndex++) {
+            int actualRow = sortedRowOrder.get(rowIndex);  // שורה לפי הסדר המודפס
+            for (int col = 1; col <= sheetDto.getNumOfColumns(); col++) {
+                Coordinate coordinate = CoordinateCache.createCoordinate(actualRow, col); // קואורדינטה לפי השורה המקורית
+                CellDto cell = sheetDto.getCell(actualRow, col);
+
+                // יצירת תווית חדשה
+                Label label = new Label();
+
+                // קישור ה-Label ל-StringProperty מתוך ה-UImodel
+                String cellValue = (cell != null && cell.getValue() != null && !cell.getValue().isEmpty()) ? cell.getValue() : "";
+                uiModel.updateCell(coordinate, cellValue);  // עדכון התא ב-UImodel
+                label.textProperty().bind(uiModel.getCellProperty(coordinate)); // Binding
+
+                // הגדרת רוחב מקסימלי כדי לחתוך טקסט אם הוא גדול מדי
+                label.setMaxWidth(cellWidth);
+                label.setWrapText(false); // ביטול גלישת טקסט
+                label.setEllipsisString("..."); // הוספת שלוש נקודות במידת הצורך לחיתוך
+
+                // הגדרת סגנון ברירת מחדל
+                label.setStyle("-fx-alignment: CENTER_LEFT; -fx-background-color: white; -fx-padding: 5px;");
+
+                // הוספת אירוע לחיצה לסימון תא
+                label.setOnMouseClicked(event -> {
+                    if (selectedCell.get() != null) {
+                        selectedCell.get().setStyle("-fx-background-color: white; -fx-alignment: CENTER_LEFT; -fx-padding: 5px;");
+                    }
+                    label.setStyle("-fx-background-color: #add8e6; -fx-alignment: CENTER_LEFT; -fx-padding: 5px;");
+                    selectedCell.set(label); // עדכון התא הנבחר
+                });
+
+                // הוספת אירוע מעבר עם העכבר
+                label.setOnMouseEntered(event -> {
+                    label.setStyle("-fx-background-color: lightblue; -fx-alignment: CENTER_LEFT; -fx-padding: 5px;");
+                });
+
+                label.setOnMouseExited(event -> {
+                    if (!label.equals(selectedCell.get())) {
+                        label.setStyle("-fx-background-color: white; -fx-alignment: CENTER_LEFT; -fx-padding: 5px;");
+                    }
+                });
+
+                // הוספת התווית לגריד, לפי השורה המודפסת (rowIndex) והעמודה הרגילה (col)
+                sheetGridPane.add(label, col , rowIndex + 1); // הצגת התא בשורה החדשה
+            }
+        }
+
+        sheetGridPane.setGridLinesVisible(true); // הצגת קווי ההפרדה
+    }
+
+
+    /*
     @Override
     public void updateSheet(SheetDto sheetDto) {
 
@@ -265,6 +372,8 @@ public class SheetControllerImpl implements SheetController {
 
         sheetGridPane.setGridLinesVisible(true); // הצגת קווי ההפרדה
     }
+
+     */
 
 
     @Override
@@ -380,6 +489,26 @@ public class SheetControllerImpl implements SheetController {
     public SheetDto getVersionDto(int version)
     {
         return sheetEngine.getVersionDto(version);
+    }
+
+
+    public void sortRowsInRange(Coordinate topLeft, Coordinate bottomRight) {
+        // יצירת רשימה של עמודות (Character)
+        List<Character> columns = new ArrayList<>();
+
+        // לולאה שעוברת על העמודות מהעמודה השמאלית (topLeft.getColumn()) עד הימנית (bottomRight.getColumn())
+        for (int col = topLeft.getColumn(); col <= bottomRight.getColumn(); col++) {
+            // ממיר אינדקס עמודה לאות (למשל, 0 -> 'A', 1 -> 'B')
+            char columnChar = (char) ('A' + col);
+            columns.add(columnChar);
+        }
+        // קריאה לפונקציית המיון עם רשימת העמודות שנבנתה
+        sortedRowOrder = sheetEngine.getCurrentSheetDTO().sortRowsByColumns(topLeft, bottomRight, columns);
+    }
+
+
+    public void resetSorting() {
+        sortedRowOrder = sheetEngine.getCurrentSheetDTO().resetSoretedOrder();
     }
 
     //

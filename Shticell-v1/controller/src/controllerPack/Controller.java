@@ -11,6 +11,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.FileChooser;
 import sheet.coordinate.api.Coordinate;
+import sheet.coordinate.impl.CoordinateCache;
 import sheetEngine.SheetEngine;
 import sheetEngine.SheetEngineImpl;
 
@@ -83,8 +84,6 @@ public class Controller {
                     sheetComponentController.updateCellContent(selectedCoordinate, newValue);
 
 
-
-
                     versionComboBox.getItems().clear();
                     //Getting list for versions
                     List<Integer> versions = sheetComponentController.getVersionList();
@@ -104,6 +103,34 @@ public class Controller {
         });
 
 
+
+
+
+        // Listener ללחיצה על כפתור ה-sort
+        sort.setOnAction(event -> {
+            // מקבל את הקואורדינטות מתיבות הטקסט
+            Coordinate topLeft = CoordinateCache.createCoordinateFromString(topLeftBox.getText());
+            Coordinate bottomRight = CoordinateCache.createCoordinateFromString(bottomRightBox.getText());
+
+            if (topLeft != null && bottomRight != null) {
+                // קריאה לפונקציית המיון שלך במנוע הגיליון
+                sheetComponentController.sortRowsInRange(topLeft, bottomRight);
+
+                // רענון התצוגה כדי להציג את הלוח אחרי המיון
+                refreshSheetDisplay();
+            } else {
+                System.out.println("Invalid coordinates entered.");
+            }
+        });
+
+        // Listener ללחיצה על כפתור ה-reset (ביטול המיון)
+        resetsort.setOnAction(event -> {
+            sheetComponentController.resetSorting();
+            refreshSheetDisplay();
+        });
+
+
+
         // הוסף מאזין לבחירה ב-ComboBox
         versionComboBox.setOnAction(event -> {
             // קבל את האינדקס של הבחירה (האינדקס תואם לסדר של הגרסאות)
@@ -114,6 +141,15 @@ public class Controller {
                 sheetVersionController.updateSheet(sheetComponentController.getVersionDto(selectedIndex+1)); // לדוגמה, טען את הגרסה שנבחרה
             }
         });
+    }
+
+
+
+
+
+    // פונקציה לרענון התצוגה של הגיליון אחרי המיון
+    private void refreshSheetDisplay() {
+        sheetComponentController.loadSheetCurrent();
     }
 
 
@@ -134,6 +170,7 @@ public class Controller {
                 sheetComponentController.loadSheetFromFile(file.getPath());
                 //sheetEngine.loadSheetFromXML(file.getPath());
                 fileNameLabel.setText("Selected file: " + file.getName());
+                sheetComponentController.resetSorting();
                 // עדכון sheetController לאחר טעינת הקובץ
                 sheetComponentController.loadSheetCurrent();
 
@@ -161,10 +198,6 @@ public class Controller {
             fileNameLabel.setText("No file selected or an error occurred.");
         }
     }
-
-
-
-
 
 
 }
