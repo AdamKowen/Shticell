@@ -77,7 +77,7 @@ public class Controller {
 
                 // הצגת הקואורדינטות של התא הנבחר
                 selectedCoordinate = sheetComponentController.getSelectedCoordinate();
-                //selectedCellLabel.setText("Selected cell: " + selectedCoordinate);
+                ///selectedCellLabel.setText("Selected cell: " + selectedCoordinate);
 
                 // הגדרת המיקוד על תיבת הטקסט כך שהסמן יהיה בפנים
                 cellInputContentTextField.requestFocus();
