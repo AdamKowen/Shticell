@@ -25,12 +25,16 @@ public class SumExpression implements Expression {
             List<Cell> cellsInRange = sheet.getCellsInRange(rangeName);
             for (Cell cell :cellsInRange ) {
                 Expression expr= cell.getExpression();
-                if(expr.eval(sheet).getCellType()== CellType.NUMERIC)
+                if(expr.eval(sheet).getCellType()== CellType.NUMERIC) {
                     sum += expr.eval(sheet).extractValueWithExpectation(Double.class);
+                    System.out.println(expr.eval(sheet).extractValueWithExpectation(Double.class));
+                }
             }
         }catch (Exception e){
-            System.out.println("Range not found"+e.getMessage());
+            throw new RuntimeException("error"+e.getMessage());
+
         }
+
 
         return new EffectiveValueImpl(CellType.NUMERIC, sum);
     }
@@ -42,7 +46,7 @@ public class SumExpression implements Expression {
 
     @Override
     public Boolean doesContainRef() {
-        return null;
+        return false;
     }
 
     @Override

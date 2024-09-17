@@ -49,7 +49,7 @@ public class AverageExpression implements Expression {
 
     @Override
     public Boolean doesContainRef() {
-        return null;
+        return false;
     }
 
     @Override

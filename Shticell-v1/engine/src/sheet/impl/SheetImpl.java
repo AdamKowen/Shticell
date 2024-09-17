@@ -27,11 +27,11 @@ public class SheetImpl implements Sheet {
     private Map<Coordinate, Cell> cellsInSheet;
     private Map<Integer, SheetDto> versionHistory;
     private List<Integer> numCellChangedHistory;
-    private Map<String, Range> ranges = new HashMap<>();
+    private Map<String, Range> ranges ;
 
 
     // Constructor
-    public SheetImpl(String name, int numOfColumns, int numOfRows, int columnUnits, int rowUnits, Map<Coordinate, Cell> cellsInSheet)
+    public SheetImpl(String name, int numOfColumns, int numOfRows, int columnUnits, int rowUnits, Map<Coordinate, Cell> cellsInSheet,Map<String, Range> rangesInSheet)
     {
         this.name = name;
         this.numOfColumns = numOfColumns;
@@ -42,7 +42,7 @@ public class SheetImpl implements Sheet {
         this.cellsInSheet = cellsInSheet;
         this.versionHistory = new HashMap<>();
         this.numCellChangedHistory = new ArrayList<>();
-        this.ranges = new HashMap<>();
+        this.ranges = rangesInSheet;
     }
 
     @Override
@@ -155,6 +155,11 @@ public class SheetImpl implements Sheet {
     public Map<Coordinate, Cell> getSheet() {
         return cellsInSheet;
     }
+
+    public Map<String, Range> getRanges() {
+        return ranges;
+    }
+
 
     @Override
     public void saveVersion() {
