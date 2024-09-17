@@ -54,6 +54,9 @@ public class SheetControllerImpl implements SheetController {
     // קואורדינטה של התא בו עזבנו את הבחירה
     private Coordinate endCoordinate;
 
+    // הוספת Property עבור טווח נבחר
+    private ObjectProperty<CellRange> selectedRange = new SimpleObjectProperty<>();
+
 
 
     @FXML
@@ -314,6 +317,9 @@ public class SheetControllerImpl implements SheetController {
         label.setOnMousePressed(event -> {
             startCoordinate = coordinate; // שמירת קואורדינטת התחלה
             endCoordinate = coordinate;
+            setSelectedRange(startCoordinate, endCoordinate);
+            selectedCell.set((Label)getNodeByCoordinate(startCoordinate.getRow(), startCoordinate.getColumn()));
+            highlightSelectedRange(startCoordinate, endCoordinate);
             System.out.println("Mouse pressed at: " + startCoordinate.getRow() + ", " + startCoordinate.getColumn());
         });
 
@@ -325,9 +331,21 @@ public class SheetControllerImpl implements SheetController {
 
         // אירוע מעבר מעל תא תוך כדי גרירה
         label.setOnMouseDragOver(event -> {
-            endCoordinate = coordinate; // עדכון קואורדינטת סיום תוך כדי גרירה
-            System.out.println("Mouse dragged over: " + endCoordinate.getRow() + ", " + endCoordinate.getColumn());
-            highlightSelectedRange(startCoordinate, endCoordinate); // עידכון הסימון במהלך הגרירה
+            if(coordinate != endCoordinate)
+            {
+                System.out.println("Mouse dragged over: " + endCoordinate.getRow() + ", " + endCoordinate.getColumn());
+                endCoordinate = coordinate;
+                highlightSelectedRange(startCoordinate, endCoordinate); // עידכון הסימון במהלך הגרירה
+                if (startCoordinate != endCoordinate)
+                {
+                    selectedCell.set(null);
+                    setSelectedRange(startCoordinate, endCoordinate);
+                }
+                else
+                {
+                    selectedCell.set((Label)getNodeByCoordinate(startCoordinate.getRow(), startCoordinate.getColumn()));
+                }
+            }
         });
 
         // אירוע שחרור עכבר
@@ -341,6 +359,7 @@ public class SheetControllerImpl implements SheetController {
             else{
                 selectedCell.set(null);
                 selectedCoordinate = null;
+                setSelectedRange(startCoordinate, endCoordinate);
             }
         });
     }
@@ -673,6 +692,18 @@ public class SheetControllerImpl implements SheetController {
         sortedRowOrder = sheetEngine.getCurrentSheetDTO().resetSoretedOrder();
     }
 
+
+
+
+    // Getter עבור selectedRangeProperty
+    public ObjectProperty<CellRange> selectedRangeProperty() {
+        return selectedRange;
+    }
+
+    // פונקציה להגדיר את הטווח הנבחר
+    private void setSelectedRange(Coordinate topLeft, Coordinate bottomRight) {
+        selectedRange.set(new CellRange(topLeft, bottomRight));  // יוצרים טווח חדש ומעדכנים את ה-Property
+    }
     //
 
     /*

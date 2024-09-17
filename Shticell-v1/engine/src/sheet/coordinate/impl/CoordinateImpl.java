@@ -39,6 +39,27 @@ public class CoordinateImpl implements Coordinate {
         result = 31 * result + column;
         return result;
     }
+
+
+    @Override
+    public String toString() {
+        // המרת העמודה לאותיות (A, B, C וכו')
+        String columnLetter = convertColumnNumberToLetter(column);
+
+        // החזרת הפורמט הרצוי: A1, B2, וכו'
+        return columnLetter + (row);
+    }
+
+    // פונקציה להמרת מספר עמודה לאותיות בצורה פשוטה ומדויקת
+    private String convertColumnNumberToLetter(int column) {
+        StringBuilder columnName = new StringBuilder();
+        while (column > 0) {
+            column--; // התאמת האינדקס, כדי שיתאים לשיטה העשרונית
+            columnName.insert(0, (char) ('A' + (column % 26)));
+            column = column / 26;
+        }
+        return columnName.toString();
+    }
 }
 
 

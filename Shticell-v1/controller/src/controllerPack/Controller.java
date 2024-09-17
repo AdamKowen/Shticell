@@ -1,6 +1,8 @@
 package controllerPack;
 import dto.CellDto;
 import dto.SheetDto;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -77,7 +79,7 @@ public class Controller {
 
                 // הצגת הקואורדינטות של התא הנבחר
                 selectedCoordinate = sheetComponentController.getSelectedCoordinate();
-                //selectedCellLabel.setText("Selected cell: " + selectedCoordinate);
+                selectedCellLabel.setText("Selected cell: " + selectedCoordinate);
 
                 // הגדרת המיקוד על תיבת הטקסט כך שהסמן יהיה בפנים
                 cellInputContentTextField.requestFocus();
@@ -91,7 +93,7 @@ public class Controller {
         });
 
 
-        /*
+
         // הוספת Listener לטווח תאים
         sheetComponentController.selectedRangeProperty().addListener((observable, oldRange, newRange) -> {
             if (newRange != null) {
@@ -99,11 +101,11 @@ public class Controller {
                 Coordinate bottomRight = newRange.getBottomRight();
                 selectedCellLabel.setText("Selected range: " + topLeft + " to " + bottomRight);
             } else {
-                selectedCellLabel.setText("Selected cell: none");
+                selectedCellLabel.setText("No range selected");
             }
         });
 
-         */
+
 
 
         // הוספת Listener ללחיצה על Enter בתיבת הטקסט
@@ -130,9 +132,6 @@ public class Controller {
                 }
             }
         });
-
-
-
 
 
         // Listener ללחיצה על כפתור ה-sort

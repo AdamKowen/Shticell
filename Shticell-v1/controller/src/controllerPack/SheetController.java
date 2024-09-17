@@ -66,5 +66,8 @@ public interface SheetController {
     void sortRowsInRange(Coordinate topLeft, Coordinate bottomRight);
 
     void resetSorting();
+
+
+    ObjectProperty<CellRange> selectedRangeProperty();
 }
 
