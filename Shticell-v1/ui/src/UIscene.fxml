@@ -52,8 +52,7 @@
                            <children>
                               <HBox prefHeight="45.0" prefWidth="143.0">
                                  <children>
-                                    <Label text="Selected cell:" />
-                                    <Label prefHeight="17.0" prefWidth="34.0" text="cell" />
+                                    <Label fx:id="selectedCellLabel" text="Selected cell:" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="45.0" prefWidth="167.0" GridPane.columnIndex="1">

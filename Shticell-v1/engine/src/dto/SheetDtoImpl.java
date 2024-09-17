@@ -148,7 +148,11 @@ public class SheetDtoImpl implements SheetDto{
     }
 
 
+
     private List<Integer> sortRowsByGivenColumns(Map<Integer, List<CellDto>> rowsInRange, List<Integer> columnIndices) {
+
+
+        /*
         // קבלת כל מספרי השורות בסדר המקורי
         List<Integer> allRows = cellsInSheet.keySet().stream()
                 .map(Coordinate::getRow)
@@ -156,19 +160,57 @@ public class SheetDtoImpl implements SheetDto{
                 .sorted()    // שמירה על סדר השורות המקורי
                 .collect(Collectors.toList());
 
+         */
+
+        // יצירת רשימה של כל השורות (1 עד numOfRows)
+        List<Integer> allRows = new ArrayList<>();
+        for (int i = 1; i <= numOfRows; i++) {
+            allRows.add(i);  // מוסיף את כל השורות לפי הסדר המקורי
+        }
+
         // מיון השורות שנמצאות בטווח שנבחר
         List<Integer> sortedRowNumbers = rowsInRange.keySet().stream()
                 .sorted((row1, row2) -> compareRowsByColumns(row1, row2, rowsInRange, columnIndices))
                 .collect(Collectors.toList());
 
-        // עדכון הרשימה הכללית עם השורות הממוינות במקום שלהן
-        int startRow = allRows.indexOf(sortedRowNumbers.get(0));  // מוצאים את המיקום הראשון בטווח
-        for (int i = 0; i < sortedRowNumbers.size(); i++) {
-            allRows.set(startRow + i, sortedRowNumbers.get(i));   // מחליפים את השורות הממוינות ברשימה הכללית
+
+        /*
+        // יצירת רשימה חדשה של כל השורות, שבה נשמור את השורות הממוינות במקום הנכון
+        List<Integer> sortedAllRows = new ArrayList<>(allRows);
+
+        // מחליפים את השורות הממוינות בתוך רשימת כל השורות
+        int indexInSorted = 0;
+        for (int i = 0; i < allRows.size(); i++) {
+            int currentRow = allRows.get(i);
+
+            // אם השורה הנוכחית נמצאת בטווח המיון, מחליפים אותה בשורה הממוינת
+            if (rowsInRange.containsKey(currentRow)) {
+                sortedAllRows.set(i, sortedRowNumbers.get(indexInSorted));
+                indexInSorted++;
+            }
         }
 
+         */
+
+
+
+        // החלפת השורות הממוינות בתוך רשימת כל השורות
+        int sortedIndex = 0;
+        for (int i = 0; i < allRows.size(); i++) {
+            int currentRow = allRows.get(i);
+
+            // אם השורה הנוכחית נמצאת בטווח המיון, מחליפים אותה בשורה הממוינת
+            if (rowsInRange.containsKey(currentRow)) {
+                allRows.set(i, sortedRowNumbers.get(sortedIndex));
+                sortedIndex++;
+            }
+        }
+
+
+        // מחזירים את רשימת כל השורות עם השורות שבטווח ממוינות והשאר בסדר המקורי שלהן
         return allRows;
     }
+
 
 
     // פונקציה שמבצעת השוואה בין שתי שורות לפי עמודות נבחרות
@@ -179,7 +221,7 @@ public class SheetDtoImpl implements SheetDto{
             CellDto cell2 = getCellInRow(row2, columnIndex, rowsInRange);
 
             // מבצעים השוואה בין הערכים המספריים (אם הם קיימים)
-            int comparison = compareCells(cell1, cell2);
+            int comparison = compareCells(cell1, cell2);  // השוואה בכיוון הנכון (cell1 קודם)
             if (comparison != 0) {
                 return comparison; // אם יש תוצאה חיובית, מחזירים אותה
             }
@@ -187,19 +229,32 @@ public class SheetDtoImpl implements SheetDto{
         return 0; // אם כל הערכים זהים, לא משנים את הסדר
     }
 
+
+
     // שליפת תא מסוים משורה לפי אינדקס העמודה
     private CellDto getCellInRow(int row, int column, Map<Integer, List<CellDto>> rowsInRange) {
         List<CellDto> rowCells = rowsInRange.get(row);
-        if (column < rowCells.size()) {
-            return rowCells.get(column);
+
+        // חיפוש התא לפי אינדקס העמודה
+        for (CellDto cell : rowCells) {
+            if (cell.getCoordinate().getColumn() == column) {
+                return cell;
+            }
         }
-        return null; // אם אין תא, מחזירים null
+
+        // אם לא מצאנו תא, מחזירים תא ריק (יכול להיות בהתאם לאיך שאתה מייצג תאים ריקים)
+        return null;
     }
+
 
     // השוואה בין שני תאים על בסיס ערכים מספריים
     private int compareCells(CellDto cell1, CellDto cell2) {
-        if (cell1 == null || cell2 == null) {
-            return 0; // אם אין תאים להשוות, לא משנים את הסדר
+        if (cell1 == null && cell2 == null) {
+            return 0; // שני התאים ריקים, אין שינוי
+        } else if (cell1 == null) {
+            return -1; // תא ריק נחשב כקטן
+        } else if (cell2 == null) {
+            return 1;  // תא ריק נחשב כקטן
         }
 
         // מיון לפי ערכים מספריים, נתעלם ממחרוזות ומערכים לא מספריים
@@ -211,6 +266,7 @@ public class SheetDtoImpl implements SheetDto{
             return 0; // אם לא ניתן להמיר למספר, לא משנים את הסדר
         }
     }
+
 
 
     public List<Integer> resetSoretedOrder()

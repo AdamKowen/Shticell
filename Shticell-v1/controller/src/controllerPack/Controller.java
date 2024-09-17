@@ -64,15 +64,47 @@ public class Controller {
 
 
     @FXML
+    private Label selectedCellLabel;
+
+
+    @FXML
     private void initialize() {
         // Listener לשינויי הבחירה של התא
         sheetComponentController.selectedCellProperty().addListener((observable, oldLabel, newLabel) -> {
             if (newLabel != null) {
-                // כאשר נבחר תא חדש, עדכון תיבת הטקסט עם הערך שלו
-                //String cellContent = newLabel.getText();
+                // עדכון תיבת הטקסט עם הערך של התא הנבחר
                 cellInputContentTextField.setText(sheetComponentController.getSelectedCoordinateOriginalValue());
+
+                // הצגת הקואורדינטות של התא הנבחר
+                selectedCoordinate = sheetComponentController.getSelectedCoordinate();
+                //selectedCellLabel.setText("Selected cell: " + selectedCoordinate);
+
+                // הגדרת המיקוד על תיבת הטקסט כך שהסמן יהיה בפנים
+                cellInputContentTextField.requestFocus();
+
+                // ממקם את הסמן בסוף הטקסט הקיים
+                cellInputContentTextField.positionCaret(cellInputContentTextField.getText().length());
+            } else {
+                cellInputContentTextField.setText("");
+                selectedCellLabel.setText("Selected cell: none");
             }
         });
+
+
+        /*
+        // הוספת Listener לטווח תאים
+        sheetComponentController.selectedRangeProperty().addListener((observable, oldRange, newRange) -> {
+            if (newRange != null) {
+                Coordinate topLeft = newRange.getTopLeft();
+                Coordinate bottomRight = newRange.getBottomRight();
+                selectedCellLabel.setText("Selected range: " + topLeft + " to " + bottomRight);
+            } else {
+                selectedCellLabel.setText("Selected cell: none");
+            }
+        });
+
+         */
+
 
         // הוספת Listener ללחיצה על Enter בתיבת הטקסט
         cellInputContentTextField.setOnKeyPressed(event -> {
@@ -83,9 +115,8 @@ public class Controller {
                     String newValue = cellInputContentTextField.getText();
                     sheetComponentController.updateCellContent(selectedCoordinate, newValue);
 
-
                     versionComboBox.getItems().clear();
-                    //Getting list for versions
+                    // קבלת רשימת הגרסאות
                     List<Integer> versions = sheetComponentController.getVersionList();
                     // עבור על הרשימה ובנה מחרוזות עם מספרי גרסאות ומספרי שינויים
                     for (int i = 0; i < versions.size(); i++) {
@@ -96,8 +127,6 @@ public class Controller {
                         // הוסף את המחרוזת ל-ComboBox
                         versionComboBox.getItems().add(versionText);
                     }
-
-
                 }
             }
         });
