@@ -1,24 +1,37 @@
 package controllerPack;
 import dto.CellDto;
 import dto.SheetDto;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.WritableImage;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
+import javafx.util.Duration;
 import sheet.coordinate.api.Coordinate;
 import sheet.coordinate.impl.CoordinateCache;
+import javafx.scene.input.DragEvent;
 import sheetEngine.SheetEngine;
 import sheetEngine.SheetEngineImpl;
 
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Controller {
@@ -68,6 +81,13 @@ public class Controller {
     @FXML
     private Label selectedCellLabel;
 
+    @FXML
+    private ListView<String> colList; // ListView לרשימת העמודות
+
+    private String draggedItem;  // נשמור את האיבר הנגרר
+
+
+
 
     @FXML
     private void initialize() {
@@ -100,6 +120,8 @@ public class Controller {
                 Coordinate topLeft = newRange.getTopLeft();
                 Coordinate bottomRight = newRange.getBottomRight();
                 selectedCellLabel.setText("Selected range: " + topLeft + " to " + bottomRight);
+                topLeftBox.setText(topLeft.toString());
+                bottomRightBox.setText(bottomRight.toString());
             } else {
                 selectedCellLabel.setText("No range selected");
             }
@@ -169,8 +191,154 @@ public class Controller {
                 sheetVersionController.updateSheet(sheetComponentController.getVersionDto(selectedIndex+1)); // לדוגמה, טען את הגרסה שנבחרה
             }
         });
+
+
+        addDragEvents(); // לרשימת מיון
+
+
+
+
     }
 
+    private void addDragEvents() {
+
+        ObservableList<String> items = FXCollections.observableArrayList("A", "B", "C", "D", "E");  // דוגמה לרשימת עמודות
+        colList.setItems(items);
+        colList.setCellFactory(lv -> {
+            ListCell<String> cell = new ListCell<String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item);
+                }
+            };
+
+            cell.setOnDragDetected(event -> {
+                if (!cell.isEmpty()) {
+                    Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
+                    ClipboardContent content = new ClipboardContent();
+                    content.putString(cell.getItem());
+                    db.setContent(content);
+
+                    // יצירת DragView עם האות הנגררת
+                    WritableImage snapshot = cell.snapshot(null, null);  // יצירת snapshot של התא הנגרר
+                    db.setDragView(snapshot);  // הצגת הטקסט במקום אייקון ברירת המחדל
+
+                    event.consume();
+                }
+            });
+
+
+            cell.setOnDragOver(event -> {
+                if (event.getGestureSource() != cell && event.getDragboard().hasString()) {
+                    event.acceptTransferModes(TransferMode.MOVE);
+                    event.consume();
+                }
+            });
+
+            cell.setOnDragEntered(event -> {
+                if (event.getGestureSource() != cell && event.getDragboard().hasString()) {
+                    cell.setStyle("-fx-background-color: lightblue;");
+                }
+            });
+
+            cell.setOnDragExited(event -> {
+                cell.setStyle("");
+            });
+
+
+            cell.setOnDragDropped(event -> {
+                Dragboard db = event.getDragboard();
+                if (db.hasString() && cell.getItem() != null) {
+                    int draggedIdx = items.indexOf(db.getString());
+                    int thisIdx = items.indexOf(cell.getItem());
+
+                    String temp = items.get(draggedIdx);
+                    items.set(draggedIdx, items.get(thisIdx));
+                    items.set(thisIdx, temp);
+
+                    List<String> copy = new ArrayList<>(items);
+                    items.clear();
+                    items.addAll(copy);
+
+                    event.setDropCompleted(true);
+                    colList.getSelectionModel().select(thisIdx);
+                    event.consume();
+                }
+            });
+
+
+            cell.setOnDragDone(event -> {
+                event.consume();
+            });
+
+            return cell;
+        });
+    }
+
+
+
+
+
+
+    // פונקציה לטעינת העמודות לתוך הרשימה
+    private void initializeColumnList(List<String> columns) {
+        colList.getItems().clear(); // ניקוי הרשימה אם יש פריטים קודמים
+        colList.getItems().addAll(columns); // הוספת שמות העמודות
+    }
+
+
+    private void enableColumnReordering() {
+        colList.setCellFactory(lv -> {
+            ListCell<String> cell = new ListCell<>();
+
+            cell.textProperty().bind(cell.itemProperty()); // קישור הטקסט של התאים לנתונים ברשימה
+
+            // הגדרת גרירה
+            cell.setOnDragDetected(event -> {
+                if (cell.getItem() == null) return;
+
+                Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
+                ClipboardContent cc = new ClipboardContent();
+                cc.putString(cell.getItem());
+                db.setContent(cc);
+                event.consume();
+            });
+
+            // קבלת הפריט שנגרר
+            cell.setOnDragOver(event -> {
+                if (event.getGestureSource() != cell && event.getDragboard().hasString()) {
+                    event.acceptTransferModes(TransferMode.MOVE);
+                }
+                event.consume();
+            });
+
+            // שחרור והכנסת העמודה במקום הנכון
+            cell.setOnDragDropped(event -> {
+                if (cell.getItem() == null) return;
+
+                Dragboard db = event.getDragboard();
+                boolean success = false;
+                if (db.hasString()) {
+                    int draggedIndex = colList.getItems().indexOf(db.getString());
+                    int thisIndex = colList.getItems().indexOf(cell.getItem());
+
+                    // הזזת העמודה לרשימה במקום הנכון
+                    String draggedItem = colList.getItems().remove(draggedIndex);
+                    colList.getItems().add(thisIndex, draggedItem);
+
+                    success = true;
+                }
+                event.setDropCompleted(success);
+                event.consume();
+            });
+
+            // מחיקת גרירה לאחר סיום
+            cell.setOnDragDone(DragEvent::consume);
+
+            return cell;
+        });
+    }
 
 
 
