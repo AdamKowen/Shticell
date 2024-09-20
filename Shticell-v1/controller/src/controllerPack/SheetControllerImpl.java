@@ -1,6 +1,8 @@
 package controllerPack;
 
+import dto.BoundariesDto;
 import dto.CellDto;
+import dto.RangeDto;
 import dto.SheetDto;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -24,6 +26,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SheetControllerImpl implements SheetController {
 
@@ -600,5 +603,18 @@ public class SheetControllerImpl implements SheetController {
 
      */
 
+    public Map<String, RangeDto> getRanges()
+    {
+        return sheetEngine.getCurrentSheetDTO().getRanges();
+    }
+
+
+    public void highlightFunctionRange(String rangeName)
+    {
+        BoundariesDto currBoundaries = sheetEngine.getCurrentSheetDTO().getRanges().get(rangeName).getBoundaries();
+        Coordinate from = CoordinateCache.createCoordinateFromString(currBoundaries.getFrom());
+        Coordinate to = CoordinateCache.createCoordinateFromString(currBoundaries.getTo());
+        highlightSelectedRange(from, to);
+    }
 
 }

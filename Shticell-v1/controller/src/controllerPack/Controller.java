@@ -41,6 +41,7 @@ public class Controller {
 
 
 
+
     @FXML
     private Button LoadButton;
 
@@ -87,6 +88,8 @@ public class Controller {
     private String draggedItem;  // נשמור את האיבר הנגרר
 
 
+    @FXML
+    private ListView<String> listOfRanges; // אותו שם שהשתמשת ב-Scene Builder
 
 
     @FXML
@@ -196,6 +199,15 @@ public class Controller {
         addDragEvents(); // לרשימת מיון
 
 
+
+
+
+
+        listOfRanges.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                sheetComponentController.highlightFunctionRange(newValue); // קריאה לפונקציה שמדגישה את הטווח
+            }
+        });
 
 
     }
@@ -384,6 +396,8 @@ public class Controller {
                     // הוסף את המחרוזת ל-ComboBox
                     versionComboBox.getItems().add(versionText);
                 }
+
+                listOfRanges.getItems().addAll(sheetComponentController.getRanges().keySet());
 
                 //populateGrid();
             } catch (Exception e) {

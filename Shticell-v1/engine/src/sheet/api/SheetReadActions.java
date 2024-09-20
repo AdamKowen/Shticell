@@ -3,6 +3,7 @@ package sheet.api;
 import dto.SheetDto;
 import sheet.cell.api.Cell;
 import sheet.coordinate.api.Coordinate;
+import sheet.range.api.Range;
 
 import java.util.List;
 import java.util.Map;
@@ -40,4 +41,5 @@ public interface SheetReadActions {
 
      List<Cell> getCellsInRange(String name);
 
+    Map<String, Range> getRanges();
 }

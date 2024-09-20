@@ -141,7 +141,11 @@
                 </TitledPane>
                 <TitledPane animated="false" prefHeight="102.0" prefWidth="133.0" text="untitled 2">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <ListView fx:id="listOfRanges" prefHeight="200.0" prefWidth="133.0" />
+                           </children>
+                        </AnchorPane>
                   </content>
                 </TitledPane>
                 <TitledPane animated="false" prefHeight="860.0" prefWidth="133.0" text="untitled 3">

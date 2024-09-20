@@ -1,5 +1,6 @@
 package controllerPack;
 
+import dto.RangeDto;
 import dto.SheetDto;
 import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Pos;
@@ -14,6 +15,7 @@ import sheetEngine.SheetEngineImpl;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface SheetController {
 
@@ -69,5 +71,9 @@ public interface SheetController {
 
 
     ObjectProperty<CellRange> selectedRangeProperty();
+
+    Map<String, RangeDto> getRanges();
+
+    void highlightFunctionRange(String rangeName);
 }
 

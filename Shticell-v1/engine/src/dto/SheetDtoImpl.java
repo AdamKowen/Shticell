@@ -4,6 +4,7 @@ import sheet.api.Sheet;
 import sheet.cell.api.Cell;
 import sheet.coordinate.api.Coordinate;
 import sheet.coordinate.impl.CoordinateCache;
+import sheet.range.api.Range;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ public class SheetDtoImpl implements SheetDto{
     private Integer columnUnits;
     private Integer rowUnits;
     private Map<Coordinate, CellDto> cellsInSheet;
+    private Map<String, RangeDto> ranges ;
 
     public SheetDtoImpl(Sheet sheet){
         this.numOfColumns = sheet.getNumOfColumns();
@@ -40,9 +42,26 @@ public class SheetDtoImpl implements SheetDto{
         }
 
         this.cellsInSheet = currSheetToDto;
+
+
+
+        Map<String, Range> currRanges = sheet.getRanges();
+        Map<String, RangeDto> currRangesToDto = new HashMap<>();
+
+        for (Map.Entry<String, Range> entry : currRanges.entrySet()) {
+            String name = entry.getKey(); // מפתח (name)
+            Range range = entry.getValue(); // ערך (range)
+
+            // יצירת rangedto מהאובייקט range
+            RangeDto rangeDto = new RangeDto(range);
+
+            // הכנסת ה-range למפה החדשה
+            currRangesToDto.put(name, rangeDto);
+        }
+
+        this.ranges = currRangesToDto;
+
     }
-
-
 
 
 
@@ -102,13 +121,6 @@ public class SheetDtoImpl implements SheetDto{
 
 
 
-
-
-
-
-
-
-
     // פונקציה למיון השורות בטווח מסוים על פי עמודות נבחרות
     public List<Integer> sortRowsByColumns(Coordinate topLeft, Coordinate bottomRight, List<Character> columnChars) {
         // ממירים את ה-characters של העמודות למספרי אינדקסים
@@ -146,7 +158,6 @@ public class SheetDtoImpl implements SheetDto{
         }
         return rows;
     }
-
 
 
     private List<Integer> sortRowsByGivenColumns(Map<Integer, List<CellDto>> rowsInRange, List<Integer> columnIndices) {
@@ -212,7 +223,6 @@ public class SheetDtoImpl implements SheetDto{
     }
 
 
-
     // פונקציה שמבצעת השוואה בין שתי שורות לפי עמודות נבחרות
     private int compareRowsByColumns(int row1, int row2, Map<Integer, List<CellDto>> rowsInRange, List<Integer> columnIndices) {
         // עבור כל עמודה שבחרנו, בודקים את הערכים שלה עבור כל שורה
@@ -228,7 +238,6 @@ public class SheetDtoImpl implements SheetDto{
         }
         return 0; // אם כל הערכים זהים, לא משנים את הסדר
     }
-
 
 
     // שליפת תא מסוים משורה לפי אינדקס העמודה
@@ -268,15 +277,17 @@ public class SheetDtoImpl implements SheetDto{
     }
 
 
-
-    public List<Integer> resetSoretedOrder()
-    {
+    public List<Integer> resetSoretedOrder() {
         List<Integer> order = new ArrayList<>();
         for(int i = 1; i <= numOfRows; i++)
         {
             order.add(i);
         }
         return order;
+    }
+
+    public Map<String, RangeDto>  getRanges() {
+        return ranges;
     }
 
 }
