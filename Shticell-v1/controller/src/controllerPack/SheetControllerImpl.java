@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -246,6 +247,11 @@ public class SheetControllerImpl implements SheetController {
 
         final double cellWidth = 100.0; // רוחב קבוע לכל תא
         final double cellHeight = 30.0; // גובה קבוע לכל תא
+
+        if (sortedRowOrder == null)
+        {
+            sortedRowOrder = sheetDto.resetSoretedOrder();
+        }
 
         // הוספת כותרות עמודות
         for (int col = 0; col < sheetDto.getNumOfColumns(); col++) {
@@ -562,18 +568,10 @@ public class SheetControllerImpl implements SheetController {
     }
 
 
-    public void sortRowsInRange(Coordinate topLeft, Coordinate bottomRight) {
-        // יצירת רשימה של עמודות (Character)
-        List<Character> columns = new ArrayList<>();
+    public void sortRowsInRange(Coordinate topLeft, Coordinate bottomRight, List<Character> colList) {
 
-        // לולאה שעוברת על העמודות מהעמודה השמאלית (topLeft.getColumn()) עד הימנית (bottomRight.getColumn())
-        for (int col = topLeft.getColumn(); col <= bottomRight.getColumn(); col++) {
-            // ממיר אינדקס עמודה לאות (למשל, 0 -> 'A', 1 -> 'B')
-            char columnChar = (char) ('A' + col);
-            columns.add(columnChar);
-        }
         // קריאה לפונקציית המיון עם רשימת העמודות שנבנתה
-        sortedRowOrder = sheetEngine.getCurrentSheetDTO().sortRowsByColumns(topLeft, bottomRight, columns);
+        sortedRowOrder = sheetEngine.getCurrentSheetDTO().sortRowsByColumns(topLeft, bottomRight, colList);
     }
 
 
@@ -609,12 +607,64 @@ public class SheetControllerImpl implements SheetController {
     }
 
 
+    //need to update with correct highlight
     public void highlightFunctionRange(String rangeName)
     {
         BoundariesDto currBoundaries = sheetEngine.getCurrentSheetDTO().getRanges().get(rangeName).getBoundaries();
         Coordinate from = CoordinateCache.createCoordinateFromString(currBoundaries.getFrom());
         Coordinate to = CoordinateCache.createCoordinateFromString(currBoundaries.getTo());
-        highlightSelectedRange(from, to);
+
+        highlightSelectedRange(from, to); ////// need to update to work with after sorting where cells are scattered!
     }
+
+
+    //need to update with correct highlight
+    public boolean deleteRange(String rangeName)
+    {
+        sheetEngine.deleteRange(rangeName);
+        return true;
+    }
+
+
+
+    public List<String> getSelectedColumns() {
+        // בדיקה אם startCoordinate ו-endCoordinate מאותחלים
+        if (startCoordinate == null || endCoordinate == null) {
+            return new ArrayList<>(); // החזר רשימה ריקה אם לא אותחלו
+        }
+
+        // השגת ערכי העמודה ההתחלתית והסופית
+        int startColumn = startCoordinate.getColumn();
+        int endColumn = endCoordinate.getColumn();
+
+        // הבטחת הסדר הנכון (אם נבחר מימין לשמאל)
+        if (startColumn > endColumn) {
+            int temp = startColumn;
+            startColumn = endColumn;
+            endColumn = temp;
+        }
+
+        // יצירת רשימה להחזקת שמות העמודות
+        List<String> selectedColumns = new ArrayList<>();
+
+        // מעבר על העמודות שבטווח והמרתן לשמות
+        for (int col = startColumn; col <= endColumn; col++) {
+            selectedColumns.add(convertColumnNumberToString(col));
+        }
+
+        return selectedColumns;
+    }
+
+    // פונקציה המסייעת להמרת מספר עמודה למחרוזת (למשל: 1 -> "A", 2 -> "B")
+    private String convertColumnNumberToString(int columnNumber) {
+        StringBuilder columnName = new StringBuilder();
+        while (columnNumber > 0) {
+            int remainder = (columnNumber - 1) % 26;
+            columnName.insert(0, (char)(remainder + 'A'));
+            columnNumber = (columnNumber - 1) / 26;
+        }
+        return columnName.toString();
+    }
+
 
 }

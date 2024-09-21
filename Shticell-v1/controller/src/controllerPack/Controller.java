@@ -33,13 +33,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Controller {
 
     private Label selectedLabel = null;
     private Coordinate selectedCoordinate = null;
-
-
+    private List<String> currentColsSelected;
 
 
     @FXML
@@ -125,6 +125,7 @@ public class Controller {
                 selectedCellLabel.setText("Selected range: " + topLeft + " to " + bottomRight);
                 topLeftBox.setText(topLeft.toString());
                 bottomRightBox.setText(bottomRight.toString());
+                updateColumnList(sheetComponentController.getSelectedColumns());
             } else {
                 selectedCellLabel.setText("No range selected");
             }
@@ -166,9 +167,16 @@ public class Controller {
             Coordinate bottomRight = CoordinateCache.createCoordinateFromString(bottomRightBox.getText());
 
             if (topLeft != null && bottomRight != null) {
-                // קריאה לפונקציית המיון שלך במנוע הגיליון
-                sheetComponentController.sortRowsInRange(topLeft, bottomRight);
+// קבלת רשימת ה-String מה-ListView
+                ObservableList<String> columnStrings = colList.getItems();
 
+// המרת הרשימה לרשימת Character
+                List<Character> columnChars = columnStrings.stream()
+                        .map(s -> s.charAt(0))  // קבלת התו הראשון של כל מחרוזת
+                        .collect(Collectors.toList());
+
+// קריאה לפונקציית המיון שלך במנוע הגיליון
+                sheetComponentController.sortRowsInRange(topLeft, bottomRight, columnChars);
                 // רענון התצוגה כדי להציג את הלוח אחרי המיון
                 refreshSheetDisplay();
             } else {
@@ -195,8 +203,9 @@ public class Controller {
             }
         });
 
-
-        addDragEvents(); // לרשימת מיון
+        ObservableList<String> emptyList = FXCollections.observableArrayList();
+        colList.setItems(emptyList);  // אתחול ה-ListView עם רשימה ריקה
+        addDragEvents(emptyList); // לרשימת מיון
 
 
 
@@ -212,10 +221,49 @@ public class Controller {
 
     }
 
-    private void addDragEvents() {
 
-        ObservableList<String> items = FXCollections.observableArrayList("A", "B", "C", "D", "E");  // דוגמה לרשימת עמודות
+    public void updateColumnList(List<String> columns) {
+        colList.getItems().setAll(columns);
+    }
+
+
+    @FXML
+    private void deleteSelectedRange() {
+        // קבלת הפריט שנבחר מהרשימה
+        String selectedRange = listOfRanges.getSelectionModel().getSelectedItem();
+
+        // בדיקה אם יש פריט נבחר
+        if (selectedRange != null) {
+            // מחיקת הטווח מה-Map של הטווחים
+            boolean isDeleted = sheetComponentController.deleteRange(selectedRange);
+
+            if (isDeleted) {
+                // הסרת הטווח מהרשימה ב-UI
+                listOfRanges.getItems().remove(selectedRange);
+
+            } else {
+                // הצגת הודעת אזהרה אם המחיקה לא הצליחה (למשל, אם הטווח בשימוש)
+                showAlert("Cannot delete range", "The range is being used by a function.");
+            }
+        } else {
+            // אם לא נבחר טווח, להציג הודעה מתאימה
+            showAlert("No range selected", "Please select a range to delete.");
+        }
+    }
+
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void addDragEvents(List<String> columns) {
+        ObservableList<String> items = FXCollections.observableArrayList(columns);
         colList.setItems(items);
+
         colList.setCellFactory(lv -> {
             ListCell<String> cell = new ListCell<String>() {
                 @Override
@@ -225,6 +273,7 @@ public class Controller {
                 }
             };
 
+            // שאר אירועי ה-drag נשארים כפי שהם
             cell.setOnDragDetected(event -> {
                 if (!cell.isEmpty()) {
                     Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
@@ -232,14 +281,12 @@ public class Controller {
                     content.putString(cell.getItem());
                     db.setContent(content);
 
-                    // יצירת DragView עם האות הנגררת
-                    WritableImage snapshot = cell.snapshot(null, null);  // יצירת snapshot של התא הנגרר
-                    db.setDragView(snapshot);  // הצגת הטקסט במקום אייקון ברירת המחדל
+                    WritableImage snapshot = cell.snapshot(null, null);
+                    db.setDragView(snapshot);
 
                     event.consume();
                 }
             });
-
 
             cell.setOnDragOver(event -> {
                 if (event.getGestureSource() != cell && event.getDragboard().hasString()) {
@@ -257,7 +304,6 @@ public class Controller {
             cell.setOnDragExited(event -> {
                 cell.setStyle("");
             });
-
 
             cell.setOnDragDropped(event -> {
                 Dragboard db = event.getDragboard();
@@ -279,7 +325,6 @@ public class Controller {
                 }
             });
 
-
             cell.setOnDragDone(event -> {
                 event.consume();
             });
@@ -287,7 +332,6 @@ public class Controller {
             return cell;
         });
     }
-
 
 
 
@@ -381,12 +425,14 @@ public class Controller {
                 sheetComponentController.resetSorting();
                 // עדכון sheetController לאחר טעינת הקובץ
                 sheetComponentController.loadSheetCurrent();
-
+                sheetVersionController.updateSheet(sheetComponentController.getVersionDto(1));
 
 
                 // רוקן את ה-ComboBox לפני הוספת פריטים חדשים
                 versionComboBox.getItems().clear();
                 List<Integer> versions = sheetComponentController.getVersionList();
+
+
                 // עבור על הרשימה ובנה מחרוזות עם מספרי גרסאות ומספרי שינויים
                 for (int i = 0; i < versions.size(); i++) {
                     int versionNumber = i + 1; // מספר הגרסה מתחיל מ-1

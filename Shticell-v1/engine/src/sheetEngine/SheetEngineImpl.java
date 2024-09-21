@@ -128,6 +128,13 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
     }
 
 
+    @Override
+    public void deleteRange(String str) {
+        currentSheet.removeRange(str);
+    }
+
+
+
 
     // פונקציות נוספות לעבודה עם הגיליון
     // public void updateCell(...) { ... }

@@ -31,4 +31,6 @@ public interface SheetEngine {
     boolean isCoordinateInRange(String str);
 
     boolean isCellEmpty(String str);
+
+    void deleteRange(String str);
 }

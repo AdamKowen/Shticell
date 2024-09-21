@@ -32,4 +32,6 @@ public interface SheetUpdateActions {
     // Function to update the version of the sheet
     void updateVersion();
 
+    void removeRange(String name);
+
 }

@@ -65,7 +65,7 @@ public interface SheetController {
 
     SheetDto getVersionDto(int version);
 
-    void sortRowsInRange(Coordinate topLeft, Coordinate bottomRight);
+    void sortRowsInRange(Coordinate topLeft, Coordinate bottomRight, List<Character> colList);
 
     void resetSorting();
 
@@ -75,5 +75,9 @@ public interface SheetController {
     Map<String, RangeDto> getRanges();
 
     void highlightFunctionRange(String rangeName);
+
+    boolean deleteRange(String rangeName);
+
+    List<String> getSelectedColumns();
 }
 

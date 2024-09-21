@@ -138,7 +138,7 @@ public class SheetDtoImpl implements SheetDto{
     // ממיר רשימת עמודות מסוג char למספרי עמודות
     private List<Integer> convertColumnsToIndices(List<Character> columnChars) {
         return columnChars.stream()
-                .map(c -> (int) c - 'A') // המרת כל עמודה לאינדקס מספרי (נניח ש-A מתחיל מ-0)
+                .map(c -> (int) c - 'A' + 1) // המרת כל עמודה לאינדקס מספרי (נניח ש-A מתחיל מ-0)
                 .collect(Collectors.toList());
     }
 

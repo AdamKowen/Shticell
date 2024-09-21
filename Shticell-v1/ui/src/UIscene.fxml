@@ -29,7 +29,7 @@
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
                   <Button fx:id="LoadButton" mnemonicParsing="false" onAction="#loadButtonActionListener" prefHeight="26.0" prefWidth="91.0" text="Load File" />
-                  <Label fx:id="fileNameLabel" prefHeight="26.0" prefWidth="836.0" text="loaded file" />
+                  <Label fx:id="fileNameLabel" prefHeight="26.0" prefWidth="778.0" text="loaded file" />
                </children>
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
@@ -139,11 +139,14 @@
                         </AnchorPane>
                   </content>
                 </TitledPane>
-                <TitledPane animated="false" prefHeight="102.0" prefWidth="133.0" text="untitled 2">
+                <TitledPane fx:id="rangeNameTextBox" animated="false" prefHeight="102.0" prefWidth="133.0" text="untitled 2">
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
                               <ListView fx:id="listOfRanges" prefHeight="200.0" prefWidth="133.0" />
+                              <Button fx:id="addRange" layoutX="29.0" layoutY="258.0" mnemonicParsing="false" text="Add Range" />
+                              <Button fx:id="deleteRange" layoutX="25.0" layoutY="302.0" mnemonicParsing="false" onAction="#deleteSelectedRange" text="Delete Range" />
+                              <TextField layoutX="12.0" layoutY="218.0" prefHeight="26.0" prefWidth="104.0" />
                            </children>
                         </AnchorPane>
                   </content>
