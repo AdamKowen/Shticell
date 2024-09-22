@@ -153,7 +153,24 @@
                 </TitledPane>
                 <TitledPane animated="false" prefHeight="860.0" prefWidth="133.0" text="untitled 3">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <TabPane fx:id="columnTabPane" layoutX="-1.0" layoutY="86.0" prefHeight="200.0" prefWidth="133.0" tabClosingPolicy="UNAVAILABLE">
+                                <tabs>
+                                  <Tab text="Untitled Tab 1">
+                                    <content>
+                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                    </content>
+                                  </Tab>
+                                    <Tab text="Untitled Tab">
+                                      <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                      </content>
+                                    </Tab>
+                                </tabs>
+                              </TabPane>
+                           </children>
+                        </AnchorPane>
                   </content>
                 </TitledPane>
               </panes>

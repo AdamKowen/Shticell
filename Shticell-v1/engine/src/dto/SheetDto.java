@@ -31,13 +31,12 @@ public interface SheetDto {
     public Map<Coordinate, CellDto> getSheet();
 
 
-
-
-
     public List<Integer> sortRowsByColumns(Coordinate topLeft, Coordinate bottomRight, List<Character> columnChars);
 
     public List<Integer> resetSoretedOrder();
 
-
     Map<String, RangeDto>  getRanges();
+
+    Map<String, List<String>> getUniqueValuesInRange(Coordinate topLeft, Coordinate bottomRight);
+
 }

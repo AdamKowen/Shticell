@@ -290,4 +290,51 @@ public class SheetDtoImpl implements SheetDto{
         return ranges;
     }
 
+
+
+
+
+    public Map<String, List<String>> getUniqueValuesInRange(Coordinate topLeft, Coordinate bottomRight) {
+        Map<String, Set<String>> uniqueValuesMap = new HashMap<>(); // נשתמש ב-Set כדי לשמור על ערכים ייחודיים
+
+        // מעבר על כל התאים בטווח
+        for (int row = topLeft.getRow(); row <= bottomRight.getRow(); row++) {
+            for (int col = topLeft.getColumn(); col <= bottomRight.getColumn(); col++) {
+                Coordinate coordinate = CoordinateCache.createCoordinate(row, col); // יצירת הקואורדינטה עבור כל תא
+                CellDto cell = cellsInSheet.get(coordinate);
+
+                if (cell != null) {
+                    String columnName = convertColumnNumberToString(col); // המרת מספר העמודה לשם (A, B, C...)
+                    String cellValue = cell.getValue();
+
+                    // הוספת הערך למפה של הערכים הייחודיים עבור העמודה
+                    uniqueValuesMap.putIfAbsent(columnName, new HashSet<>());
+                    uniqueValuesMap.get(columnName).add(cellValue);
+                }
+            }
+        }
+
+        // המרה ממפה של Sets למפה של Lists כדי להתאים למבנה הנתונים הנדרש
+        Map<String, List<String>> result = new HashMap<>();
+        for (Map.Entry<String, Set<String>> entry : uniqueValuesMap.entrySet()) {
+            result.put(entry.getKey(), new ArrayList<>(entry.getValue()));
+        }
+
+        return result;
+    }
+
+
+
+    // פונקציה המסייעת להמרת מספר עמודה לשם (למשל 1 -> "A", 2 -> "B")
+    private String convertColumnNumberToString(int columnNumber) {
+        StringBuilder columnName = new StringBuilder();
+        while (columnNumber > 0) {
+            int remainder = (columnNumber - 1) % 26;
+            columnName.insert(0, (char)(remainder + 'A'));
+            columnNumber = (columnNumber - 1) / 26;
+        }
+        return columnName.toString();
+    }
+
+
 }

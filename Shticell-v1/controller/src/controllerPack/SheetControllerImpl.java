@@ -50,7 +50,9 @@ public class SheetControllerImpl implements SheetController {
 
     SheetEngine sheetEngine = new SheetEngineImpl();
 
-    private List<Integer> sortedRowOrder;
+    private List<Integer> sortedRowOrder; // printing list
+
+
 
     // קואורדינטה של התא שממנו התחלנו את הבחירה
     private Coordinate startCoordinate;
@@ -415,7 +417,7 @@ public class SheetControllerImpl implements SheetController {
             for (int col = startCol; col <= endCol; col++) {
                 Label cell = (Label) getNodeByCoordinate(row, col);
                 if (cell != null) {
-                    cell.setStyle("-fx-background-color: lightblue; -fx-alignment: CENTER_LEFT; -fx-padding: 5px;"); // סימון התא בצבע כחול
+                    cell.setStyle("-fx-background-color: #ffd5e9; -fx-alignment: CENTER_LEFT; -fx-padding: 5px;"); // סימון התא בצבע כחול
                 }
             }
         }
@@ -665,6 +667,96 @@ public class SheetControllerImpl implements SheetController {
         }
         return columnName.toString();
     }
+
+
+    public Map<String, List<String>> getUniqueValuesInRange(Coordinate topLeft, Coordinate bottomRight)
+    {
+        return sheetEngine.getUniqueValuesInRange(topLeft, bottomRight);
+    }
+
+
+
+
+
+    public void removeRowsForValue(String columnName, String value, Coordinate topLeft, Coordinate bottomRight) {
+        // חיפוש כל השורות שיש להסיר על פי הערך המסומן והעמודה
+        List<Integer> rowsToRemove = new ArrayList<>();
+
+        for (int row = topLeft.getRow(); row <= bottomRight.getRow(); row++) {
+            Coordinate coordinate = CoordinateCache.createCoordinate(row, convertColumnNameToNumber(columnName));
+            CellDto cell = sheetEngine.getCellDTO(coordinateToString(coordinate));
+            if (cell != null && cell.getValue().equals(value)) {
+                rowsToRemove.add(row);
+            }
+        }
+
+        // הסרת השורות מרשימת sortedRowOrder
+        sortedRowOrder.removeAll(rowsToRemove);
+
+        // עדכון התצוגה שלך, לוודא שהרשימה מעודכנת כראוי ב-UI
+        updateSheet(sheetEngine.getCurrentSheetDTO());
+    }
+
+
+
+    public void addRowsForValue(String columnName, String value, Coordinate topLeft, Coordinate bottomRight) {
+        // חיפוש כל השורות שיש להחזיר לפי הערך המסומן מחדש
+        List<Integer> rowsToAdd = new ArrayList<>();
+
+        for (int row = topLeft.getRow(); row <= bottomRight.getRow(); row++) {
+            Coordinate coordinate = CoordinateCache.createCoordinate(row, convertColumnNameToNumber(columnName));
+            CellDto cell = sheetEngine.getCellDTO(coordinateToString(coordinate));
+
+            if (cell != null && cell.getValue().equals(value)) {
+                rowsToAdd.add(row);
+            }
+        }
+
+        // הוספת כל שורה במיקום הנכון ב-sortedRowOrder לפי הסדר המקורי
+        for (Integer row : rowsToAdd) {
+            insertRowInCorrectOrder(row);
+        }
+
+        // עדכון התצוגה שלך, לוודא שהרשימה מעודכנת כראוי ב-UI
+        updateSheet(sheetEngine.getCurrentSheetDTO());
+    }
+
+    // פונקציה המסייעת להוספת השורה במיקום הנכון לפי הסדר המקורי
+    private void insertRowInCorrectOrder(Integer row) {
+        for (int i = 0; i < sortedRowOrder.size(); i++) {
+            if (sortedRowOrder.get(i) > row) {
+                sortedRowOrder.add(i, row);
+                return;
+            }
+        }
+
+        // אם השורה גדולה יותר מכל הערכים, נוסיף אותה לסוף הרשימה
+        sortedRowOrder.add(row);
+    }
+
+
+    public int translateRow(int uiRowIndex) {
+        // המרת השורה מה-UI למספר שורה ברשימת sortedRowOrder
+        if (uiRowIndex >= 0 && uiRowIndex < sortedRowOrder.size()) {
+            return sortedRowOrder.get(uiRowIndex);
+        }
+        throw new IllegalArgumentException("Row index out of bounds: " + uiRowIndex);
+    }
+
+
+    private int convertColumnNameToNumber(String columnName) {
+        int columnNumber = 0;
+
+        for (int i = 0; i < columnName.length(); i++) {
+            char currentChar = columnName.charAt(i);
+
+            // חישוב מספר העמודה בהתבסס על הערך של האותיות (לדוגמה 'A' = 1, 'B' = 2 וכו')
+            columnNumber = columnNumber * 26 + (currentChar - 'A' + 1);
+        }
+
+        return columnNumber;
+    }
+
 
 
 }

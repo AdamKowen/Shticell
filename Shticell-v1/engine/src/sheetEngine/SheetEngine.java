@@ -9,6 +9,7 @@ import sheet.coordinate.api.Coordinate;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface SheetEngine {
 
@@ -33,4 +34,6 @@ public interface SheetEngine {
     boolean isCellEmpty(String str);
 
     void deleteRange(String str);
+
+    Map<String, List<String>> getUniqueValuesInRange(Coordinate topLeft, Coordinate bottomRight);
 }

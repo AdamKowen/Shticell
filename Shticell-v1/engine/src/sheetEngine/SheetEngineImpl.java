@@ -21,6 +21,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SheetEngineImpl implements sheetEngine.SheetEngine {
 
@@ -133,7 +134,12 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         currentSheet.removeRange(str);
     }
 
-
+    @Override
+   public Map<String, List<String>> getUniqueValuesInRange(Coordinate topLeft, Coordinate bottomRight)
+    {
+        SheetDto sheetDto = getCurrentSheetDTO();
+        return sheetDto.getUniqueValuesInRange(topLeft, bottomRight);
+    }
 
 
     // פונקציות נוספות לעבודה עם הגיליון

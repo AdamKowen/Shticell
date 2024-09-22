@@ -1,10 +1,8 @@
 package controllerPack;
 import dto.CellDto;
 import dto.SheetDto;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -12,7 +10,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Side;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.ClipboardContent;
@@ -33,6 +33,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Controller {
@@ -63,6 +64,9 @@ public class Controller {
 
     @FXML
     private TextField cellInputContentTextField;
+
+    @FXML
+    private TabPane columnTabPane;
 
 
     @FXML
@@ -125,7 +129,11 @@ public class Controller {
                 selectedCellLabel.setText("Selected range: " + topLeft + " to " + bottomRight);
                 topLeftBox.setText(topLeft.toString());
                 bottomRightBox.setText(bottomRight.toString());
+
+
+
                 updateColumnList(sheetComponentController.getSelectedColumns());
+                initializeTabsForSelectedColumns(sheetComponentController.getUniqueValuesInRange(topLeft,bottomRight),topLeft,bottomRight);
             } else {
                 selectedCellLabel.setText("No range selected");
             }
@@ -219,7 +227,66 @@ public class Controller {
         });
 
 
+
+        columnTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        columnTabPane.setSide(Side.TOP); // הטאבים יופיעו בחלק העליון
+
+
+
     }
+
+
+
+    // אתחול הטאבים לפי העמודות שנבחרו והכנסת הערכים
+    public void initializeTabsForSelectedColumns(Map<String, List<String>> columnData, Coordinate topLeft, Coordinate bottomRight) {
+        columnTabPane.getTabs().clear(); // ניקוי הטאבים הקיימים
+
+        for (String columnName : columnData.keySet()) {
+            // יצירת טאב חדש לעמודה
+            Tab tab = new Tab(columnName);
+
+            // יצירת VBox להחזיק את ה-CheckBoxes עבור כל הערכים בעמודה זו
+            VBox vbox = new VBox();
+
+            // מעבר על הערכים הייחודיים של העמודה והוספתם ל-VBox עם CheckBox מסומן
+            List<String> uniqueValues = columnData.get(columnName);
+            for (String value : uniqueValues) {
+                CheckBox checkBox = new CheckBox(value);
+                checkBox.setSelected(true); // ברירת מחדל: כל הערכים מסומנים
+
+
+
+                checkBox.setOnAction(event -> {
+                    if (checkBox.isSelected()) {
+                        // כאשר המשתמש מסמן מחדש את הערך, נחזיר את השורות המתאימות
+                        sheetComponentController.addRowsForValue(columnName, value, topLeft, bottomRight);
+                    }
+
+                    if (!checkBox.isSelected()) {
+
+                        // כאשר המשתמש מוריד את הסימון, נסיר את השורות המתאימות
+                        sheetComponentController.removeRowsForValue(columnName, value, topLeft, bottomRight);
+                    }
+                });
+
+                // הוספת CheckBox ל-VBox
+                vbox.getChildren().add(checkBox);
+            }
+
+            // הוספת ה-VBox לטאב
+            tab.setContent(vbox);
+
+            // הוספת הטאב ל-TabPane
+
+
+            columnTabPane.getTabs().add(tab);
+
+
+        }
+    }
+
+
+
 
 
     public void updateColumnList(List<String> columns) {
@@ -249,6 +316,7 @@ public class Controller {
             // אם לא נבחר טווח, להציג הודעה מתאימה
             showAlert("No range selected", "Please select a range to delete.");
         }
+
     }
 
 
