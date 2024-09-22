@@ -121,19 +121,20 @@ public class SheetDtoImpl implements SheetDto{
 
 
 
-    // פונקציה למיון השורות בטווח מסוים על פי עמודות נבחרות
-    public List<Integer> sortRowsByColumns(Coordinate topLeft, Coordinate bottomRight, List<Character> columnChars) {
+    // פונקציה למיון השורות מתוך רשימת השורות שהתקבלה על פי העמודות הנבחרות
+    public List<Integer> sortRowsByColumns(List<Integer> rows, List<Character> columnChars) {
         // ממירים את ה-characters של העמודות למספרי אינדקסים
         List<Integer> columnIndices = convertColumnsToIndices(columnChars);
 
-        // שליפת השורות הרלוונטיות מהמפה לפי הטווח
-        Map<Integer, List<CellDto>> rowsInRange = getRowsInRange(topLeft, bottomRight);
+        // שליפת השורות הרלוונטיות מהמפה על פי רשימת השורות שהתקבלה
+        Map<Integer, List<CellDto>> rowsInRange = getRowsInRange(rows);
 
         // מיון השורות בטווח שנבחר בלבד
         List<Integer> sortedRowNumbers = sortRowsByGivenColumns(rowsInRange, columnIndices);
 
         return sortedRowNumbers;
     }
+
 
     // ממיר רשימת עמודות מסוג char למספרי עמודות
     private List<Integer> convertColumnsToIndices(List<Character> columnChars) {
@@ -142,84 +143,37 @@ public class SheetDtoImpl implements SheetDto{
                 .collect(Collectors.toList());
     }
 
-    // שליפת השורות בטווח שנבחר
-    private Map<Integer, List<CellDto>> getRowsInRange(Coordinate topLeft, Coordinate bottomRight) {
-        Map<Integer, List<CellDto>> rows = new HashMap<>();
+    // שליפת השורות מתוך רשימת השורות שהתקבלה
+    private Map<Integer, List<CellDto>> getRowsInRange(List<Integer> rows) {
+        Map<Integer, List<CellDto>> rowsMap = new HashMap<>();
 
-        for (int row = topLeft.getRow(); row <= bottomRight.getRow(); row++) {
+        for (int row : rows) {
             List<CellDto> cellsInRow = new ArrayList<>();
-            for (int col = topLeft.getColumn(); col <= bottomRight.getColumn(); col++) {
-                Coordinate coord = CoordinateCache.createCoordinate(row,col);
+
+            // שליפת כל התאים בשורה הנוכחית
+            for (int col = 1; col <= numOfColumns; col++) {
+                Coordinate coord = CoordinateCache.createCoordinate(row, col);
                 if (cellsInSheet.containsKey(coord)) {
                     cellsInRow.add(cellsInSheet.get(coord));
                 }
             }
-            rows.put(row, cellsInRow);
+
+            rowsMap.put(row, cellsInRow);
         }
-        return rows;
+
+        return rowsMap;
     }
 
 
     private List<Integer> sortRowsByGivenColumns(Map<Integer, List<CellDto>> rowsInRange, List<Integer> columnIndices) {
-
-
-        /*
-        // קבלת כל מספרי השורות בסדר המקורי
-        List<Integer> allRows = cellsInSheet.keySet().stream()
-                .map(Coordinate::getRow)
-                .distinct()  // במקרה של שורות כפולות
-                .sorted()    // שמירה על סדר השורות המקורי
-                .collect(Collectors.toList());
-
-         */
-
-        // יצירת רשימה של כל השורות (1 עד numOfRows)
-        List<Integer> allRows = new ArrayList<>();
-        for (int i = 1; i <= numOfRows; i++) {
-            allRows.add(i);  // מוסיף את כל השורות לפי הסדר המקורי
-        }
 
         // מיון השורות שנמצאות בטווח שנבחר
         List<Integer> sortedRowNumbers = rowsInRange.keySet().stream()
                 .sorted((row1, row2) -> compareRowsByColumns(row1, row2, rowsInRange, columnIndices))
                 .collect(Collectors.toList());
 
-
-        /*
-        // יצירת רשימה חדשה של כל השורות, שבה נשמור את השורות הממוינות במקום הנכון
-        List<Integer> sortedAllRows = new ArrayList<>(allRows);
-
-        // מחליפים את השורות הממוינות בתוך רשימת כל השורות
-        int indexInSorted = 0;
-        for (int i = 0; i < allRows.size(); i++) {
-            int currentRow = allRows.get(i);
-
-            // אם השורה הנוכחית נמצאת בטווח המיון, מחליפים אותה בשורה הממוינת
-            if (rowsInRange.containsKey(currentRow)) {
-                sortedAllRows.set(i, sortedRowNumbers.get(indexInSorted));
-                indexInSorted++;
-            }
-        }
-
-         */
-
-
-
-        // החלפת השורות הממוינות בתוך רשימת כל השורות
-        int sortedIndex = 0;
-        for (int i = 0; i < allRows.size(); i++) {
-            int currentRow = allRows.get(i);
-
-            // אם השורה הנוכחית נמצאת בטווח המיון, מחליפים אותה בשורה הממוינת
-            if (rowsInRange.containsKey(currentRow)) {
-                allRows.set(i, sortedRowNumbers.get(sortedIndex));
-                sortedIndex++;
-            }
-        }
-
-
-        // מחזירים את רשימת כל השורות עם השורות שבטווח ממוינות והשאר בסדר המקורי שלהן
-        return allRows;
+        // מחזירים רק את רשימת השורות שבטווח הממוינות
+        return sortedRowNumbers;
     }
 
 

@@ -571,10 +571,58 @@ public class SheetControllerImpl implements SheetController {
 
 
     public void sortRowsInRange(Coordinate topLeft, Coordinate bottomRight, List<Character> colList) {
+        // המרת הטווח לרשימת שורות על פי הסדר הקיים ב-sortedRowOrder
+        List<Integer> rowsInRange = getRowsFromCoordinates(topLeft, bottomRight);
 
-        // קריאה לפונקציית המיון עם רשימת העמודות שנבנתה
-        sortedRowOrder = sheetEngine.getCurrentSheetDTO().sortRowsByColumns(topLeft, bottomRight, colList);
+
+        List<Integer> rangeSorted = sheetEngine.getCurrentSheetDTO().sortRowsByColumns(rowsInRange, colList);
+
+        // החזרת השורות הממוינות לרשימת sortedRowOrder במקום הנכון
+        replaceSortedRangeInOrder(rowsInRange, rangeSorted);
     }
+
+
+
+    // הפונקציה שמחזירה את השורות הממוינות לטווח במקום הנכון ב-sortedRowOrder
+    private void replaceSortedRangeInOrder(List<Integer> originalRange, List<Integer> sortedRange) {
+        int startIndex = -1;
+
+        // מציאת האינדקס ההתחלתי של הטווח ב-sortedRowOrder
+        for (int i = 0; i < sortedRowOrder.size(); i++) {
+            if (sortedRowOrder.get(i).equals(originalRange.get(0))) {
+                startIndex = i;
+                break;
+            }
+        }
+
+        // וידוא שמצאנו את המקום הנכון
+        if (startIndex != -1) {
+            // החלפת הטווח הממויין ב-sortedRowOrder
+            for (int i = 0; i < sortedRange.size(); i++) {
+                sortedRowOrder.set(startIndex + i, sortedRange.get(i));
+            }
+        }
+    }
+
+
+
+
+    private List<Integer> getRowsFromCoordinates(Coordinate topLeft, Coordinate bottomRight) {
+        List<Integer> rowsInRange = new ArrayList<>();
+
+        // מעבר על כל שורה בטווח שנבחר
+        for (int gridRow = topLeft.getRow(); gridRow <= bottomRight.getRow(); gridRow++) {
+            // השגת השורה המתאימה לפי אינדקס ב-sortedRowOrder
+            if (gridRow - 1 < sortedRowOrder.size()) {
+                int actualRow = sortedRowOrder.get(gridRow - 1); // הוצאה של השורה המקורית מתוך sortedRowOrder
+                rowsInRange.add(actualRow);
+            }
+        }
+
+        return rowsInRange;
+    }
+
+
 
 
     public void resetSorting() {

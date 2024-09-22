@@ -31,7 +31,7 @@ public interface SheetDto {
     public Map<Coordinate, CellDto> getSheet();
 
 
-    public List<Integer> sortRowsByColumns(Coordinate topLeft, Coordinate bottomRight, List<Character> columnChars);
+    List<Integer> sortRowsByColumns(List<Integer> rows, List<Character> columnChars);
 
     public List<Integer> resetSoretedOrder();
 
