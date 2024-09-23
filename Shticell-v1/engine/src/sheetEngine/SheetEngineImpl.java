@@ -135,10 +135,10 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
     }
 
     @Override
-   public Map<String, List<String>> getUniqueValuesInRange(Coordinate topLeft, Coordinate bottomRight)
+   public Map<String, List<String>> getUniqueValuesInRange(List<Integer> rows, List<String> columns)
     {
         SheetDto sheetDto = getCurrentSheetDTO();
-        return sheetDto.getUniqueValuesInRange(topLeft, bottomRight);
+        return sheetDto.getUniqueValuesInRange(rows,columns);
     }
 
 

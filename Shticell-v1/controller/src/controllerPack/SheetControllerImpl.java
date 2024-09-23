@@ -26,6 +26,7 @@ import sheetEngine.SheetEngineImpl;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +54,10 @@ public class SheetControllerImpl implements SheetController {
     private List<Integer> sortedRowOrder; // printing list
 
 
+    // רשימה שמורה של הסדר האחרון המלא לפני ביצוע סינון
+    private List<Integer> lastSortedOrderBeforeFiltering;
+
+
 
     // קואורדינטה של התא שממנו התחלנו את הבחירה
     private Coordinate startCoordinate;
@@ -62,6 +67,9 @@ public class SheetControllerImpl implements SheetController {
 
     // הוספת Property עבור טווח נבחר
     private ObjectProperty<CellRange> selectedRange = new SimpleObjectProperty<>();
+
+    // מפת מעקב אחרי מספר העמודות שבגללן כל שורה הוסרה
+    private Map<Integer, Integer> removalCountMap = new HashMap<>();
 
 
 
@@ -102,33 +110,6 @@ public class SheetControllerImpl implements SheetController {
                 // קישור StringProperty מה-UIModel לתצוגת ה-Label
                 label.textProperty().bind(uiModel.getCellProperty(coordinate));
 
-
-
-                /*
-                // הוספת אירוע לחיצה לסימון תא
-                label.setOnMouseClicked(event -> {
-                    if (selectedCell.get() != null) {
-                        selectedCell.get().setStyle("-fx-background-color: white;");
-                    }
-                    label.setStyle("-fx-background-color: #add8e6;");
-                    selectedCell.set(label); // עדכון התא הנבחר
-                });
-
-
-
-
-
-                // הוספת אירוע מעבר עכבר
-                label.setOnMouseEntered(event -> {
-                    label.setStyle("-fx-background-color: lightblue;");
-                });
-                label.setOnMouseExited(event -> {
-                    if (!label.equals(selectedCell.get())) {
-                        label.setStyle("-fx-background-color: white;");
-                    }
-                });
-
-                 */
 
                 sheetGridPane.add(label, col, row);
             }
@@ -253,6 +234,12 @@ public class SheetControllerImpl implements SheetController {
         if (sortedRowOrder == null)
         {
             sortedRowOrder = sheetDto.resetSoretedOrder();
+        }
+
+        if (lastSortedOrderBeforeFiltering == null)
+        {
+            lastSortedOrderBeforeFiltering = new ArrayList<>();
+            lastSortedOrderBeforeFiltering.addAll(sortedRowOrder);
         }
 
         // הוספת כותרות עמודות
@@ -579,6 +566,11 @@ public class SheetControllerImpl implements SheetController {
 
         // החזרת השורות הממוינות לרשימת sortedRowOrder במקום הנכון
         replaceSortedRangeInOrder(rowsInRange, rangeSorted);
+
+
+
+        // עדכון lastSortedOrder עם הסדר החדש
+        lastSortedOrderBeforeFiltering = new ArrayList<>(sortedRowOrder);
     }
 
 
@@ -719,10 +711,12 @@ public class SheetControllerImpl implements SheetController {
 
     public Map<String, List<String>> getUniqueValuesInRange(Coordinate topLeft, Coordinate bottomRight)
     {
-        return sheetEngine.getUniqueValuesInRange(topLeft, bottomRight);
+
+        List<Integer> rows = getRowsFromCoordinates(topLeft, bottomRight);
+
+
+        return sheetEngine.getUniqueValuesInRange(rows,getSelectedColumns());
     }
-
-
 
 
 
@@ -730,11 +724,16 @@ public class SheetControllerImpl implements SheetController {
         // חיפוש כל השורות שיש להסיר על פי הערך המסומן והעמודה
         List<Integer> rowsToRemove = new ArrayList<>();
 
-        for (int row = topLeft.getRow(); row <= bottomRight.getRow(); row++) {
-            Coordinate coordinate = CoordinateCache.createCoordinate(row, convertColumnNameToNumber(columnName));
+        for (int gridRow = topLeft.getRow(); gridRow <= bottomRight.getRow(); gridRow++) {
+            // do this more readble!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            int actualRow = lastSortedOrderBeforeFiltering.get(gridRow - 1); // מקבל את השורה המקורית לפי התרגום ב-sortedRowOrder
+            Coordinate coordinate = CoordinateCache.createCoordinate(actualRow, convertColumnNameToNumber(columnName));
             CellDto cell = sheetEngine.getCellDTO(coordinateToString(coordinate));
+
             if (cell != null && cell.getValue().equals(value)) {
-                rowsToRemove.add(row);
+                // עדכון מפת הספירה
+                removalCountMap.put(actualRow, removalCountMap.getOrDefault(actualRow, 0) + 1);
+                rowsToRemove.add(actualRow);
             }
         }
 
@@ -745,18 +744,30 @@ public class SheetControllerImpl implements SheetController {
         updateSheet(sheetEngine.getCurrentSheetDTO());
     }
 
-
-
     public void addRowsForValue(String columnName, String value, Coordinate topLeft, Coordinate bottomRight) {
+        // השגת רשימת השורות המתורגמות לפי הסדר הנוכחי
+        List<Integer> rowsInRange = getRowsFromCoordinatesBeforeFiltering(topLeft, bottomRight);
+
         // חיפוש כל השורות שיש להחזיר לפי הערך המסומן מחדש
         List<Integer> rowsToAdd = new ArrayList<>();
 
-        for (int row = topLeft.getRow(); row <= bottomRight.getRow(); row++) {
-            Coordinate coordinate = CoordinateCache.createCoordinate(row, convertColumnNameToNumber(columnName));
+        // מעבר על השורות המתורגמות שהתקבלו
+        for (Integer actualRow : rowsInRange) {
+            Coordinate coordinate = CoordinateCache.createCoordinate(actualRow, convertColumnNameToNumber(columnName));
             CellDto cell = sheetEngine.getCellDTO(coordinateToString(coordinate));
 
             if (cell != null && cell.getValue().equals(value)) {
-                rowsToAdd.add(row);
+                // עדכון מפת הספירה והחזרה לשורות ההדפסה
+                int count = removalCountMap.getOrDefault(actualRow, 0);
+                if (count > 0) {
+                    removalCountMap.put(actualRow, count - 1);
+                }
+
+                // אם הספירה מגיעה ל-0, ניתן להחזיר את השורה
+                if (removalCountMap.get(actualRow) == 0) {
+                    removalCountMap.remove(actualRow); // הסרת הרישום מהמפה
+                    rowsToAdd.add(actualRow);
+                }
             }
         }
 
@@ -769,18 +780,36 @@ public class SheetControllerImpl implements SheetController {
         updateSheet(sheetEngine.getCurrentSheetDTO());
     }
 
-    // פונקציה המסייעת להוספת השורה במיקום הנכון לפי הסדר המקורי
+
+
+    // פונקציה המסייעת להוספת השורה במיקום הנכון לפי הסדר האחרון ששמור ב-lastSortedOrder
     private void insertRowInCorrectOrder(Integer row) {
+        if (lastSortedOrderBeforeFiltering == null) {
+            // במקרה ואין סדר מיון קודם, פשוט נוסיף לפי סדר כרונולוגי
+            for (int i = 0; i < sortedRowOrder.size(); i++) {
+                if (sortedRowOrder.get(i) > row) {
+                    sortedRowOrder.add(i, row);
+                    return;
+                }
+            }
+            sortedRowOrder.add(row); // אם לא נמצא מקום מתאים, נוסיף לסוף
+            return;
+        }
+
+        // במקרה שיש סדר מיון שמור ב-lastSortedOrder, נמצא את המקום הנכון להוסיף את השורה
+        int indexInLastSorted = lastSortedOrderBeforeFiltering.indexOf(row);
         for (int i = 0; i < sortedRowOrder.size(); i++) {
-            if (sortedRowOrder.get(i) > row) {
+            int currentRowInOrder = sortedRowOrder.get(i);
+            if (lastSortedOrderBeforeFiltering.indexOf(currentRowInOrder) > indexInLastSorted) {
                 sortedRowOrder.add(i, row);
                 return;
             }
         }
 
-        // אם השורה גדולה יותר מכל הערכים, נוסיף אותה לסוף הרשימה
+        // אם לא נמצא מקום מתאים, נוסיף לסוף הרשימה
         sortedRowOrder.add(row);
     }
+
 
 
     public int translateRow(int uiRowIndex) {
@@ -804,6 +833,25 @@ public class SheetControllerImpl implements SheetController {
 
         return columnNumber;
     }
+
+
+
+
+    private List<Integer> getRowsFromCoordinatesBeforeFiltering(Coordinate topLeft, Coordinate bottomRight) {
+        List<Integer> rowsInRange = new ArrayList<>();
+
+        // מעבר על כל שורה בטווח שנבחר
+        for (int gridRow = topLeft.getRow(); gridRow <= bottomRight.getRow(); gridRow++) {
+            // השגת השורה המתאימה לפי אינדקס ב-sortedRowOrder
+            if (gridRow - 1 < lastSortedOrderBeforeFiltering.size()) {
+                int actualRow = lastSortedOrderBeforeFiltering.get(gridRow - 1); // הוצאה של השורה המקורית מתוך sortedRowOrder
+                rowsInRange.add(actualRow);
+            }
+        }
+
+        return rowsInRange;
+    }
+
 
 
 

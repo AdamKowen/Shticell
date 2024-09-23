@@ -37,6 +37,6 @@ public interface SheetDto {
 
     Map<String, RangeDto>  getRanges();
 
-    Map<String, List<String>> getUniqueValuesInRange(Coordinate topLeft, Coordinate bottomRight);
+    public Map<String, List<String>> getUniqueValuesInRange(List<Integer> rows, List<String> columns);
 
 }

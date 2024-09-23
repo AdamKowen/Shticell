@@ -248,22 +248,24 @@ public class SheetDtoImpl implements SheetDto{
 
 
 
-    public Map<String, List<String>> getUniqueValuesInRange(Coordinate topLeft, Coordinate bottomRight) {
+    public Map<String, List<String>> getUniqueValuesInRange(List<Integer> rows, List<String> columns) {
         Map<String, Set<String>> uniqueValuesMap = new HashMap<>(); // נשתמש ב-Set כדי לשמור על ערכים ייחודיים
 
-        // מעבר על כל התאים בטווח
-        for (int row = topLeft.getRow(); row <= bottomRight.getRow(); row++) {
-            for (int col = topLeft.getColumn(); col <= bottomRight.getColumn(); col++) {
+        // מעבר על כל השורות שהתקבלו ברשימה
+        for (int row : rows) {
+            // מעבר על כל העמודות בטווח שנבחר
+            for (String colName : columns) {
+                int col = convertColumnStringToNumber(colName); // המרת שם העמודה למספר אינדקס
+
                 Coordinate coordinate = CoordinateCache.createCoordinate(row, col); // יצירת הקואורדינטה עבור כל תא
                 CellDto cell = cellsInSheet.get(coordinate);
 
                 if (cell != null) {
-                    String columnName = convertColumnNumberToString(col); // המרת מספר העמודה לשם (A, B, C...)
                     String cellValue = cell.getValue();
 
                     // הוספת הערך למפה של הערכים הייחודיים עבור העמודה
-                    uniqueValuesMap.putIfAbsent(columnName, new HashSet<>());
-                    uniqueValuesMap.get(columnName).add(cellValue);
+                    uniqueValuesMap.putIfAbsent(colName, new HashSet<>());
+                    uniqueValuesMap.get(colName).add(cellValue);
                 }
             }
         }
@@ -276,6 +278,19 @@ public class SheetDtoImpl implements SheetDto{
 
         return result;
     }
+
+    // פונקציה המסייעת להמרת שם העמודה למספר
+    private int convertColumnStringToNumber(String columnString) {
+        int columnNumber = 0;
+        for (int i = 0; i < columnString.length(); i++) {
+            char c = Character.toUpperCase(columnString.charAt(i));
+            columnNumber = columnNumber * 26 + (c - 'A' + 1);
+        }
+        return columnNumber;
+    }
+
+
+
 
 
 

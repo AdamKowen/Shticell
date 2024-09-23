@@ -261,12 +261,10 @@ public class Controller {
                         // כאשר המשתמש מסמן מחדש את הערך, נחזיר את השורות המתאימות
                         sheetComponentController.addRowsForValue(columnName, value, topLeft, bottomRight);
                     }
-
-                    if (!checkBox.isSelected()) {
-
-                        // כאשר המשתמש מוריד את הסימון, נסיר את השורות המתאימות
+                    else {
                         sheetComponentController.removeRowsForValue(columnName, value, topLeft, bottomRight);
                     }
+
                 });
 
                 // הוספת CheckBox ל-VBox

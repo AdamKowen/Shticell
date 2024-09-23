@@ -35,5 +35,5 @@ public interface SheetEngine {
 
     void deleteRange(String str);
 
-    Map<String, List<String>> getUniqueValuesInRange(Coordinate topLeft, Coordinate bottomRight);
+    Map<String, List<String>> getUniqueValuesInRange(List<Integer> rows, List<String> columns);
 }
