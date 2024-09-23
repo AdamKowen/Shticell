@@ -7,6 +7,8 @@ import sheet.cell.api.Cell;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import sheet.cell.api.CellStyle;
 import sheet.cell.api.EffectiveValue;
 import sheet.coordinate.api.*;
 import sheet.coordinate.impl.CoordinateImpl;
@@ -20,6 +22,7 @@ public class CellImpl implements Cell {
     private int version;
     private List<Coordinate> dependsOn;
     private List<Coordinate> influencingOn;
+    private CellStyle style;
 
     public CellImpl(int row, int column, String originalValue, int version)  {
         this.coordinate = new CoordinateImpl(row, column);
@@ -27,6 +30,9 @@ public class CellImpl implements Cell {
         this.version = version;
         this.dependsOn = new ArrayList<>();
         this.influencingOn = new ArrayList<>();
+
+        this.style = new CellStyle();
+
     }
     @Override
     public Coordinate getCoordinate() {
