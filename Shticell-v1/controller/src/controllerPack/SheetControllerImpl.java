@@ -14,6 +14,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import loader.SheetLoadingException;
 import org.xml.sax.SAXException;
@@ -109,6 +110,18 @@ public class SheetControllerImpl implements SheetController {
 
                 // קישור StringProperty מה-UIModel לתצוגת ה-Label
                 label.textProperty().bind(uiModel.getCellProperty(coordinate));
+
+
+                // הגדרת התווית כך שתתאים לגודל התא ב-GridPane
+                label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+                label.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+
+                // מיקום הטקסט במרכז
+                label.setAlignment(Pos.CENTER);
+
+                // הגדרת הגבלות כך שהתווית תגדל יחד עם התא
+                GridPane.setFillWidth(label, true);
+                GridPane.setFillHeight(label, true);
 
 
                 sheetGridPane.add(label, col, row);
