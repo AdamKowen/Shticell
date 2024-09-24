@@ -89,5 +89,7 @@ public interface SheetController {
     void removeRowsForValue(String columnName, String value, Coordinate topLeft, Coordinate bottomRight);
 
     void addRowsForValue(String columnName, String value, Coordinate topLeft, Coordinate bottomRight);
+
+    void updateRowWidth(double newWidth);
 }
 

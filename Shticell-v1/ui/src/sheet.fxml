@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -20,11 +19,4 @@
            </GridPane>
        </ScrollPane>
    </center>
-   <bottom>
-      <Label fx:id="leftLabel" prefHeight="17.0" prefWidth="384.0" text="Label" BorderPane.alignment="CENTER">
-         <graphic>
-            <Label fx:id="rightLabel" prefHeight="17.0" prefWidth="157.0" text="Label" />
-         </graphic>
-      </Label>
-   </bottom>
 </BorderPane>

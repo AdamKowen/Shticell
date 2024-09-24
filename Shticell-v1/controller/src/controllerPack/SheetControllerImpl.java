@@ -853,6 +853,17 @@ public class SheetControllerImpl implements SheetController {
     }
 
 
+    public void updateRowWidth(double newWidth) {
+
+        // לדוגמה: עדכון כל השורות ב-GridPane לרוחב החדש
+        for (RowConstraints row : sheetGridPane.getRowConstraints()) {
+            row.setPrefHeight(newWidth); // קביעת הגובה החדש של השורה
+        }
+
+        // אם רוצים לעדכן שורה מסוימת בלבד, נניח לפי אינדקס 0
+        // yourGridPane.getRowConstraints().get(0).setPrefHeight(newWidth);
+    }
+
 
 
 }

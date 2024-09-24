@@ -2,9 +2,11 @@
 
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
@@ -15,6 +17,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="558.0" prefWidth="919.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllerPack.Controller">
@@ -102,79 +105,123 @@
       </TabPane>
    </right>
    <left>
-      <VBox prefHeight="450.0" prefWidth="133.0" BorderPane.alignment="CENTER">
+      <VBox alignment="BOTTOM_CENTER" prefHeight="450.0" prefWidth="133.0" BorderPane.alignment="CENTER">
          <children>
-            <HBox prefHeight="459.0" prefWidth="133.0" />
-            <Accordion>
-              <panes>
-                <TitledPane animated="false" prefHeight="938.0" prefWidth="133.0" text="untitled 1">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <GridPane prefHeight="460.0" prefWidth="136.0">
-                                <columnConstraints>
-                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                </columnConstraints>
-                                <rowConstraints>
-                                  <RowConstraints maxHeight="130.0" minHeight="0.0" prefHeight="15.863174438476562" vgrow="SOMETIMES" />
-                                  <RowConstraints maxHeight="148.0" minHeight="0.0" prefHeight="32.645904541015625" vgrow="SOMETIMES" />
-                                  <RowConstraints maxHeight="127.2781982421875" minHeight="0.0" prefHeight="25.918212890625" vgrow="SOMETIMES" />
-                                    <RowConstraints maxHeight="121.99546813964844" minHeight="0.0" prefHeight="34.82147216796875" vgrow="SOMETIMES" />
-                                    <RowConstraints maxHeight="261.30946350097656" minHeight="10.0" prefHeight="45.34686279296875" vgrow="SOMETIMES" />
-                                    <RowConstraints maxHeight="248.57723999023438" minHeight="10.0" prefHeight="31.781402587890625" vgrow="SOMETIMES" />
-                                    <RowConstraints maxHeight="247.71859741210938" minHeight="10.0" prefHeight="247.71859741210938" vgrow="SOMETIMES" />
-                                </rowConstraints>
-                                 <children>
-                                    <Label text="top left" textAlignment="CENTER" />
-                                    <TextField fx:id="topLeftBox" GridPane.rowIndex="1" />
-                                    <Label fx:id="bottonRight" text="bottom right" GridPane.rowIndex="2" />
-                                    <TextField fx:id="bottomRightBox" GridPane.rowIndex="3" />
-                                    <Button fx:id="sort" mnemonicParsing="false" text="sort" GridPane.rowIndex="4" />
-                                    <Button fx:id="resetsort" mnemonicParsing="false" text="reset sort" GridPane.rowIndex="5" />
-                                    <ListView fx:id="columnOrderListView" prefHeight="200.0" prefWidth="150.0" GridPane.rowIndex="6" />
-                                    <ListView fx:id="colList" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="6" />
-                                 </children>
-                              </GridPane>
-                           </children>
-                        </AnchorPane>
-                  </content>
-                </TitledPane>
-                <TitledPane fx:id="rangeNameTextBox" animated="false" prefHeight="102.0" prefWidth="133.0" text="untitled 2">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <ListView fx:id="listOfRanges" prefHeight="200.0" prefWidth="133.0" />
-                              <Button fx:id="addRange" layoutX="29.0" layoutY="258.0" mnemonicParsing="false" text="Add Range" />
-                              <Button fx:id="deleteRange" layoutX="25.0" layoutY="302.0" mnemonicParsing="false" onAction="#deleteSelectedRange" text="Delete Range" />
-                              <TextField layoutX="12.0" layoutY="218.0" prefHeight="26.0" prefWidth="104.0" />
-                           </children>
-                        </AnchorPane>
-                  </content>
-                </TitledPane>
-                <TitledPane animated="false" prefHeight="860.0" prefWidth="133.0" text="untitled 3">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <TabPane fx:id="columnTabPane" layoutX="-1.0" layoutY="86.0" prefHeight="200.0" prefWidth="133.0" tabClosingPolicy="UNAVAILABLE">
-                                <tabs>
-                                  <Tab text="Untitled Tab 1">
-                                    <content>
-                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                    </content>
-                                  </Tab>
-                                    <Tab text="Untitled Tab">
-                                      <content>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                      </content>
-                                    </Tab>
-                                </tabs>
-                              </TabPane>
-                           </children>
-                        </AnchorPane>
-                  </content>
-                </TitledPane>
-              </panes>
-            </Accordion>
+            <GridPane prefHeight="469.0" prefWidth="133.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="383.6861877441406" minHeight="10.0" prefHeight="350.866943359375" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="198.50802612304688" minHeight="10.0" prefHeight="99.133056640625" vgrow="NEVER" />
+              </rowConstraints>
+               <children>
+                  <StackPane prefHeight="197.0" prefWidth="133.0">
+                     <children>
+                        <Accordion fx:id="accordion" prefHeight="306.0" prefWidth="133.0">
+                          <panes>
+                              <TitledPane animated="false" text="Style">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <ColorPicker layoutX="9.0" layoutY="38.0" prefHeight="26.0" prefWidth="113.0" />
+                                          <Label layoutX="9.0" layoutY="14.0" prefHeight="24.0" prefWidth="112.0" text="Background Colour" />
+                                          <Label layoutX="9.0" layoutY="71.0" prefHeight="31.0" prefWidth="111.0" text="Font Colour" />
+                                          <ColorPicker layoutX="9.0" layoutY="102.0" prefHeight="26.0" prefWidth="114.0" />
+                                          <Label layoutX="10.0" layoutY="145.0" prefHeight="17.0" prefWidth="111.0" text="Colom Width:" />
+                                          <Slider fx:id="rowWidthSlider" layoutX="9.0" layoutY="171.0" max="150.0" min="1.0" prefHeight="16.0" prefWidth="112.0" value="1000.0" />
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </TitledPane>
+                            <TitledPane prefHeight="174.0" prefWidth="91.0" text="Sort">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <GridPane prefHeight="247.0" prefWidth="136.0">
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints maxHeight="148.0" minHeight="0.0" prefHeight="29.078262329101562" vgrow="SOMETIMES" />
+                                              <RowConstraints maxHeight="127.2781982421875" minHeight="0.0" prefHeight="35.60957336425781" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="261.30946350097656" minHeight="10.0" prefHeight="177.3904266357422" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <children>
+                                                <Button fx:id="sort" mnemonicParsing="false" text="sort" />
+                                                <Button fx:id="resetsort" mnemonicParsing="false" text="reset sort" GridPane.rowIndex="1" />
+                                                <ListView fx:id="colList" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2" />
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </TitledPane>
+                            <TitledPane prefHeight="203.0" prefWidth="124.0" text="Filter">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="194.0" prefWidth="131.0">
+                                       <children>
+                                          <TabPane fx:id="columnTabPane" layoutX="-1.0" prefHeight="247.0" prefWidth="133.0" tabClosingPolicy="UNAVAILABLE">
+                                            <tabs>
+                                              <Tab text="Untitled Tab 1">
+                                                <content>
+                                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="125.0" prefWidth="133.0" />
+                                                </content>
+                                              </Tab>
+                                                <Tab text="Untitled Tab">
+                                                  <content>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                  </content>
+                                                </Tab>
+                                            </tabs>
+                                          </TabPane>
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </TitledPane>
+                            <TitledPane fx:id="rangeNameTextBox" prefHeight="219.0" prefWidth="133.0" text="Ranges">
+                                 <content>
+                                    <GridPane fx:id="hiddenItems" prefHeight="282.0" prefWidth="133.0">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints maxHeight="311.4678039550781" minHeight="10.0" prefHeight="252.69866943359375" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="171.01565551757812" minHeight="10.0" prefHeight="98.30133056640625" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <ListView fx:id="listOfRanges" prefHeight="145.0" prefWidth="133.0" />
+                                          <Button fx:id="addRange" mnemonicParsing="false" prefHeight="26.0" prefWidth="48.0" text="Add Range" GridPane.rowIndex="1" />
+                                          <Button fx:id="deleteRange" mnemonicParsing="false" onAction="#deleteSelectedRange" prefHeight="26.0" prefWidth="69.0" text="Delete Range" GridPane.rowIndex="1" />
+                                          <TextField prefHeight="21.0" prefWidth="133.0" GridPane.rowIndex="1" />
+                                       </children>
+                                    </GridPane>
+                                 </content>
+                            </TitledPane>
+                          </panes>
+                        </Accordion>
+                     </children>
+                  </StackPane>
+                  <GridPane prefHeight="119.0" prefWidth="133.0" GridPane.rowIndex="1">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="86.9178237915039" minWidth="10.0" prefWidth="70.53521728515625" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="64.95695495605469" minWidth="10.0" prefWidth="62.96478271484375" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label fx:id="bottonRight" text="bottom right" />
+                        <Label text="top left" textAlignment="CENTER" GridPane.rowIndex="1" />
+                        <TextField fx:id="topLeftBox" prefHeight="26.0" prefWidth="32.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="bottomRightBox" prefHeight="26.0" prefWidth="32.0" GridPane.columnIndex="1" />
+                        <Button mnemonicParsing="false" text="resellect" GridPane.rowIndex="2" />
+                     </children>
+                  </GridPane>
+               </children>
+            </GridPane>
          </children>
       </VBox>
    </left>

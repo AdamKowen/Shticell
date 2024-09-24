@@ -56,11 +56,23 @@ public class Controller {
     private SheetController sheetVersionController;
 
 
+
     @FXML
     private ComboBox<Object> versionComboBox;
 
     //@FXML
     //private ScrollPane sheetScrollPane;
+
+    @FXML
+    private Accordion accordion;
+
+    @FXML
+    private Slider rowWidthSlider; // ה-Slider מה-FXML
+
+
+    @FXML
+    private GridPane hiddenItems; // ה-GridPane שהוספת
+
 
     @FXML
     private TextField cellInputContentTextField;
@@ -233,8 +245,23 @@ public class Controller {
 
 
 
+        rowWidthSlider.valueProperty().addListener((obs, oldVal, newVal) -> updateRowWidth());
     }
 
+
+
+
+    // פונקציה שמופעלת כאשר ה-Slider משתנה
+    @FXML
+    private void updateRowWidth() {
+        double newWidth = rowWidthSlider.getValue(); // השגת הערך מה-Slider
+
+
+        sheetComponentController.updateRowWidth(newWidth);
+
+        // אם רוצים לעדכן שורה מסוימת בלבד, נניח לפי אינדקס 0
+        // yourGridPane.getRowConstraints().get(0).setPrefHeight(newWidth);
+    }
 
 
     // אתחול הטאבים לפי העמודות שנבחרו והכנסת הערכים
@@ -281,6 +308,9 @@ public class Controller {
 
 
         }
+
+
+
     }
 
 
