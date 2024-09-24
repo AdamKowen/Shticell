@@ -89,11 +89,11 @@
       </VBox>
    </top>
    <center>
-      <TabPane prefHeight="600.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" maxHeight="Infinity" maxWidth="Infinity" VBox.vgrow="ALWAYS">
+      <TabPane maxHeight="Infinity" maxWidth="Infinity" prefHeight="450.0" prefWidth="760.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
         <tabs>
           <Tab text="Current Sheet">
                <content>
-                    <fx:include fx:id="sheetComponent" source="sheet.fxml" maxHeight="Infinity" maxWidth="Infinity"/>
+                    <fx:include fx:id="sheetComponent" maxHeight="Infinity" maxWidth="Infinity" source="sheet.fxml" />
                </content>
             </Tab>
           <Tab text="Previous Version Sheet">
@@ -105,9 +105,9 @@
       </TabPane>
    </center>
    <left>
-      <VBox alignment="BOTTOM_CENTER" prefHeight="450.0" prefWidth="133.0" BorderPane.alignment="CENTER" maxHeight="Infinity" maxWidth="Infinity">
+      <VBox alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" prefHeight="450.0" prefWidth="133.0" BorderPane.alignment="CENTER">
          <children>
-            <GridPane prefHeight="469.0" prefWidth="133.0">
+            <GridPane prefHeight="450.0" prefWidth="153.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
@@ -204,8 +204,8 @@
                   </StackPane>
                   <GridPane prefHeight="119.0" prefWidth="133.0" GridPane.rowIndex="1">
                     <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="86.9178237915039" minWidth="10.0" prefWidth="70.53521728515625" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="64.95695495605469" minWidth="10.0" prefWidth="62.96478271484375" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.13446044921875" minWidth="10.0" prefWidth="84.57085418701172" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.97262191772461" minWidth="10.0" prefWidth="48.42914581298828" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -213,11 +213,12 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label fx:id="bottonRight" text="bottom right" />
-                        <Label text="top left" textAlignment="CENTER" GridPane.rowIndex="1" />
+                        <Label fx:id="bottonRight" text="From" />
+                        <Label text="To" textAlignment="CENTER" GridPane.rowIndex="1" />
                         <TextField fx:id="topLeftBox" prefHeight="26.0" prefWidth="32.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <TextField fx:id="bottomRightBox" prefHeight="26.0" prefWidth="32.0" GridPane.columnIndex="1" />
-                        <Button mnemonicParsing="false" text="resellect" GridPane.rowIndex="2" />
+                        <Button mnemonicParsing="false" text="re-select" GridPane.rowIndex="2" />
+                        <Label fx:id="outOfRangeMassage" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
                </children>
