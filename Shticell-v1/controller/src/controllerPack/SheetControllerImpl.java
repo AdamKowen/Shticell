@@ -349,7 +349,7 @@ public class SheetControllerImpl implements SheetController {
         sheetGridPane.getColumnConstraints().clear();
 
         final double cellWidth = 100.0; // רוחב קבוע לכל תא
-        final double cellHeight = 30.0; // גובה קבוע לכל תא
+        final double cellHeight = 40.0; // גובה קבוע לכל תא
 
         if (sortedRowOrder == null) {
             sortedRowOrder = sheetDto.resetSoretedOrder();

@@ -75,7 +75,7 @@
                               <HBox prefHeight="45.0" prefWidth="181.0" GridPane.columnIndex="3">
                                  <children>
                                     <Label text="Last update cell value:" />
-                                    <Label text="last version" />
+                                    <Label />
                                  </children>
                               </HBox>
                            </children>
@@ -124,12 +124,14 @@
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
+                                          <Slider layoutX="12.0" layoutY="213.0" prefHeight="16.0" prefWidth="100.0" />
                                           <ColorPicker layoutX="9.0" layoutY="38.0" prefHeight="26.0" prefWidth="113.0" />
                                           <Label layoutX="9.0" layoutY="14.0" prefHeight="24.0" prefWidth="112.0" text="Background Colour" />
                                           <Label layoutX="9.0" layoutY="71.0" prefHeight="31.0" prefWidth="111.0" text="Font Colour" />
                                           <ColorPicker layoutX="9.0" layoutY="102.0" prefHeight="26.0" prefWidth="114.0" />
-                                          <Label layoutX="10.0" layoutY="145.0" prefHeight="17.0" prefWidth="111.0" text="Colom Width:" />
-                                          <Slider fx:id="rowWidthSlider" layoutX="9.0" layoutY="171.0" max="150.0" min="1.0" prefHeight="16.0" prefWidth="112.0" value="1000.0" />
+                                          <Label layoutX="10.0" layoutY="145.0" prefHeight="17.0" prefWidth="111.0" text="Columns Width:" />
+                                          <Slider fx:id="rowWidthSlider" layoutX="11.0" layoutY="163.0" max="60.0" min="30.0" prefHeight="16.0" prefWidth="103.0" value="45.0" />
+                                          <Label layoutX="15.0" layoutY="188.0" prefHeight="25.0" prefWidth="78.0" text="Row Height:" />
                                        </children>
                                     </AnchorPane>
                                 </content>
