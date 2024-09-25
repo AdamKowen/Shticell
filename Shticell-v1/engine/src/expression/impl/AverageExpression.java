@@ -54,7 +54,6 @@ public class AverageExpression implements Expression {
 
     @Override
     public void collectDependencies(List<Coordinate> dependencies) {
-
     }
 }
 

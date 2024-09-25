@@ -32,7 +32,6 @@ public class SumExpression implements Expression {
             }
         }catch (Exception e){
             throw new RuntimeException("error"+e.getMessage());
-
         }
 
 
