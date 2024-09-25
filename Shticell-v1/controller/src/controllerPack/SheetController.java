@@ -90,6 +90,25 @@ public interface SheetController {
 
     void addRowsForValue(String columnName, String value, Coordinate topLeft, Coordinate bottomRight);
 
-    void updateRowWidth(double newWidth);
+    void updateColWidth(double newWidth);
+
+    void updateRowHeight(double newWidth);
+
+
+    // פונקציה לקבלת רוחב תא מסוים
+    double getCellWidth();
+
+    // פונקציה לקבלת גובה תא מסוים
+     double getCellHeight();
+
+    // פונקציה לקבלת ממוצע רוחב תאים בטווח
+     double getAverageCellWidth();
+
+    // פונקציה לקבלת ממוצע גובה תאים בטווח
+     double getAverageCellHeight();
+
 }
+
+
+
 

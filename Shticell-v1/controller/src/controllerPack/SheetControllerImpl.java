@@ -56,8 +56,6 @@ public class SheetControllerImpl implements SheetController {
 
 
 
-
-
     // רשימה שמורה של הסדר האחרון המלא לפני ביצוע סינון
     private List<Integer> lastSortedOrderBeforeFiltering;
 
@@ -196,11 +194,11 @@ public class SheetControllerImpl implements SheetController {
                 if (!currentCoordinate.equals(endCoordinate)) {
                     endCoordinate = currentCoordinate;
                     Platform.runLater(() -> highlightSelectedRange(startCoordinate, endCoordinate));
+                    setSelectedRange(startCoordinate, endCoordinate);
                 }
             }
         }
     }
-
 
     private int getColumnIndexAtX(double x) {
         double accumulatedWidth = 0;
@@ -354,25 +352,43 @@ public class SheetControllerImpl implements SheetController {
             rowHeader.setStyle("-fx-background-color: lightpink; -fx-alignment: CENTER; -fx-padding: 5px;");
         }
 
-        // קביעת גודל השורות והעמודות
+// קביעת גודל השורות
         for (int row = 0; row < sheetDto.getNumOfRows(); row++) {
             RowConstraints rowConstraints = new RowConstraints();
-            rowConstraints.setPrefHeight(cellHeight); // גובה קבוע לשורות
-            sheetGridPane.getRowConstraints().add(rowConstraints);
-            // אתחול המפה rowHeight עם גובה השורה
-            rowHeight.put(row, cellHeight);
 
+            double height;
+            if(row!= 0 )
+            {
+                // קבלת הגובה של השורה מהמפה, אם לא קיים משתמשים ב-cellHeight
+                height = rowHeight.getOrDefault(sortedRowOrder.get(row-1), cellHeight);
+            }
+            else
+            {
+                height = cellHeight;
+            }
+
+            rowConstraints.setPrefHeight(height);
+            rowConstraints.setMinHeight(height);
+            rowConstraints.setMaxHeight(height);
+
+            sheetGridPane.getRowConstraints().add(rowConstraints);
         }
 
+// קביעת גודל העמודות
         for (int col = 0; col < sheetDto.getNumOfColumns(); col++) {
             ColumnConstraints colConstraints = new ColumnConstraints();
-            colConstraints.setPrefWidth(cellWidth); // רוחב קבוע לעמודות
-            sheetGridPane.getColumnConstraints().add(colConstraints);
-            // המרת אינדקס העמודה לאות (למשל, 0 -> 'A', 1 -> 'B', וכו')
-            String columnLetter = convertColumnNumberToString(col);
 
-            // אתחול המפה columnWidth עם רוחב העמודה
-            columnWidth.put(columnLetter, cellWidth);
+            // קבלת שם העמודה (בהנחה שהעמודות מתחילות מ-1)
+            String colKey = convertColumnNumberToString(col + 1);
+
+            // קבלת הרוחב של העמודה מהמפה, אם לא קיים משתמשים ב-cellWidth
+            double width = columnWidth.getOrDefault(colKey, cellWidth);
+
+            colConstraints.setPrefWidth(width);
+            colConstraints.setMinWidth(width);
+            colConstraints.setMaxWidth(width);
+
+            sheetGridPane.getColumnConstraints().add(colConstraints);
         }
 
         // הוספת התאים לפי סדר השורות המודפסות
@@ -415,6 +431,8 @@ public class SheetControllerImpl implements SheetController {
         sheetGridPane.setGridLinesVisible(true); // הצגת קווי ההפרדה
     }
 
+
+
     // הוספת אירועים ללחיצה, גרירה ושחרור עבור תאים
     private void addMouseEvents(StackPane cellPane, Coordinate coordinate) {
 
@@ -422,7 +440,7 @@ public class SheetControllerImpl implements SheetController {
         cellPane.setOnMousePressed(event -> {
             startCoordinate = coordinate; // שמירת קואורדינטת התחלה
             endCoordinate = coordinate;
-            setSelectedRange(startCoordinate, endCoordinate);
+            //setSelectedRange(startCoordinate, endCoordinate);
             selectedCell.set(getLabelByCoordinate(startCoordinate.getRow(), startCoordinate.getColumn()));
             highlightSelectedRange(startCoordinate, endCoordinate);
             System.out.println("Mouse pressed at: " + startCoordinate.getRow() + ", " + startCoordinate.getColumn());
@@ -457,6 +475,7 @@ public class SheetControllerImpl implements SheetController {
             highlightSelectedRange(startCoordinate, endCoordinate); // סימון הטווח שנבחר
             if (startCoordinate == endCoordinate) {
                 selectedCell.set(getLabelByCoordinate(startCoordinate.getRow(), startCoordinate.getColumn()));
+                selectedCoordinate = startCoordinate;
             } else {
                 selectedCell.set(null);
                 selectedCoordinate = null;
@@ -464,6 +483,8 @@ public class SheetControllerImpl implements SheetController {
             }
         });
     }
+
+
 
     // פונקציה לסימון טווח תאים לפי הגרירה (עבודה על StackPane ולא על Label)
     private void highlightSelectedRange(Coordinate start, Coordinate end) {
@@ -567,6 +588,20 @@ public class SheetControllerImpl implements SheetController {
     @Override
     public void loadSheetFromFile(String filename) throws ParserConfigurationException, IOException, SheetLoadingException, SAXException {
         sheetEngine.loadSheetFromXML(filename);
+        // קביעת גודל השורות והעמודות
+
+        SheetDto sheetDto = sheetEngine.getCurrentSheetDTO();
+        for (int row = 0; row < sheetDto.getNumOfRows(); row++) {
+            // אתחול המפה rowHeight עם גובה השורה
+            rowHeight.put(row, cellHeight);
+        }
+
+        for (int col = 0; col < sheetDto.getNumOfColumns(); col++) {
+            // המרת אינדקס העמודה לאות (למשל, 0 -> 'A', 1 -> 'B', וכו')
+            String columnLetter = convertColumnNumberToString(col);
+            // אתחול המפה columnWidth עם רוחב העמודה
+            columnWidth.put(columnLetter, cellWidth);
+        }
 
 
     }
@@ -594,16 +629,6 @@ public class SheetControllerImpl implements SheetController {
         selectedRange.set(new CellRange(topLeft, bottomRight));  // יוצרים טווח חדש ומעדכנים את ה-Property
     }
 
-    public void updateRowWidth(double newWidth) {
-
-        // לדוגמה: עדכון כל השורות ב-GridPane לרוחב החדש
-        for (RowConstraints row : sheetGridPane.getRowConstraints()) {
-            row.setPrefHeight(newWidth); // קביעת הגובה החדש של השורה
-        }
-
-        // אם רוצים לעדכן שורה מסוימת בלבד, נניח לפי אינדקס 0
-        // yourGridPane.getRowConstraints().get(0).setPrefHeight(newWidth);
-    }
 
 
 
@@ -940,20 +965,20 @@ public class SheetControllerImpl implements SheetController {
 
 
     // פונקציה לקבלת רוחב תא מסוים
-    public double getCellWidth(Coordinate coordinate) {
-        String columnName = convertColumnNumberToString(coordinate.getColumn());
+    public double getCellWidth() {
+        String columnName = convertColumnNumberToString(selectedCoordinate.getColumn());
         return columnWidth.getOrDefault(columnName, cellWidth);
     }
 
     // פונקציה לקבלת גובה תא מסוים
-    public double getCellHeight(Coordinate coordinate) {
-        String rowName = Integer.toString(coordinate.getRow());
+    public double getCellHeight() {
+        Integer rowName = (selectedCoordinate.getRow());
         return rowHeight.getOrDefault(rowName, cellHeight);
     }
 
     // פונקציה לקבלת ממוצע רוחב תאים בטווח
-    public double getAverageCellWidth(Coordinate topLeft, Coordinate bottomRight) {
-        List<String> columnsInRange = getColumnsInRange(topLeft, bottomRight);
+    public double getAverageCellWidth() {
+        List<String> columnsInRange = getSelectedColumns();
         double totalWidth = 0;
         for (String columnName : columnsInRange) {
             totalWidth += columnWidth.getOrDefault(columnName, cellWidth);
@@ -962,36 +987,143 @@ public class SheetControllerImpl implements SheetController {
     }
 
     // פונקציה לקבלת ממוצע גובה תאים בטווח
-    public double getAverageCellHeight(Coordinate topLeft, Coordinate bottomRight) {
-        List<String> rowsInRange = getRowsInRange(topLeft, bottomRight);
+    public double getAverageCellHeight() {
+        List<Integer> rowsInRange = getRowsInRange(selectedRange.getValue().getTopLeft(), selectedRange.get().getBottomRight());
         double totalHeight = 0;
-        for (String rowName : rowsInRange) {
+        for (Integer rowName : rowsInRange) {
             totalHeight += rowHeight.getOrDefault(rowName, cellHeight);
         }
         return totalHeight / rowsInRange.size();
     }
 
-    // פונקציה לקבלת רשימת עמודות בטווח
-    private List<String> getColumnsInRange(Coordinate topLeft, Coordinate bottomRight) {
-        List<String> columns = new ArrayList<>();
-        int startCol = Math.min(topLeft.getColumn(), bottomRight.getColumn());
-        int endCol = Math.max(topLeft.getColumn(), bottomRight.getColumn());
-        for (int col = startCol; col <= endCol; col++) {
-            columns.add(convertColumnNumberToString(col));
+
+
+    public void updateColWidth(double newWidth) {
+        if (selectedCoordinate != null) {
+            int columnIndex = selectedCoordinate.getColumn();
+
+            // עדכון ColumnConstraints עבור העמודה המסומנת
+            if (columnIndex >= 0 && columnIndex < sheetGridPane.getColumnConstraints().size()) {
+                ColumnConstraints colConstraints = sheetGridPane.getColumnConstraints().get(columnIndex);
+                colConstraints.setPrefWidth(newWidth);
+                colConstraints.setMinWidth(newWidth);
+                colConstraints.setMaxWidth(newWidth);
+
+                // עדכון המפה columnWidth
+                String columnName = convertColumnNumberToString(columnIndex);
+                columnWidth.put(columnName, newWidth);
+            } else {
+                System.out.println("Index out of bounds for column constraints.");
+            }
+        } else if (selectedRange.get() != null) {
+            // עדכון רוחב העמודות בטווח המסומן
+            Coordinate topLeft = selectedRange.get().getTopLeft();
+            Coordinate bottomRight = selectedRange.get().getBottomRight();
+
+            int startColumn = Math.min(topLeft.getColumn(), bottomRight.getColumn());
+            int endColumn = Math.max(topLeft.getColumn(), bottomRight.getColumn());
+
+            for (int columnIndex = startColumn; columnIndex <= endColumn; columnIndex++) {
+                if (columnIndex >= 0 && columnIndex < sheetGridPane.getColumnConstraints().size()) {
+                    ColumnConstraints colConstraints = sheetGridPane.getColumnConstraints().get(columnIndex);
+                    colConstraints.setPrefWidth(newWidth);
+                    colConstraints.setMinWidth(newWidth);
+                    colConstraints.setMaxWidth(newWidth);
+
+                    // עדכון המפה columnWidth
+                    String columnName = convertColumnNumberToString(columnIndex);
+                    columnWidth.put(columnName, newWidth);
+                } else {
+                    System.out.println("Index out of bounds for column constraints at column " + columnIndex);
+                }
+            }
+        } else {
+            System.out.println("No cell or range is selected.");
         }
-        return columns;
     }
 
+
+    public void updateRowHeight(double newHeight) {
+        if (selectedCoordinate != null) {
+            int uiRowIndex = selectedCoordinate.getRow(); // אינדקס השורה ב-GridPane (כולל שורת כותרת)
+            if (uiRowIndex == 0) {
+                System.out.println("Cannot change height of header row.");
+                return;
+            }
+
+            // התאמה עקב שורת הכותרת
+            int gridRowIndex = uiRowIndex;
+            int gridRowDataIndex = gridRowIndex - 1; // השורות בנתונים מתחילות מאינדקס 0
+
+            if (gridRowIndex >= 0 && gridRowIndex < sheetGridPane.getRowConstraints().size()) {
+                // קבלת מספר השורה האמיתי מתוך sortedRowOrder
+                if (gridRowDataIndex >= 0 && gridRowDataIndex < sortedRowOrder.size()) {
+                    int actualRowNumber = sortedRowOrder.get(gridRowDataIndex);
+
+                    // עדכון RowConstraints עבור השורה המסומנת
+                    RowConstraints rowConstraints = sheetGridPane.getRowConstraints().get(gridRowIndex);
+                    rowConstraints.setPrefHeight(newHeight);
+                    rowConstraints.setMinHeight(newHeight);
+                    rowConstraints.setMaxHeight(newHeight);
+
+                    // עדכון המפה rowHeight
+                    rowHeight.put(actualRowNumber, newHeight);
+                } else {
+                    System.out.println("Index out of bounds for sortedRowOrder.");
+                }
+            } else {
+                System.out.println("Index out of bounds for row constraints.");
+            }
+        } else if (selectedRange.get() != null) {
+            // עדכון גובה השורות בטווח המסומן
+            Coordinate topLeft = selectedRange.get().getTopLeft();
+            Coordinate bottomRight = selectedRange.get().getBottomRight();
+
+            // קבלת רשימת השורות בפועל בטווח באמצעות הפונקציה getRowsInRange
+            List<Integer> rowsToUpdate = getRowsInRange(topLeft, bottomRight);
+
+            // עבור כל מספר שורה בפועל, נאתר את המיקום שלו ב-GridPane
+            for (Integer actualRowNumber : rowsToUpdate) {
+                int gridRowDataIndex = sortedRowOrder.indexOf(actualRowNumber);
+                if (gridRowDataIndex != -1) {
+                    int gridRowIndex = gridRowDataIndex + 1; // התאמה עקב שורת הכותרת
+
+                    if (gridRowIndex >= 0 && gridRowIndex < sheetGridPane.getRowConstraints().size()) {
+                        // עדכון RowConstraints
+                        RowConstraints rowConstraints = sheetGridPane.getRowConstraints().get(gridRowIndex);
+                        rowConstraints.setPrefHeight(newHeight);
+                        rowConstraints.setMinHeight(newHeight);
+                        rowConstraints.setMaxHeight(newHeight);
+
+                        // עדכון המפה rowHeight
+                        rowHeight.put(actualRowNumber, newHeight);
+                    } else {
+                        System.out.println("Index out of bounds for row constraints at row " + gridRowIndex);
+                    }
+                } else {
+                    System.out.println("Row " + actualRowNumber + " not found in sortedRowOrder.");
+                }
+            }
+        } else {
+            System.out.println("No cell or range is selected.");
+        }
+    }
+
+
     // פונקציה לקבלת רשימת שורות בטווח
-    private List<String> getRowsInRange(Coordinate topLeft, Coordinate bottomRight) {
-        List<String> rows = new ArrayList<>();
+    private List<Integer> getRowsInRange(Coordinate topLeft, Coordinate bottomRight) {
+        List<Integer> rows = new ArrayList<>();
         int startRow = Math.min(topLeft.getRow(), bottomRight.getRow());
         int endRow = Math.max(topLeft.getRow(), bottomRight.getRow());
-        for (int row = startRow; row <= endRow; row++) {
-            rows.add(Integer.toString(row));
+
+        for (int gridRowIndex = startRow; gridRowIndex <= endRow; gridRowIndex++) {
+            // מתרגמים את אינדקס השורה ב-GridPane למספר שורה מקורי באמצעות sortedRowOrder
+            if (gridRowIndex - 1 < sortedRowOrder.size()) {
+                int actualRowNumber = sortedRowOrder.get(gridRowIndex - 1);
+                rows.add(actualRowNumber);
+            }
         }
         return rows;
     }
-
 
 }

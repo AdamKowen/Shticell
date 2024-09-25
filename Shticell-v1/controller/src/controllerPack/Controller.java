@@ -41,7 +41,7 @@ public class Controller {
     private Label selectedLabel = null;
     private Coordinate selectedCoordinate = null;
     private List<String> currentColsSelected;
-
+    private boolean isProgrammaticChange = false;
 
     @FXML
     private Button LoadButton;
@@ -67,11 +67,16 @@ public class Controller {
     private Accordion accordion;
 
     @FXML
-    private Slider rowWidthSlider; // ה-Slider מה-FXML
+    private Slider rowHeightSlider; // ה-Slider מה-FXML
+
+
+    @FXML
+    private Slider colWidthSlider; // ה-Slider מה-FXML
 
 
     @FXML
     private GridPane hiddenItems; // ה-GridPane שהוספת
+
 
 
     @FXML
@@ -125,6 +130,15 @@ public class Controller {
 
                 // ממקם את הסמן בסוף הטקסט הקיים
                 cellInputContentTextField.positionCaret(cellInputContentTextField.getText().length());
+
+                // **עדכון הסליידרים עם רוחב וגובה התא הנבחר**
+                double cellWidth = sheetComponentController.getCellWidth();
+                double cellHeight = sheetComponentController.getCellHeight();
+
+                isProgrammaticChange = true;
+                colWidthSlider.setValue(cellWidth);
+                rowHeightSlider.setValue(cellHeight);
+                isProgrammaticChange = false;
             } else {
                 cellInputContentTextField.setText("");
                 selectedCellLabel.setText("Selected cell: none");
@@ -142,14 +156,23 @@ public class Controller {
                 topLeftBox.setText(topLeft.toString());
                 bottomRightBox.setText(bottomRight.toString());
 
-
-
                 updateColumnList(sheetComponentController.getSelectedColumns());
-                initializeTabsForSelectedColumns(sheetComponentController.getUniqueValuesInRange(topLeft,bottomRight),topLeft,bottomRight);
+                initializeTabsForSelectedColumns(sheetComponentController.getUniqueValuesInRange(topLeft, bottomRight), topLeft, bottomRight);
+
+                // **עדכון הסליידרים עם ממוצע רוחב וגובה התאים בטווח הנבחר**
+                double avgCellWidth = sheetComponentController.getAverageCellWidth();
+                double avgCellHeight = sheetComponentController.getAverageCellHeight();
+
+                isProgrammaticChange = true;
+                colWidthSlider.setValue(avgCellWidth);
+                rowHeightSlider.setValue(avgCellHeight);
+                isProgrammaticChange = false;
+
             } else {
                 selectedCellLabel.setText("No range selected");
             }
         });
+
 
 
 
@@ -245,7 +268,24 @@ public class Controller {
 
 
 
-        rowWidthSlider.valueProperty().addListener((obs, oldVal, newVal) -> updateRowWidth());
+
+        colWidthSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (!isProgrammaticChange) {
+                updateColWidth();
+            }
+        });
+
+
+
+        rowHeightSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (!isProgrammaticChange) {
+                updateRowHeight();
+            }
+        });
+
+
+
+
     }
 
 
@@ -253,14 +293,21 @@ public class Controller {
 
     // פונקציה שמופעלת כאשר ה-Slider משתנה
     @FXML
-    private void updateRowWidth() {
-        double newWidth = rowWidthSlider.getValue(); // השגת הערך מה-Slider
+    private void updateColWidth() {
+        double newWidth = colWidthSlider.getValue(); // השגת הערך מה-Slider
 
 
-        sheetComponentController.updateRowWidth(newWidth);
+        sheetComponentController.updateColWidth(newWidth);
 
-        // אם רוצים לעדכן שורה מסוימת בלבד, נניח לפי אינדקס 0
-        // yourGridPane.getRowConstraints().get(0).setPrefHeight(newWidth);
+    }
+
+
+    @FXML
+    private void updateRowHeight() {
+        double newHeight = rowHeightSlider.getValue(); // השגת הערך מה-Slider
+
+        sheetComponentController.updateRowHeight(newHeight);
+
     }
 
 
