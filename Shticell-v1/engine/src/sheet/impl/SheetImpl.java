@@ -245,7 +245,22 @@ public class SheetImpl implements Sheet {
     }
 
     public void removeRange(String name) {
+        if(!checkDeleteRange(name))
+            throw new RuntimeException("cant delete Range, there are Cells that are using it");
+
         ranges.remove(name);
+    }
+
+    public boolean checkDeleteRange(String name) {
+        String avgToFind="{AVERAGE,"+name+"}";
+        String sumToFind="{SUM,"+name+"}";
+
+        for(Cell cell : cellsInSheet.values()) {
+            if(cell.getOriginalValue().contains(avgToFind)||cell.getOriginalValue().contains(sumToFind)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
