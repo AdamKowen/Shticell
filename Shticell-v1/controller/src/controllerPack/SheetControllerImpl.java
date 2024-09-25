@@ -353,7 +353,7 @@ public class SheetControllerImpl implements SheetController {
         }
 
 // קביעת גודל השורות
-        for (int row = 0; row < sheetDto.getNumOfRows(); row++) {
+        for (int row = 0; row <= sheetDto.getNumOfRows(); row++) {
             RowConstraints rowConstraints = new RowConstraints();
 
             double height;
@@ -375,7 +375,7 @@ public class SheetControllerImpl implements SheetController {
         }
 
 // קביעת גודל העמודות
-        for (int col = 0; col < sheetDto.getNumOfColumns(); col++) {
+        for (int col = 0; col <= sheetDto.getNumOfColumns(); col++) {
             ColumnConstraints colConstraints = new ColumnConstraints();
 
             // קבלת שם העמודה (בהנחה שהעמודות מתחילות מ-1)
@@ -418,8 +418,13 @@ public class SheetControllerImpl implements SheetController {
                 StackPane cellPane = new StackPane();
                 cellPane.getChildren().add(label);
 
-                // הגדרת סגנון ברירת מחדל לרקע התא
-                cellPane.setStyle("-fx-background-color: white; -fx-padding: 5px;");
+
+                // **קבלת צבע הרקע מהתא**
+                String backgroundColor = "white";; // פונקציה שמחזירה את מחרוזת הצבע
+
+
+                // הגדרת סגנון הרקע של התא עם הצבע שהתקבל
+                cellPane.setStyle("-fx-background-color: " + backgroundColor + "; -fx-padding: 5px;");
 
                 // הוספת אירועים ללחיצת עכבר, גרירה ושחרור
                 addMouseEvents(cellPane, coordinate);
@@ -519,6 +524,58 @@ public class SheetControllerImpl implements SheetController {
             }
         }
     }
+
+    // פונקציה לסימון טווח תאים לפי הגרירה (עבודה על StackPane ולא על Label)
+    private void highlightSelectedRangeAccordingToOgRange(Coordinate start, Coordinate end) {
+        // ניקוי כל התאים מסימון קודם, למעט הכותרות (שורות ועמודות)
+        sheetGridPane.getChildren().forEach(node -> {
+            if (node instanceof StackPane) {
+                StackPane cellPane = (StackPane) node;
+
+                // בדיקת מיקום התא - אם הוא בכותרת עמודה (שורה 0) או בכותרת שורה (עמודה 0)
+                Integer row = GridPane.getRowIndex(node);
+                Integer col = GridPane.getColumnIndex(node);
+
+                // אם התא הוא לא כותרת עמודה או שורה, נצבע אותו בלבן
+                if (row != null && col != null && row > 0 && col > 0) {
+                    cellPane.setStyle("-fx-background-color: white; -fx-padding: 5px;");
+                }
+            }
+        });
+
+        // סימון טווח חדש
+        int startRow = Math.min(start.getRow(), end.getRow());
+        int endRow = Math.max(start.getRow(), end.getRow());
+        int startCol = Math.min(start.getColumn(), end.getColumn());
+        int endCol = Math.max(start.getColumn(), end.getColumn());
+
+        // עבור כל מספר שורה בטווח המקורי
+        for (int originalRowNum = startRow; originalRowNum <= endRow; originalRowNum++) {
+            // חיפוש אינדקס השורה ב-sortedRowOrder
+            int gridRowDataIndex = sortedRowOrder.indexOf(originalRowNum);
+            if (gridRowDataIndex == -1) {
+                // אם השורה לא נמצאת ב-sortedRowOrder, נזרוק חריגה
+                throw new RuntimeException("Row " + originalRowNum + " is not currently displayed.");
+            }
+
+            // אינדקס השורה ב-GridPane (התאמה עקב שורת הכותרת)
+            int gridRowIndex = gridRowDataIndex + 1; // מוסיפים 1 כי שורת הכותרת היא בשורה 0
+
+            for (int col = startCol; col <= endCol; col++) {
+                // התעלמות מהכותרת של העמודה (עמודה 0)
+                if (col == 0) continue;
+
+                // קבלת ה-StackPane לפי הקואורדינטות ב-GridPane
+                StackPane cellPane = getCellPaneByCoordinate(gridRowIndex, col);
+                if (cellPane != null) {
+                    cellPane.setStyle("-fx-background-color: #ffd5e9; -fx-padding: 5px;"); // סימון התא בצבע ורוד
+                }
+            }
+        }
+    }
+
+
+
 
     // פונקציה שמחזירה את ה-StackPane לפי קואורדינטות
     private StackPane getCellPaneByCoordinate(int row, int col) {
@@ -763,7 +820,7 @@ public class SheetControllerImpl implements SheetController {
         Coordinate from = CoordinateCache.createCoordinateFromString(currBoundaries.getFrom());
         Coordinate to = CoordinateCache.createCoordinateFromString(currBoundaries.getTo());
 
-        highlightSelectedRange(from, to); ////// need to update to work with after sorting where cells are scattered!
+        highlightSelectedRangeAccordingToOgRange(from, to); ////// need to update to work with after sorting where cells are scattered!
     }
 
 
