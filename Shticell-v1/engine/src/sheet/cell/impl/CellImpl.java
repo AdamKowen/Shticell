@@ -139,4 +139,10 @@ public class CellImpl implements Cell {
     public void setInfluencedCells(List<Coordinate> updatedList) {
         this.influencingOn = updatedList;
     }
+
+    @Override
+    public CellStyle getStyle() {
+        return style;
+    }
+
 }

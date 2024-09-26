@@ -31,7 +31,7 @@ public class CellStyle {
 
     // Getter and Setter עבור textColor
     public String getTextColor() {
-        return textColor;
+        return this.textColor;
     }
 
     public void setTextColor(String textColor) {

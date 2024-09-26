@@ -23,4 +23,6 @@ public interface Cell {
 
     void setDependentCells(List<Coordinate> updatedList);
     void setInfluencedCells(List<Coordinate> updatedList);
+
+    public CellStyle getStyle();
 }
