@@ -420,7 +420,7 @@ public class SheetControllerImpl implements SheetController {
 
 
                 // **קבלת צבע הרקע מהתא**
-                String backgroundColor = "white";; // פונקציה שמחזירה את מחרוזת הצבע
+                String backgroundColor = "white"; // פונקציה שמחזירה את מחרוזת הצבע
 
 
                 // הגדרת סגנון הרקע של התא עם הצבע שהתקבל

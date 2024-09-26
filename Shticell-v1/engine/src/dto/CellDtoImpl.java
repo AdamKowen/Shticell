@@ -58,4 +58,6 @@ public class CellDtoImpl implements CellDto {
     public List<Coordinate> getInfluencingOn() {
         return influencingOn;
     }
+
+
 }

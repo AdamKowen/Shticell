@@ -22,34 +22,21 @@ public class CellStyleDto {
         return backgroundColor;
     }
 
-    public void setBackgroundColor(String backgroundColor) {
-        this.backgroundColor = backgroundColor;
-    }
-
     // Getter and Setter עבור textColor
     public String getTextColor() {
         return textColor;
     }
 
-    public void setTextColor(String textColor) {
-        this.textColor = textColor;
-    }
 
     // Getter and Setter עבור alignment
     public String getAlignment() {
         return alignment;
     }
 
-    public void setAlignment(String alignment) {
-        this.alignment = alignment;
-    }
 
     // Getter and Setter עבור isWrapped
     public boolean isWrapped() {
         return isWrapped;
     }
 
-    public void setWrapped(boolean isWrapped) {
-        this.isWrapped = isWrapped;
-    }
 }
