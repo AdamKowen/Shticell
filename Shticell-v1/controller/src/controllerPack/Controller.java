@@ -122,6 +122,8 @@ public class Controller {
 
     @FXML
     private void initialize() {
+
+
         // Listener לשינויי הבחירה של התא
         sheetComponentController.selectedCellProperty().addListener((observable, oldLabel, newLabel) -> {
             if (newLabel != null) {
@@ -132,11 +134,6 @@ public class Controller {
                 selectedCoordinate = sheetComponentController.getSelectedCoordinate();
                 selectedCellLabel.setText("Selected cell: " + selectedCoordinate);
 
-                // הגדרת המיקוד על תיבת הטקסט כך שהסמן יהיה בפנים
-                cellInputContentTextField.requestFocus();
-
-                // ממקם את הסמן בסוף הטקסט הקיים
-                cellInputContentTextField.positionCaret(cellInputContentTextField.getText().length());
 
                 // **עדכון הסליידרים עם רוחב וגובה התא הנבחר**
                 double cellWidth = sheetComponentController.getCellWidth();
@@ -146,11 +143,20 @@ public class Controller {
                 colWidthSlider.setValue(cellWidth);
                 rowHeightSlider.setValue(cellHeight);
                 isProgrammaticChange = false;
+
+
+                // הגדרת המיקוד על תיבת הטקסט כך שהסמן יהיה בפנים
+                cellInputContentTextField.requestFocus();
+                // ממקם את הסמן בסוף הטקסט הקיים
+                cellInputContentTextField.positionCaret(cellInputContentTextField.getText().length());
+
             } else {
                 cellInputContentTextField.setText("");
                 selectedCellLabel.setText("Selected cell: none");
             }
         });
+
+
 
 
 
