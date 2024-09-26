@@ -10,6 +10,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -17,6 +18,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import loader.SheetLoadingException;
 import org.xml.sax.SAXException;
 import sheet.coordinate.api.Coordinate;
@@ -24,6 +27,7 @@ import sheet.coordinate.impl.CoordinateCache;
 import sheetEngine.SheetEngine;
 import sheetEngine.SheetEngineImpl;
 
+import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.*;
@@ -54,7 +58,7 @@ public class SheetControllerImpl implements SheetController {
     private final double cellWidth = 100.0; // רוחב קבוע לכל תא
     private final double cellHeight = 40.0; // גובה קבוע לכל תא
 
-
+    private final Map<Coordinate, Pane> overlayMap = new HashMap<>();
 
     // רשימה שמורה של הסדר האחרון המלא לפני ביצוע סינון
     private List<Integer> lastSortedOrderBeforeFiltering;
@@ -311,9 +315,18 @@ public class SheetControllerImpl implements SheetController {
 
     @Override
     public void updateSheet(SheetDto sheetDto) {
+        String backgroundColor;
+        String fontColor;
         // ניקוי ה-GridPane הקיים
         sheetGridPane.getChildren().clear();
         sheetGridPane.setGridLinesVisible(false); // הצגת קווי ההפרדה
+        sheetGridPane.setHgap(0); // מרווח אופקי אפס
+        sheetGridPane.setVgap(0); // מרווח אנכי אפס
+
+
+
+
+
         // קביעת גודל הגריד לפי מספר השורות והעמודות של הגיליון
         sheetGridPane.getRowConstraints().clear();
         sheetGridPane.getColumnConstraints().clear();
@@ -352,20 +365,25 @@ public class SheetControllerImpl implements SheetController {
             rowHeader.setStyle("-fx-background-color: lightpink; -fx-alignment: CENTER; -fx-padding: 5px;");
         }
 
+
+
 // קביעת גודל השורות
-        for (int row = 0; row <= sheetDto.getNumOfRows(); row++) {
+
+// הוספת הגדרות עבור שורת הכותרת (row == 0)
+        RowConstraints headerRowConstraints = new RowConstraints();
+        headerRowConstraints.setPrefHeight(cellHeight);
+        headerRowConstraints.setMinHeight(cellHeight);
+        headerRowConstraints.setMaxHeight(cellHeight);
+        sheetGridPane.getRowConstraints().add(headerRowConstraints);
+
+// הוספת הגדרות עבור השורות המוצגות
+        for (int i = 0; i < sortedRowOrder.size(); i++) {
             RowConstraints rowConstraints = new RowConstraints();
 
-            double height;
-            if(row!= 0 )
-            {
-                // קבלת הגובה של השורה מהמפה, אם לא קיים משתמשים ב-cellHeight
-                height = rowHeight.getOrDefault(sortedRowOrder.get(row-1), cellHeight);
-            }
-            else
-            {
-                height = cellHeight;
-            }
+            int rowNumber = sortedRowOrder.get(i);
+
+            // קבלת הגובה של השורה מהמפה, אם לא קיים משתמשים ב-cellHeight
+            double height = rowHeight.getOrDefault(rowNumber, cellHeight);
 
             rowConstraints.setPrefHeight(height);
             rowConstraints.setMinHeight(height);
@@ -374,6 +392,37 @@ public class SheetControllerImpl implements SheetController {
             sheetGridPane.getRowConstraints().add(rowConstraints);
         }
 
+
+
+
+
+
+        // קביעת גודל העמודות
+
+// הוספת הגדרות עבור שורת הכותרת (row == 0)
+        ColumnConstraints headerColConstraints = new ColumnConstraints();
+        headerColConstraints.setPrefWidth(cellWidth);
+        headerColConstraints.setPrefWidth(cellWidth);
+        headerColConstraints.setPrefWidth(cellWidth);
+        sheetGridPane.getColumnConstraints().add(headerColConstraints);
+
+// הוספת הגדרות עבור השורות המוצגות
+        for (int col = 1; col <= sheetDto.getNumOfColumns(); col++) {
+            ColumnConstraints colConstraints = new ColumnConstraints();
+
+            // קבלת שם העמודה (בהנחה שהעמודות מתחילות מ-1)
+            String colKey = convertColumnNumberToString(col);
+
+            // קבלת הרוחב של העמודה מהמפה, אם לא קיים משתמשים ב-cellWidth
+            double width = columnWidth.getOrDefault(colKey, cellWidth);
+
+            colConstraints.setPrefWidth(width);
+            colConstraints.setMinWidth(width);
+            colConstraints.setMaxWidth(width);
+
+            sheetGridPane.getColumnConstraints().add(colConstraints);
+        }
+        /*
 // קביעת גודל העמודות
         for (int col = 0; col <= sheetDto.getNumOfColumns(); col++) {
             ColumnConstraints colConstraints = new ColumnConstraints();
@@ -390,6 +439,11 @@ public class SheetControllerImpl implements SheetController {
 
             sheetGridPane.getColumnConstraints().add(colConstraints);
         }
+         */
+
+
+
+
 
         // הוספת התאים לפי סדר השורות המודפסות
         for (int rowIndex = 0; rowIndex < sortedRowOrder.size(); rowIndex++) {
@@ -397,6 +451,13 @@ public class SheetControllerImpl implements SheetController {
             for (int col = 1; col <= sheetDto.getNumOfColumns(); col++) {
                 Coordinate coordinate = CoordinateCache.createCoordinate(rowIndex + 1, col); // coordinate according to gridpane
                 CellDto cell = sheetDto.getCell(actualRow, col);
+
+
+
+                // יצירת StackPane עבור התא
+                StackPane cellPane = new StackPane();
+                cellPane.setPadding(Insets.EMPTY); // הסרת Padding מה-cellPane
+
 
                 // יצירת תווית חדשה
                 Label label = new Label();
@@ -414,17 +475,71 @@ public class SheetControllerImpl implements SheetController {
                 // הגדרת התווית כך שתהיה שקופה
                 label.setBackground(Background.EMPTY);
 
-                // יצירת StackPane עבור התא
-                StackPane cellPane = new StackPane();
+
+
+
+
+
+
+                // יצירת Pane שישמש כשכבת סימון
+                Pane selectionOverlay = new Pane();
+                selectionOverlay.setPadding(Insets.EMPTY);
+
+                selectionOverlay.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+                selectionOverlay.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
+                selectionOverlay.setPrefWidth(Double.MAX_VALUE);
+                selectionOverlay.setPrefHeight(Double.MAX_VALUE);
+
+
+                selectionOverlay.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+                selectionOverlay.setMouseTransparent(true); // כדי שלא יחסום אירועי עכבר
+
+
+
+
+// שמירת ה-Rectangle במפה כדי לגשת אליו מאוחר יותר
+                overlayMap.put(coordinate, selectionOverlay);
+
+
+                // הוספת ה-Pane ל-cellPane (מעל ה-Label)
+                cellPane.getChildren().add(selectionOverlay);
+
+
+                // הוספת ה-Label ל-cellPane
                 cellPane.getChildren().add(label);
 
 
-                // **קבלת צבע הרקע מהתא**
-                String backgroundColor = "white"; // פונקציה שמחזירה את מחרוזת הצבע
 
+                if (cell != null)
+                {
+                    // **קבלת צבע הרקע מהתא**
+                    backgroundColor = cell.getStyle().getBackgroundColor(); // פונקציה שמחזירה את מחרוזת הצבע
+
+                    // **קבלת צבע הפונט מהתא**
+                    fontColor = cell.getStyle().getTextColor(); // פונקציה שמחזירה את מחרוזת הצבע לפונט
+                }
+                else {
+                    backgroundColor = "white";
+                    fontColor = "black"; // צבע ברירת מחדל לפונט
+                }
 
                 // הגדרת סגנון הרקע של התא עם הצבע שהתקבל
                 cellPane.setStyle("-fx-background-color: " + backgroundColor + "; -fx-padding: 5px;");
+
+
+                // החלת צבע הפונט של התווית
+                label.setStyle("-fx-text-fill: " + fontColor + ";");
+
+
+
+
+
+
+
+
+
+
+
 
                 // הוספת אירועים ללחיצת עכבר, גרירה ושחרור
                 addMouseEvents(cellPane, coordinate);
@@ -491,6 +606,7 @@ public class SheetControllerImpl implements SheetController {
 
 
 
+/*
     // פונקציה לסימון טווח תאים לפי הגרירה (עבודה על StackPane ולא על Label)
     private void highlightSelectedRange(Coordinate start, Coordinate end) {
         // ניקוי כל התאים מסימון קודם, למעט הכותרות (שורות ועמודות)
@@ -524,6 +640,41 @@ public class SheetControllerImpl implements SheetController {
             }
         }
     }
+
+ */
+
+
+
+
+
+
+    private void highlightSelectedRange(Coordinate start, Coordinate end) {
+        // ניקוי הסימון הקודם
+        overlayMap.values().forEach(overlay -> {
+            overlay.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+        });
+
+        // חישוב הטווח
+        int startRow = Math.min(start.getRow(), end.getRow());
+        int endRow = Math.max(start.getRow(), end.getRow());
+        int startCol = Math.min(start.getColumn(), end.getColumn());
+        int endCol = Math.max(start.getColumn(), end.getColumn());
+
+        for (int row = startRow; row <= endRow; row++) {
+            for (int col = startCol; col <= endCol; col++) {
+                Coordinate coordinate = CoordinateCache.createCoordinate(row, col);
+                Pane overlay = overlayMap.get(coordinate);
+                if (overlay != null) {
+                    overlay.setBackground(new Background(new BackgroundFill(Color.web("#ffd5e9", 0.7), CornerRadii.EMPTY, Insets.EMPTY)));
+                }
+            }
+        }
+    }
+
+
+
+
+
 
     // פונקציה לסימון טווח תאים לפי הגרירה (עבודה על StackPane ולא על Label)
     private void highlightSelectedRangeAccordingToOgRange(Coordinate start, Coordinate end) {
@@ -593,7 +744,7 @@ public class SheetControllerImpl implements SheetController {
     private Label getLabelByCoordinate(int row, int col) {
         StackPane cellPane = getCellPaneByCoordinate(row, col);
         if (cellPane != null && !cellPane.getChildren().isEmpty()) {
-            return (Label) cellPane.getChildren().get(0);
+            return (Label) cellPane.getChildren().get(1);
         }
         return null;
     }
@@ -1182,5 +1333,53 @@ public class SheetControllerImpl implements SheetController {
         }
         return rows;
     }
+
+
+
+    public void ChangeBackground(String colorHex) {
+
+            // קבלת העמודות והשורות שנבחרו
+            List<String> selectedColumns = getSelectedColumns();
+            List<Integer> selectedRows = getRowsInRange(startCoordinate, endCoordinate); // מניחים ש- startCoordinate ו- endCoordinate מייצגים את הטווח שנבחר
+
+            // מעבר על כל השורות והעמודות
+            for (Integer row : selectedRows) {
+                for (String column : selectedColumns) {
+                    // יצירת מחרוזת המייצגת את התא, לדוגמה: "A1"
+                    String cellReference = column + row;
+
+                    sheetEngine.setBackgrountColor(cellReference, colorHex);
+                }
+            }
+
+            updateSheet(sheetEngine.getCurrentSheetDTO());
+    }
+
+
+
+    public void ChangeTextColor(String colorHex) {
+
+        // קבלת העמודות והשורות שנבחרו
+        List<String> selectedColumns = getSelectedColumns();
+        List<Integer> selectedRows = getRowsInRange(startCoordinate, endCoordinate); // מניחים ש- startCoordinate ו- endCoordinate מייצגים את הטווח שנבחר
+
+        // מעבר על כל השורות והעמודות
+        for (Integer row : selectedRows) {
+            for (String column : selectedColumns) {
+                // יצירת מחרוזת המייצגת את התא, לדוגמה: "A1"
+                String cellReference = column + row;
+
+                sheetEngine.setFontColor(cellReference, colorHex);
+            }
+        }
+
+        updateSheet(sheetEngine.getCurrentSheetDTO());
+    }
+
+
+
+
+
+
 
 }

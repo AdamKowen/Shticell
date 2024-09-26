@@ -20,4 +20,6 @@ public interface CellDto {
     List<Coordinate> getDependsOn();
 
     List<Coordinate> getInfluencingOn();
+
+    CellStyleDto getStyle();
 }

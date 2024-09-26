@@ -141,6 +141,34 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         return sheetDto.getUniqueValuesInRange(rows,columns);
     }
 
+    public void setBackgrountColor(String cell, String color)
+    {
+        Coordinate coordinate =  CoordinateCache.createCoordinateFromString(cell);
+        if (coordinate == null) {
+            throw new IllegalArgumentException("Could not create coordinate from string: " + cell);
+        }
+
+        Cell currentCell = currentSheet.getCell(coordinate);
+        if (currentCell != null)
+        {
+            currentSheet.getCell(coordinate).getStyle().setBackgroundColor(color);
+        }
+    }
+
+
+    public void setFontColor(String cell, String color)
+    {
+        Coordinate coordinate =  CoordinateCache.createCoordinateFromString(cell);
+        if (coordinate == null) {
+            throw new IllegalArgumentException("Could not create coordinate from string: " + cell);
+        }
+
+        Cell currentCell = currentSheet.getCell(coordinate);
+        if (currentCell != null)
+        {
+            currentSheet.getCell(coordinate).getStyle().setTextColor(color);
+        }
+    }
 
     // פונקציות נוספות לעבודה עם הגיליון
     // public void updateCell(...) { ... }

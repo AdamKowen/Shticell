@@ -20,6 +20,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import sheet.coordinate.api.Coordinate;
@@ -111,6 +112,12 @@ public class Controller {
 
     @FXML
     private ListView<String> listOfRanges; // אותו שם שהשתמשת ב-Scene Builder
+
+
+    @FXML
+    private ColorPicker backgroundPicker;
+    @FXML
+    private ColorPicker fontPicker;
 
 
     @FXML
@@ -284,8 +291,31 @@ public class Controller {
         });
 
 
+    }
 
 
+    @FXML
+    private void changeBackgroundColor() {
+
+        Color color = backgroundPicker.getValue(); // קבלת הצבע שנבחר
+        String colorHex = toHexString(color); // המרת הצבע למחרוזת Hex
+        sheetComponentController.ChangeBackground(colorHex);
+    }
+
+    @FXML
+    private void changeTextColor() {
+        Color color = fontPicker.getValue(); // קבלת הצבע שנבחר
+        String colorHex = toHexString(color); // המרת הצבע למחרוזת Hex
+        sheetComponentController.ChangeTextColor(colorHex);
+    }
+
+
+
+    private String toHexString(Color color) {
+        int red = (int) (color.getRed() * 255);
+        int green = (int) (color.getGreen() * 255);
+        int blue = (int) (color.getBlue() * 255);
+        return String.format("#%02X%02X%02X", red, green, blue);
     }
 
 

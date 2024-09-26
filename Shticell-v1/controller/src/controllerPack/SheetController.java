@@ -107,6 +107,9 @@ public interface SheetController {
     // פונקציה לקבלת ממוצע גובה תאים בטווח
      double getAverageCellHeight();
 
+     void ChangeBackground(String colorHex);
+
+    void ChangeTextColor(String colorHex);
 }
 
 

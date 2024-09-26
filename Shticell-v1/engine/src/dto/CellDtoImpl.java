@@ -14,6 +14,7 @@ public class CellDtoImpl implements CellDto {
     private int version;
     private List<Coordinate> dependsOn;
     private List<Coordinate> influencingOn;
+    private CellStyleDto style;
 
     // Constructor
     public CellDtoImpl(Cell cell) {
@@ -23,6 +24,7 @@ public class CellDtoImpl implements CellDto {
         this.version = cell.getVersion();
         this.dependsOn = new ArrayList<>(cell.getDependentCells());
         this.influencingOn = new ArrayList<>(cell.getInfluencedCells());
+        this.style = new CellStyleDto(cell.getStyle());
     }
 
     // Getters and Setters
@@ -58,6 +60,11 @@ public class CellDtoImpl implements CellDto {
     public List<Coordinate> getInfluencingOn() {
         return influencingOn;
     }
+
+    public CellStyleDto getStyle() {
+        return style;
+    }
+
 
 
 }
