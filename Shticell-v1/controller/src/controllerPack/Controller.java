@@ -561,7 +561,7 @@ public class Controller {
         sheetComponentController.loadSheetCurrent();
     }
 
-    /*
+
     @FXML
     void loadButtonActionListener(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -613,9 +613,9 @@ public class Controller {
         }
     }
 
-     */
 
 
+    /*
     @FXML
     void loadButtonActionListener(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -724,6 +724,8 @@ public class Controller {
             fileNameLabel.setText("No file selected or an error occurred.");
         }
     }
+
+     */
 
 
 }

@@ -18,13 +18,14 @@ public class Main extends Application {
             Scene scene = new Scene(root);
 
             // הגדרת כותרת
-            primaryStage.setTitle("My JavaFX Application");
+            primaryStage.setTitle("Shticell");
 
             // הגדרת הסצנה
             primaryStage.setScene(scene);
 
-            // הגדרת ה-StyleClass (אם נדרש CSS ייחודי)
-            //root.getStyleClass().add("yourCssClassName"); // ניתן להחליף את 'yourCssClassName' בשם קובץ ה-CSS אם יש לך.
+
+            // טוען את קובץ ה-CSS
+            scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
 
             // הגדרת רוחב וגובה מינימלי לחלון

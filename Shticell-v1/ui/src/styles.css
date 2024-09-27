@@ -1,0 +1,284 @@
+/* CSS עבור הממשק הכללי */
+
+/* רקע כללי */
+.root {
+    -fx-background-color: #ffffff; /* רקע בהיר */
+}
+
+/* עיצוב האזור של ה-Accordion */
+#leftPane {
+    -fx-background-color: #818193; /* צבע התואם לצבעים החדשים */
+    -fx-padding: 5; /* ריווח פנימי */
+    -fx-background-radius: 10; /* פינות מעוגלות */
+}
+
+/* עיצוב השורה העליונה (עם הכותרת "Shticell") */
+#topRow {
+    -fx-background-color: #563f46; /* צבע כהה יותר */
+    -fx-background-radius: 0; /* פינות עליונות מעוגלות */
+}
+
+/* עיצוב השורה עם כפתור ה-Load ושאר האיברים */
+#loadRow {
+    -fx-background-color: #c8c3cc; /* צבע נוסף */
+}
+
+/* עיצוב השורה מתחת עם הכפתורים */
+#buttonRow {
+    -fx-background-color: #ffffff; /* צבע נוסף */
+}
+
+/* עיצוב הכפתורים */
+.button {
+    -fx-background-color: #563f46; /* צבע כהה יותר */
+    -fx-text-fill: #FFFFFF; /* טקסט לבן */
+    -fx-font-weight: normal;
+    -fx-background-radius: 8;
+    -fx-border-color: transparent;
+    -fx-border-radius: 8;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.button:hover {
+    -fx-background-color: #8ca3a3; /* צבע בהיר יותר */
+}
+
+.button:pressed {
+    -fx-background-color: #484f4f; /* צבע כהה יותר */
+}
+
+/* עיצוב ה-Label */
+.label {
+    -fx-text-fill: #563f46; /* צבע טקסט כהה */
+    -fx-font-weight: normal;
+}
+
+/* עיצוב ה-ProgressBar */
+.progress-bar {
+    -fx-accent: #563f46; /* צבע כהה יותר */
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #ffffff; /* צבע רקע בהיר */
+}
+
+.titled-pane > .title {
+    -fx-background-color: rgba(86, 63, 70, 0.5); /* התאמה לצבע #563f46 עם שקיפות */
+}
+
+/* הסתרת החץ לחלוטין */
+.titled-pane > .title > .arrow-button {
+    -fx-opacity: 0; /* להפוך אותו לשקוף לחלוטין */
+    -fx-shape: ""; /* הסרת צורת החץ */
+    -fx-background-color: transparent; /* שקיפות מוחלטת */
+    -fx-padding: 0; /* הסרת ריווח */
+    -fx-min-width: 0;
+    -fx-min-height: 0;
+    -fx-max-width: 0;
+    -fx-max-height: 0;
+}
+
+.titled-pane > .title > .text {
+    -fx-fill: #FFFFFF; /* טקסט לבן */
+}
+
+/* עיצוב עבור ה-tabs */
+.tab {
+    -fx-background-color: #958084; /* צבע כהה */
+    -fx-text-base-color: #FFFFFF; /* טקסט לבן */
+    -fx-background-radius: 5 5 0 0;
+}
+
+.tab:selected {
+    -fx-background-color: #563f46; /* צבע נוסף */
+    -fx-text-base-color: #FFFFFF; /* טקסט לבן */
+}
+
+.tab-label {
+    -fx-text-fill: #FFFFFF; /* טקסט לבן */
+}
+
+/* עיצוב ה-TitledPane וה-Accordion */
+.titled-pane > .title {
+    -fx-background-color: #563f46; /* צבע כהה יותר */
+    -fx-text-fill: #FFFFFF; /* טקסט לבן */
+    -fx-font-weight: normal;
+    -fx-background-radius: 10; /* פינות מעוגלות */
+    -fx-padding: 7; /* ריווח פנימי */
+}
+
+.titled-pane > .content {
+    -fx-background-color: #ffffff; /* צבע בהיר */
+    -fx-padding: 0; /* ריווח פנימי */
+    -fx-background-radius: 10; /* פינות מעוגלות */
+}
+
+/* מרווח בין האופציות באקורדיון */
+.titled-pane {
+    -fx-border-color: transparent;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 2 0; /* מרווח בין האקורדיונים */
+}
+
+/* הפיכת החצים באקורדיון ללבן */
+.titled-pane > .title > .arrow {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-fill: #FFFFFF; /* חץ בצבע לבן */
+}
+
+/* עיצוב עבור ScrollPane */
+.scroll-pane {
+    -fx-background: #f0f0f0; /* צבע רקע בהיר יותר */
+    -fx-background-radius: 5; /* פינות מעוגלות */
+    -fx-padding: 5; /* ריווח פנימי */
+}
+.scroll-bar {
+    -fx-background-color: transparent; /* צבע שקוף */
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #8ca3a3; /* צבע בהיר יותר */
+    -fx-background-radius: 20; /* עיגול פינות */
+    -fx-padding: 0; /* ריווח פנימי ל-thumb */
+}
+
+.scroll-bar:horizontal {
+    -fx-pref-height: 16px; /* גובה עבור ScrollBar אופקי */
+}
+.scroll-bar:vertical {
+    -fx-pref-width: 16px; /* רוחב עבור ScrollBar אנכי */
+}
+
+/* CSS עבור העלמת החצים ב-ScrollBar */
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent; /* רקע שקוף */
+    -fx-padding: 0; /* הסרת הריווח */
+    -fx-shape: ""; /* הסרת הצורה */
+    -fx-opacity: 0; /* להפוך אותם לשקופים לחלוטין */
+    -fx-min-width: 0;
+    -fx-min-height: 0;
+    -fx-max-width: 0;
+    -fx-max-height: 0;
+}
+
+/* עיצוב עבור תוכן ה-TitledPane הספציפי עם מזהה 'style' */
+#style {
+    -fx-background-color: #ffffff; /* צבע רקע לבן */
+    -fx-background-radius: 10; /* פינות מעוגלות */
+    -fx-padding: 10; /* ריווח פנימי */
+}
+
+/* עיצוב עבור TextField */
+.text-field {
+    -fx-background-color: #c8c3cc;
+    -fx-border-color: #563f46;
+    -fx-border-radius: 15;
+    -fx-background-radius: 15;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.text-field:focused {
+    -fx-border-color: #484f4f;
+}
+
+.text-field .text {
+    -fx-fill: #563f46;
+}
+
+/* עיצוב ComboBox */
+.combo-box {
+    -fx-background-color: #c8c3cc;
+    -fx-text-fill: #563f46;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: #c8c3cc;
+    -fx-background-radius: 8;
+}
+
+.combo-box:hover {
+    -fx-background-color: #8ca3a3;
+}
+
+.combo-box:pressed {
+    -fx-background-color: #9cbfbf;
+}
+
+/* עיצוב ה-Checkbox */
+.check-box {
+    -fx-text-fill: #563f46;
+    -fx-background-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.check-box .box {
+    -fx-border-color: #563f46;
+    -fx-border-width: 2px;
+    -fx-background-color: transparent;
+    -fx-border-radius: 4;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #563f46;
+}
+
+.check-box .box:hover {
+    -fx-background-color: #8ca3a3;
+}
+
+/* עיצוב עבור ה-Slider */
+.slider {
+    -fx-background-color: transparent;
+}
+
+.slider .track {
+    -fx-background-color: #8ca3a3;
+    -fx-background-radius: 5;
+}
+
+.slider .thumb {
+    -fx-background-color: #563f46;
+    -fx-background-radius: 50%;
+    -fx-border-color: #FFFFFF;
+    -fx-border-width: 2px;
+}
+
+/* עיצוב עבור ColorPicker */
+.color-picker {
+    -fx-background-color: #c8c3cc;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: transparent;
+    -fx-text-fill: #563f46;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.color-picker:hover {
+    -fx-background-color: #8ca3a3;
+}
+
+.color-picker:pressed {
+    -fx-background-color: #484f4f;
+}
+
+
+/* הסרת סימון כחול סביב אלמנטים */
+* {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-border-style: none;
+}
