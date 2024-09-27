@@ -7,6 +7,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Tab?>
@@ -26,29 +27,42 @@
    <top>
       <VBox prefHeight="108.0">
          <children>
-            <HBox alignment="CENTER" prefHeight="32.0">
+            <HBox alignment="CENTER" prefHeight="61.0" prefWidth="924.0">
                <children>
                   <Label text="Shticell" />
                </children>
             </HBox>
-            <HBox prefHeight="100.0">
+            <GridPane prefHeight="96.0" prefWidth="908.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" maxWidth="339.2989807128906" minWidth="10.0" prefWidth="119.03758239746094" />
+                <ColumnConstraints hgrow="NEVER" maxWidth="707.1642456054688" minWidth="10.0" prefWidth="253.05743408203125" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="0.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
                <children>
-                  <Button fx:id="LoadButton" mnemonicParsing="false" onAction="#loadButtonActionListener" prefHeight="36.0" prefWidth="97.0" text="Load File">
-                     <HBox.margin>
-                        <Insets left="20.0" top="5.0" />
-                     </HBox.margin></Button>
-                  <Label fx:id="fileNameLabel" prefHeight="35.0" prefWidth="768.0" text="loaded file">
-                     <HBox.margin>
-                        <Insets left="15.0" right="10.0" top="7.0" />
-                     </HBox.margin>
+                  <Button fx:id="LoadButton" mnemonicParsing="false" onAction="#loadButtonActionListener" prefHeight="44.0" prefWidth="97.0" text="Load File">
+                     <GridPane.margin>
+                        <Insets left="15.0" />
+                     </GridPane.margin></Button>
+                  <Label fx:id="fileNameLabel" prefHeight="35.0" text="loaded file" GridPane.columnIndex="1">
                      <font>
                         <Font size="14.0" />
                      </font></Label>
+                  <ProgressBar fx:id="taskProgressBar" maxWidth="1.7976931348623157E308" minWidth="0.0" prefHeight="40.0" prefWidth="0.0" progress="0.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets right="10.0" top="15.0" />
+                     </padding>
+                  </ProgressBar>
                </children>
-            </HBox>
+            </GridPane>
             <GridPane maxWidth="1.7976931348623157E308" prefHeight="95.0" prefWidth="924.0">
               <columnConstraints>
-                <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="764.6055297851562" prefWidth="769.112548828125" />
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="769.112548828125" />
                 <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" minWidth="143.9560546875" prefWidth="154.887451171875" />
               </columnConstraints>
               <rowConstraints>
@@ -59,56 +73,28 @@
                     <columnConstraints>
                       <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" minWidth="100.1055908203125" prefWidth="142.47122192382812" />
                       <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" minWidth="58.028778076171875" prefWidth="100.86564636230469" />
-                        <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="366.41619873046875" prefWidth="378.1343536376953" />
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="0.0" />
                         <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="148.711181640625" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <HBox prefHeight="45.0">
-                           <children>
-                              <Label fx:id="selectedCellLabel" prefHeight="43.0" prefWidth="109.0" text="Selected cell:">
-                                 <padding>
-                                    <Insets left="10.0" />
-                                 </padding>
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </HBox>
-                        <HBox prefHeight="45.0" prefWidth="94.0" GridPane.columnIndex="1">
-                           <children>
-                              <Label prefHeight="25.0" prefWidth="98.0" text="Origina cell value: ">
-                                 <HBox.margin>
-                                    <Insets top="10.0" />
-                                 </HBox.margin>
-                              </Label>
-                           </children>
-                        </HBox>
-                        <HBox maxWidth="1.7976931348623157E308" prefHeight="43.0" prefWidth="425.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS">
-                           <children>
-                              <TextField fx:id="cellInputContentTextField" maxWidth="1.7976931348623157E308" prefHeight="32.0" prefWidth="419.0" HBox.hgrow="ALWAYS">
-                                 <HBox.margin>
-                                    <Insets left="5.0" right="10.0" top="5.0" />
-                                 </HBox.margin>
-                              </TextField>
-                           </children>
-                        </HBox>
-                        <HBox prefHeight="45.0" prefWidth="181.0" GridPane.columnIndex="3">
-                           <children>
-                              <Label fx:id="LastUpdate" prefHeight="23.0" prefWidth="149.0" text="Last updated:">
-                                 <HBox.margin>
-                                    <Insets top="10.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <Label />
-                           </children>
-                        </HBox>
+                        <Label fx:id="LastUpdate" prefHeight="23.0" prefWidth="149.0" text="Last updated:" GridPane.columnIndex="3" />
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="26.0" prefWidth="90.0" GridPane.columnIndex="3" />
+                        <TextField fx:id="cellInputContentTextField" maxWidth="1.7976931348623157E308" minWidth="0.0" prefHeight="32.0" GridPane.columnIndex="2" />
+                        <Label prefHeight="25.0" prefWidth="98.0" text="Origina cell value: " GridPane.columnIndex="1" />
+                        <Label fx:id="selectedCellLabel" prefHeight="43.0" prefWidth="109.0" text="Selected cell:">
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
                      </children>
                   </GridPane>
-                  <ComboBox fx:id="versionComboBox" prefHeight="33.0" prefWidth="146.0" promptText="Previous Version" visibleRowCount="15" GridPane.columnIndex="1" />
+                  <ComboBox fx:id="versionComboBox" prefHeight="33.0" prefWidth="145.0" promptText="Previous Version" visibleRowCount="15" GridPane.columnIndex="1" />
                </children>
             </GridPane>
          </children>
@@ -198,8 +184,8 @@
                                              </GridPane.margin>
                                           </Slider>
                                           <Label prefHeight="25.0" prefWidth="78.0" text="Row Height:" GridPane.rowIndex="9" />
-                                          <Button fx:id="resetStyle" mnemonicParsing="false" prefHeight="26.0" prefWidth="99.0" text="Reset Style" GridPane.rowIndex="11" />
-                                          <ComboBox fx:id="alignmentBox" prefHeight="26.0" prefWidth="100.0" GridPane.rowIndex="5">
+                                          <Button fx:id="resetStyle" mnemonicParsing="false" onAction="#resetStyle" prefHeight="26.0" prefWidth="99.0" text="Reset Style" GridPane.rowIndex="11" />
+                                          <ComboBox fx:id="alignmentBox" onAction="#onAlignmentChange" prefHeight="26.0" prefWidth="100.0" GridPane.rowIndex="5">
                                              <padding>
                                                 <Insets right="5.0" />
                                              </padding>
@@ -214,7 +200,7 @@
                               </ScrollPane>
                            </content>
                         </TitledPane>
-                        <TitledPane minHeight="0.0" prefHeight="50.0" prefWidth="133.0" text="Sort">
+                        <TitledPane minHeight="0.0" prefHeight="20.0" prefWidth="133.0" text="Sort">
                            <content>
                               <GridPane prefHeight="205.0" prefWidth="117.0">
                                 <columnConstraints>

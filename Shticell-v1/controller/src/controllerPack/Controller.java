@@ -8,6 +8,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
@@ -110,6 +111,10 @@ public class Controller {
 
     @FXML
     private Label LastUpdate;
+
+
+    @FXML
+    private ProgressBar taskProgressBar;
 
 
     @FXML
@@ -315,7 +320,12 @@ public class Controller {
         // הגדרת ערך ברירת מחדל
         alignmentBox.setValue("Left");
 
+
+
+        taskProgressBar.setVisible(false);
     }
+
+
 
 
     @FXML
@@ -339,15 +349,21 @@ public class Controller {
         String selectedAlignment = (String)alignmentBox.getValue();
         switch (selectedAlignment) {
             case "Left":
-                System.out.println("Text aligned to Left");
+                sheetComponentController.ChangeAlignment("LEFT");
                 break;
             case "Center":
-                System.out.println("Text aligned to Center");
+                sheetComponentController.ChangeAlignment("CENTER");
                 break;
             case "Right":
-                System.out.println("Text aligned to Right");
+                sheetComponentController.ChangeAlignment("RIGHT");
                 break;
         }
+    }
+
+
+    @FXML
+    private void resetStyle() {
+        sheetComponentController.resetStyle();
     }
 
 
@@ -474,84 +490,6 @@ public class Controller {
     }
 
 
-/*
-    private void addDragEvents(List<String> columns) {
-        ObservableList<String> items = FXCollections.observableArrayList(columns);
-        colList.setItems(items);
-
-        colList.setCellFactory(lv -> {
-            ListCell<String> cell = new ListCell<String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    setText(empty ? null : item);
-                }
-            };
-
-            // שאר אירועי ה-drag נשארים כפי שהם
-            cell.setOnDragDetected(event -> {
-                if (!cell.isEmpty()) {
-                    Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
-                    ClipboardContent content = new ClipboardContent();
-                    content.putString(cell.getItem());
-                    db.setContent(content);
-
-                    WritableImage snapshot = cell.snapshot(null, null);
-                    db.setDragView(snapshot);
-
-                    event.consume();
-                }
-            });
-
-            cell.setOnDragOver(event -> {
-                if (event.getGestureSource() != cell && event.getDragboard().hasString()) {
-                    event.acceptTransferModes(TransferMode.MOVE);
-                    event.consume();
-                }
-            });
-
-            cell.setOnDragEntered(event -> {
-                if (event.getGestureSource() != cell && event.getDragboard().hasString()) {
-                    cell.setStyle("-fx-background-color: lightblue;");
-                }
-            });
-
-            cell.setOnDragExited(event -> {
-                cell.setStyle("");
-            });
-
-            cell.setOnDragDropped(event -> {
-                Dragboard db = event.getDragboard();
-                if (db.hasString() && cell.getItem() != null) {
-                    int draggedIdx = items.indexOf(db.getString());
-                    int thisIdx = items.indexOf(cell.getItem());
-
-                    String temp = items.get(draggedIdx);
-                    items.set(draggedIdx, items.get(thisIdx));
-                    items.set(thisIdx, temp);
-
-                    List<String> copy = new ArrayList<>(items);
-                    items.clear();
-                    items.addAll(copy);
-
-                    event.setDropCompleted(true);
-                    colList.getSelectionModel().select(thisIdx);
-                    event.consume();
-                }
-            });
-
-            cell.setOnDragDone(event -> {
-                event.consume();
-            });
-
-            return cell;
-        });
-    }
-
- */
-
-
-
 
 
 
@@ -623,7 +561,7 @@ public class Controller {
         sheetComponentController.loadSheetCurrent();
     }
 
-
+    /*
     @FXML
     void loadButtonActionListener(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -671,6 +609,118 @@ public class Controller {
             }
         } else {
             // מציג הודעת שגיאה אם לא נבחר קובץ
+            fileNameLabel.setText("No file selected or an error occurred.");
+        }
+    }
+
+     */
+
+
+    @FXML
+    void loadButtonActionListener(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select File");
+
+        // Adding a filter to allow only XML files (optional)
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+
+        File file = fileChooser.showOpenDialog(null);
+
+        if (file != null) {
+            // Create a Task to load the file in the background
+            Task<Void> loadFileTask = new Task<Void>() {
+                @Override
+                protected Void call() {
+                    try {
+                        // הצגת ה-ProgressBar כשהטעינה מתחילה
+                        Platform.runLater(() -> {
+                            taskProgressBar.setVisible(true); // הופך את ה-progress bar לגלוי
+                            fileNameLabel.setText("Loading: Starting file load...");
+                        });
+
+                        // עדכון הדרגתי של הטעינה
+                        smoothProgressUpdate(0.0, 0.2, 250); // עדכון ל-20%
+
+                        // טעינת הקובץ
+                        sheetComponentController.loadSheetFromFile(file.getPath());
+                        Platform.runLater(() -> fileNameLabel.setText("Loading: File loaded successfully."));
+                        smoothProgressUpdate(0.2, 0.4, 250); // עדכון ל-40%
+
+                        // איפוס המיון
+                        sheetComponentController.resetSorting();
+                        Platform.runLater(() -> fileNameLabel.setText("Loading: Resetting sorting..."));
+                        smoothProgressUpdate(0.4, 0.6, 250); // עדכון ל-60%
+
+                        // טעינת הגיליון הנוכחי
+                        Platform.runLater(() -> {
+                            fileNameLabel.setText("Loading: Updating sheet view...");
+                            sheetComponentController.loadSheetCurrent();
+                            sheetVersionController.updateSheet(sheetComponentController.getVersionDto(1));
+
+                            // עדכון ComboBox וה-Label
+                            fileNameLabel.setText("Loading: Populating version list...");
+                            versionComboBox.getItems().clear();
+                            List<Integer> versions = sheetComponentController.getVersionList();
+
+                            for (int i = 0; i < versions.size(); i++) {
+                                int versionNumber = i + 1;
+                                int changes = versions.get(i);
+                                String versionText = "Version " + versionNumber + " - " + changes + " changes";
+                                versionComboBox.getItems().add(versionText);
+                            }
+
+                            listOfRanges.getItems().addAll(sheetComponentController.getRanges().keySet());
+
+                            // הסרת הסיומת ".xml" משם הקובץ
+                            String fileNameWithoutExtension = file.getName().replaceAll("\\.xml$", "");
+
+                            // הצגת הטקסט של הקובץ שנבחר לאחר כל העדכונים
+                            fileNameLabel.setText("Selected file: " + fileNameWithoutExtension);
+                        });
+
+                        // סימולציה של סיום הטעינה
+                        smoothProgressUpdate(0.6, 1.0, 250);
+                        Platform.runLater(() -> {
+                            taskProgressBar.setVisible(false); // מסתיר את ה-progress bar לאחר סיום הטעינה
+                        });
+
+                    } catch (Exception e) {
+                        Platform.runLater(() -> {
+                            fileNameLabel.setText("An error occurred: " + e.getMessage());
+                            taskProgressBar.setVisible(false); // מסתיר את ה-progress bar במקרה של שגיאה
+                        });
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+
+
+                // פונקציה לעדכון ההתקדמות דרך ה-Task עצמו
+                private void smoothProgressUpdate(double startProgress, double endProgress, int durationMillis) throws InterruptedException {
+                    int steps = 50; // מספר הצעדים ליצירת אנימציה חלקה
+                    double increment = (endProgress - startProgress) / steps;
+                    int stepDuration = durationMillis / steps;
+
+                    for (int i = 0; i <= steps; i++) {
+                        double progress = startProgress + (increment * i);
+                        updateProgress(progress, 1); // עדכון ה-Task עצמו
+                        Thread.sleep(stepDuration); // עיכוב קצר בין כל עדכון כדי ליצור אפקט של אנימציה חלקה
+                    }
+                }
+            };
+
+
+
+            // Bind the progress bar to the task's progress
+            taskProgressBar.progressProperty().bind(loadFileTask.progressProperty());
+
+            // Start the task in a new thread
+            Thread thread = new Thread(loadFileTask);
+            thread.setDaemon(true);
+            thread.start();
+        } else {
+            // Display an error message if no file is selected
             fileNameLabel.setText("No file selected or an error occurred.");
         }
     }

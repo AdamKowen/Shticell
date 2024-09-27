@@ -38,14 +38,25 @@ public class CellStyle {
         this.textColor = textColor;
     }
 
-    // Getter and Setter עבור alignment
-    public TextAlignment getAlignment() {
-        return alignment;
+    // Getter עבור alignment שמחזיר את הערך כמחרוזת
+    public String getAlignment() {
+        return alignment != null ? alignment.name() : null;
     }
 
-    public void setAlignment(TextAlignment alignment) {
-        this.alignment = alignment;
+    // Setter עבור alignment שמקבל מחרוזת וממיר לערך Enum
+    public void setAlignment(String alignment) {
+        if (alignment != null) {
+            try {
+                this.alignment = TextAlignment.valueOf(alignment.toUpperCase()); // המרה מ-String ל-Enum
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid alignment value: " + alignment);
+                this.alignment = TextAlignment.LEFT; // ערך ברירת מחדל במקרה של ערך לא תקין
+            }
+        } else {
+            this.alignment = null; // אם המחרוזת היא null, הגדר את alignment ל-null
+        }
     }
+
 
     // Getter and Setter עבור isWrapped
     public boolean isWrapped() {

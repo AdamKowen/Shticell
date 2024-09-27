@@ -170,6 +170,36 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         }
     }
 
+
+    public void setAlignment(String cell, String Ali)
+    {
+        Coordinate coordinate =  CoordinateCache.createCoordinateFromString(cell);
+        if (coordinate == null) {
+            throw new IllegalArgumentException("Could not create coordinate from string: " + cell);
+        }
+
+        Cell currentCell = currentSheet.getCell(coordinate);
+        if (currentCell != null)
+        {
+            currentSheet.getCell(coordinate).getStyle().setAlignment(Ali);
+        }
+    }
+
+
+    public void resetStyle(String cell)
+    {
+        Coordinate coordinate =  CoordinateCache.createCoordinateFromString(cell);
+        if (coordinate == null) {
+            throw new IllegalArgumentException("Could not create coordinate from string: " + cell);
+        }
+
+        Cell currentCell = currentSheet.getCell(coordinate);
+        if (currentCell != null)
+        {
+            currentSheet.getCell(coordinate).getStyle().setToDefault();
+        }
+    }
+
     // פונקציות נוספות לעבודה עם הגיליון
     // public void updateCell(...) { ... }
     // public void saveSheet(...) { ... }

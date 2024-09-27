@@ -23,6 +23,15 @@ public class Main extends Application {
             // הגדרת הסצנה
             primaryStage.setScene(scene);
 
+            // הגדרת ה-StyleClass (אם נדרש CSS ייחודי)
+            //root.getStyleClass().add("yourCssClassName"); // ניתן להחליף את 'yourCssClassName' בשם קובץ ה-CSS אם יש לך.
+
+
+            // הגדרת רוחב וגובה מינימלי לחלון
+            primaryStage.setMinWidth(600); // גודל מינימלי לרוחב
+            primaryStage.setMinHeight(500); // גודל מינימלי לגובה
+
+
             // הצגת החלון
             primaryStage.show();
         } catch(Exception e) {

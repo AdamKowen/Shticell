@@ -39,4 +39,6 @@ public interface SheetEngine {
 
     void setBackgrountColor(String cell, String color);
     void setFontColor(String cell, String color);
+    void setAlignment(String cell, String Ali);
+    void resetStyle(String cell);
 }

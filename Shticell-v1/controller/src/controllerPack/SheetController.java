@@ -115,6 +115,10 @@ public interface SheetController {
     Coordinate getDisplayedCellPosition(Coordinate originalCoord);
 
     void highlightDependencies();
+
+    void ChangeAlignment(String Ali);
+
+    void resetStyle();
 }
 
 

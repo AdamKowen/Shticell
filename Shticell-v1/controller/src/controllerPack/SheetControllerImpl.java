@@ -323,13 +323,12 @@ public class SheetControllerImpl implements SheetController {
     public void updateSheet(SheetDto sheetDto) {
         String backgroundColor;
         String fontColor;
+        String alignment;
         // ניקוי ה-GridPane הקיים
         sheetGridPane.getChildren().clear();
         sheetGridPane.setGridLinesVisible(false); // הצגת קווי ההפרדה
         sheetGridPane.setHgap(0); // מרווח אופקי אפס
         sheetGridPane.setVgap(0); // מרווח אנכי אפס
-
-
 
 
 
@@ -397,8 +396,6 @@ public class SheetControllerImpl implements SheetController {
 
             sheetGridPane.getRowConstraints().add(rowConstraints);
         }
-
-
 
 
 
@@ -523,10 +520,14 @@ public class SheetControllerImpl implements SheetController {
 
                     // **קבלת צבע הפונט מהתא**
                     fontColor = cell.getStyle().getTextColor(); // פונקציה שמחזירה את מחרוזת הצבע לפונט
+
+
+                    alignment = cell.getStyle().getAlignment();
                 }
                 else {
                     backgroundColor = "white";
                     fontColor = "black"; // צבע ברירת מחדל לפונט
+                    alignment  = "LEFT";
                 }
 
                 // הגדרת סגנון הרקע של התא עם הצבע שהתקבל
@@ -536,6 +537,18 @@ public class SheetControllerImpl implements SheetController {
                 // החלת צבע הפונט של התווית
                 label.setStyle("-fx-text-fill: " + fontColor + ";");
 
+
+                switch (alignment) {
+                    case "LEFT":
+                        label.setAlignment(Pos.CENTER_LEFT);
+                        break;
+                    case "CENTER":
+                        label.setAlignment(Pos.CENTER);
+                        break;
+                    case "RIGHT":
+                        label.setAlignment(Pos.CENTER_RIGHT);
+                        break;
+                }
 
 
 
@@ -1463,6 +1476,48 @@ public class SheetControllerImpl implements SheetController {
             }
         }
     }
+
+
+
+    public void ChangeAlignment(String Ali)
+    {
+        // קבלת העמודות והשורות שנבחרו
+        List<String> selectedColumns = getSelectedColumns();
+        List<Integer> selectedRows = getRowsInRange(startCoordinate, endCoordinate); // מניחים ש- startCoordinate ו- endCoordinate מייצגים את הטווח שנבחר
+
+        // מעבר על כל השורות והעמודות
+        for (Integer row : selectedRows) {
+            for (String column : selectedColumns) {
+                // יצירת מחרוזת המייצגת את התא, לדוגמה: "A1"
+                String cellReference = column + row;
+
+                sheetEngine.setAlignment(cellReference, Ali);
+            }
+        }
+
+        updateSheet(sheetEngine.getCurrentSheetDTO());
+    }
+
+
+    public void resetStyle()
+    {
+        // קבלת העמודות והשורות שנבחרו
+        List<String> selectedColumns = getSelectedColumns();
+        List<Integer> selectedRows = getRowsInRange(startCoordinate, endCoordinate); // מניחים ש- startCoordinate ו- endCoordinate מייצגים את הטווח שנבחר
+
+        // מעבר על כל השורות והעמודות
+        for (Integer row : selectedRows) {
+            for (String column : selectedColumns) {
+                // יצירת מחרוזת המייצגת את התא, לדוגמה: "A1"
+                String cellReference = column + row;
+
+                sheetEngine.resetStyle(cellReference);
+            }
+        }
+
+        updateSheet(sheetEngine.getCurrentSheetDTO());
+    }
+
 
 
 
