@@ -43,6 +43,7 @@ public interface SheetController {
 
     void updateSheet(SheetDto sheetDto);
 
+    int getLastUpdatedVersion();
 
     // החזרת הקואורדינטה של התא שנבחר
     Coordinate getSelectedCoordinate();
@@ -110,6 +111,10 @@ public interface SheetController {
      void ChangeBackground(String colorHex);
 
     void ChangeTextColor(String colorHex);
+
+    Coordinate getDisplayedCellPosition(Coordinate originalCoord);
+
+    void highlightDependencies();
 }
 
 

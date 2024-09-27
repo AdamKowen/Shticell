@@ -44,6 +44,9 @@ public class CellImpl implements Cell {
         return originalValue;
     }
 
+
+
+
     @Override
     public void setCellOriginalValue(String value, int currVersion) {
         if (!this.originalValue.equals(value)) //if value is different update
@@ -54,6 +57,10 @@ public class CellImpl implements Cell {
         this.originalValue = value;
 
     }
+
+
+
+
 
     @Override
     public EffectiveValue getEffectiveValue() {
@@ -77,7 +84,7 @@ public class CellImpl implements Cell {
         EffectiveValue newCreatedValue = expression.eval(sheet);
 
         if (effectiveValue != null){
-            if (newCreatedValue.getValue() != effectiveValue.getValue())
+            if (!newCreatedValue.getValue().equals(effectiveValue.getValue()))
             {
                 this.version = sheet.getVersion() + 1; // add one for new version
             }

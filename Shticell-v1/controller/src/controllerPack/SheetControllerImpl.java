@@ -63,7 +63,8 @@ public class SheetControllerImpl implements SheetController {
     // רשימה שמורה של הסדר האחרון המלא לפני ביצוע סינון
     private List<Integer> lastSortedOrderBeforeFiltering;
 
-
+    // מיפוי בין אינדקסי שורות מקוריים לאינדקסים מוצגים
+    Map<Integer, Integer> rowIndexMap;
 
     // קואורדינטה של התא שממנו התחלנו את הבחירה
     private Coordinate startCoordinate;
@@ -248,6 +249,9 @@ public class SheetControllerImpl implements SheetController {
         }
     }
 
+
+
+    /*
     // פונקציה שמחזירה את הקואורדינטה המקורית עבור תא GridPane
     private Coordinate getCoordinateForCell(Coordinate gridpaneCoordinate) {
         // קבלת השורה מה-GridPane
@@ -266,6 +270,8 @@ public class SheetControllerImpl implements SheetController {
             return CoordinateCache.createCoordinate(sortedRowOrder.get(0), column);
         }
     }
+
+     */
 
     @Override
     public void alignCells(Pos alignment) {
@@ -548,6 +554,16 @@ public class SheetControllerImpl implements SheetController {
             }
         }
 
+
+
+        rowIndexMap = new HashMap<>();
+        int originalRowIndex;
+        //map for linking where is a row in printing order
+        for (int displayedRowIndex = 0; displayedRowIndex < sortedRowOrder.size(); displayedRowIndex++) {
+            originalRowIndex = sortedRowOrder.get(displayedRowIndex);
+            rowIndexMap.put(originalRowIndex, displayedRowIndex + 1);
+        }
+
         sheetGridPane.setGridLinesVisible(true); // הצגת קווי ההפרדה
     }
 
@@ -669,6 +685,12 @@ public class SheetControllerImpl implements SheetController {
                 }
             }
         }
+
+        if (start == end)
+        {
+            highlightDependencies();
+        }
+
     }
 
 
@@ -875,6 +897,17 @@ public class SheetControllerImpl implements SheetController {
             return cell.getOriginalValue();
         }
         return ""; // this will
+    }
+
+
+    public int getLastUpdatedVersion()
+    {
+        CellDto cell = sheetEngine.getCellDTO(coordinateToString(getSelectedCoordinate()));
+        if(cell != null)
+        {
+            return cell.getVersion();
+        }
+        return 0; // this will
     }
 
 
@@ -1378,6 +1411,58 @@ public class SheetControllerImpl implements SheetController {
 
 
 
+
+
+
+    public Coordinate getDisplayedCellPosition(Coordinate originalCoord) {
+        // מיפוי בין אינדקסי שורות מקוריים לאינדקסים מוצגים
+
+        // קבלת האינדקסים המוצגים של השורה והעמודה
+        Integer displayedRowIndex = rowIndexMap.get(originalCoord.getRow());
+        Integer displayedColumnIndex = originalCoord.getColumn();
+
+        // אם השורה  לא מוצגת, מחזירים null
+        if (displayedRowIndex == null) {
+            return null;
+        }
+
+        // מחזירים את המיקום המוצג של התא
+        return CoordinateCache.createCoordinate(displayedRowIndex, displayedColumnIndex);
+
+    }
+
+
+
+    private void highlightDepCoordinate(Coordinate curr) {
+        Pane overlay = overlayMap.get(curr);
+        if (overlay != null) {
+            overlay.setBackground(new Background(new BackgroundFill(Color.web("lightblue", 0.5), CornerRadii.EMPTY, Insets.EMPTY)));
+        }
+    }
+
+    private void highlightInfCoordinate(Coordinate curr) {
+        Pane overlay = overlayMap.get(curr);
+        if (overlay != null) {
+            overlay.setBackground(new Background(new BackgroundFill(Color.web("lightgreen", 0.5), CornerRadii.EMPTY, Insets.EMPTY)));
+        }
+    }
+
+
+    public void highlightDependencies() {
+        CellDto cell = sheetEngine.getCellDTO(coordinateToString(getSelectedCoordinate()));
+        if (cell != null) {
+            List<Coordinate> dep = cell.getDependsOn();
+            List<Coordinate> inf = cell.getInfluencingOn();
+
+            for (Coordinate depCoord : dep) {
+                highlightDepCoordinate(getDisplayedCellPosition(depCoord));
+            }
+
+            for (Coordinate infCoord : inf) {
+                highlightInfCoordinate(getDisplayedCellPosition(infCoord));
+            }
+        }
+    }
 
 
 

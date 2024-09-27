@@ -61,6 +61,10 @@ public class Controller {
     @FXML
     private ComboBox<Object> versionComboBox;
 
+
+    @FXML
+    private ComboBox<Object> alignmentBox;
+
     //@FXML
     //private ScrollPane sheetScrollPane;
 
@@ -105,6 +109,10 @@ public class Controller {
     private Label selectedCellLabel;
 
     @FXML
+    private Label LastUpdate;
+
+
+    @FXML
     private ListView<String> colList; // ListView לרשימת העמודות
 
     private String draggedItem;  // נשמור את האיבר הנגרר
@@ -133,7 +141,7 @@ public class Controller {
                 // הצגת הקואורדינטות של התא הנבחר
                 selectedCoordinate = sheetComponentController.getSelectedCoordinate();
                 selectedCellLabel.setText("Selected cell: " + selectedCoordinate);
-
+                LastUpdate.setText("Last Update: Version " + sheetComponentController.getLastUpdatedVersion());
 
                 // **עדכון הסליידרים עם רוחב וגובה התא הנבחר**
                 double cellWidth = sheetComponentController.getCellWidth();
@@ -143,6 +151,7 @@ public class Controller {
                 colWidthSlider.setValue(cellWidth);
                 rowHeightSlider.setValue(cellHeight);
                 isProgrammaticChange = false;
+
 
 
                 // הגדרת המיקוד על תיבת הטקסט כך שהסמן יהיה בפנים
@@ -261,7 +270,7 @@ public class Controller {
 
         ObservableList<String> emptyList = FXCollections.observableArrayList();
         colList.setItems(emptyList);  // אתחול ה-ListView עם רשימה ריקה
-        addDragEvents(emptyList); // לרשימת מיון
+        //addDragEvents(emptyList); // לרשימת מיון
 
 
 
@@ -297,6 +306,15 @@ public class Controller {
         });
 
 
+
+
+
+        // הוספת אפשרויות ל-ComboBox
+        alignmentBox.getItems().addAll("Left", "Center", "Right");
+
+        // הגדרת ערך ברירת מחדל
+        alignmentBox.setValue("Left");
+
     }
 
 
@@ -315,6 +333,22 @@ public class Controller {
         sheetComponentController.ChangeTextColor(colorHex);
     }
 
+
+    @FXML
+    private void onAlignmentChange() {
+        String selectedAlignment = (String)alignmentBox.getValue();
+        switch (selectedAlignment) {
+            case "Left":
+                System.out.println("Text aligned to Left");
+                break;
+            case "Center":
+                System.out.println("Text aligned to Center");
+                break;
+            case "Right":
+                System.out.println("Text aligned to Right");
+                break;
+        }
+    }
 
 
     private String toHexString(Color color) {
@@ -439,6 +473,8 @@ public class Controller {
         alert.showAndWait();
     }
 
+
+/*
     private void addDragEvents(List<String> columns) {
         ObservableList<String> items = FXCollections.observableArrayList(columns);
         colList.setItems(items);
@@ -511,6 +547,10 @@ public class Controller {
             return cell;
         });
     }
+
+ */
+
+
 
 
 
