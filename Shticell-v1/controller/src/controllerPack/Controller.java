@@ -83,6 +83,9 @@ public class Controller {
     @FXML
     private GridPane hiddenItems; // ה-GridPane שהוספת
 
+    @FXML
+    private TextField rangeNameTextBox;
+
 
 
     @FXML
@@ -107,11 +110,17 @@ public class Controller {
 
 
     @FXML
+    private Button addOrDeleteRange;
+
+    @FXML
     private Label selectedCellLabel;
 
     @FXML
     private Label LastUpdate;
 
+
+    @FXML
+    private Label rangeErrorMassage;
 
     @FXML
     private ProgressBar taskProgressBar;
@@ -164,6 +173,11 @@ public class Controller {
                 // ממקם את הסמן בסוף הטקסט הקיים
                 cellInputContentTextField.positionCaret(cellInputContentTextField.getText().length());
 
+                listOfRanges.getSelectionModel().clearSelection();
+                rangeNameTextBox.clear();
+                addOrDeleteRange.setText("Add Selected");
+                rangeErrorMassage.setText("");
+
             } else {
                 cellInputContentTextField.setText("");
                 selectedCellLabel.setText("Selected cell: none");
@@ -195,6 +209,11 @@ public class Controller {
                 rowHeightSlider.setValue(avgCellHeight);
                 isProgrammaticChange = false;
 
+
+                listOfRanges.getSelectionModel().clearSelection();
+                rangeNameTextBox.clear();
+                addOrDeleteRange.setText("Add Selected");
+                rangeErrorMassage.setText("");
             } else {
                 selectedCellLabel.setText("No range selected");
             }
@@ -285,6 +304,9 @@ public class Controller {
         listOfRanges.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 sheetComponentController.highlightFunctionRange(newValue); // קריאה לפונקציה שמדגישה את הטווח
+                rangeNameTextBox.setText(newValue);
+                rangeErrorMassage.setText("");
+                addOrDeleteRange.setText("Delete Range");
             }
         });
 
@@ -327,6 +349,38 @@ public class Controller {
     }
 
 
+
+    @FXML
+    private void handleAddOrDeleteRange() {
+        String buttonText = addOrDeleteRange.getText();
+        String rangeName = rangeNameTextBox.getText().trim();
+
+        if (rangeName.isEmpty()) {
+            // If the range name is empty, show an error
+            rangeErrorMassage.setText("Please enter a valid range name.");
+            return;
+        }
+
+        try {
+            if (buttonText.equals("Delete Range")) {
+                // Call the delete range function
+                sheetComponentController.deleteRange(rangeName);
+                ObservableList<String> rangesList = listOfRanges.getItems();
+                rangesList.clear();
+                listOfRanges.getItems().addAll(sheetComponentController.getRanges().keySet());
+                rangeErrorMassage.setText("Range '" + rangeName + "' deleted");
+            } else if (buttonText.equals("Add Selected")) {
+                // Call the add range function with the selected coordinates
+                sheetComponentController.addRange(rangeName);
+                rangeErrorMassage.setText("Range '" + rangeName + "' added successfully.");
+                listOfRanges.getItems().addAll(rangeName);
+
+            }
+        } catch (Exception e) {
+            // Handle exceptions and display error messages
+            rangeErrorMassage.setText("Error: " + e.getMessage());
+        }
+    }
 
 
     @FXML
@@ -397,7 +451,7 @@ public class Controller {
 
     }
 
-
+/*
     // אתחול הטאבים לפי העמודות שנבחרו והכנסת הערכים
     public void initializeTabsForSelectedColumns(Map<String, List<String>> columnData, Coordinate topLeft, Coordinate bottomRight) {
         columnTabPane.getTabs().clear(); // ניקוי הטאבים הקיימים
@@ -447,6 +501,51 @@ public class Controller {
 
     }
 
+ */
+
+
+    // אתחול הטאבים לפי העמודות שנבחרו והכנסת הערכים
+    public void initializeTabsForSelectedColumns(Map<String, List<String>> columnData, Coordinate topLeft, Coordinate bottomRight) {
+        columnTabPane.getTabs().clear(); // ניקוי הטאבים הקיימים
+
+        for (String columnName : columnData.keySet()) {
+            // יצירת טאב חדש לעמודה
+            Tab tab = new Tab(columnName);
+
+            // יצירת VBox להחזיק את ה-CheckBoxes עבור כל הערכים בעמודה זו
+            VBox vbox = new VBox();
+
+            // מעבר על הערכים הייחודיים של העמודה והוספתם ל-VBox עם CheckBox מסומן
+            List<String> uniqueValues = columnData.get(columnName);
+            for (String value : uniqueValues) {
+                CheckBox checkBox = new CheckBox(value);
+                checkBox.setSelected(true); // ברירת מחדל: כל הערכים מסומנים
+
+                checkBox.setOnAction(event -> {
+                    if (checkBox.isSelected()) {
+                        // כאשר המשתמש מסמן מחדש את הערך, נחזיר את השורות המתאימות
+                        sheetComponentController.addRowsForValue(columnName, value, topLeft, bottomRight);
+                    } else {
+                        sheetComponentController.removeRowsForValue(columnName, value, topLeft, bottomRight);
+                    }
+                });
+
+                // הוספת CheckBox ל-VBox
+                vbox.getChildren().add(checkBox);
+            }
+
+            // הוספת VBox ל-ScrollPane כדי לאפשר גלילה
+            ScrollPane scrollPane = new ScrollPane(vbox);
+            scrollPane.setFitToWidth(true); // מוודא שה-ScrollPane יתאים לרוחב
+
+            // הוספת ה-ScrollPane לטאב
+            tab.setContent(scrollPane);
+
+            // הוספת הטאב ל-TabPane
+            columnTabPane.getTabs().add(tab);
+        }
+    }
+
 
 
 
@@ -455,7 +554,7 @@ public class Controller {
         colList.getItems().setAll(columns);
     }
 
-
+/*
     @FXML
     private void deleteSelectedRange() {
         // קבלת הפריט שנבחר מהרשימה
@@ -480,6 +579,8 @@ public class Controller {
         }
 
     }
+
+ */
 
 
     private void showAlert(String title, String message) {

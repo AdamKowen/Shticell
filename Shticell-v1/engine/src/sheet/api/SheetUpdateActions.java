@@ -1,6 +1,7 @@
 package sheet.api;
 import sheet.cell.api.Cell;
 import sheet.coordinate.api.Coordinate;
+import sheet.range.api.Range;
 
 
 public interface SheetUpdateActions {
@@ -33,5 +34,7 @@ public interface SheetUpdateActions {
     void updateVersion();
 
     void removeRange(String name);
+
+    void addRange(String name, Range range);
 
 }

@@ -237,8 +237,12 @@ public class SheetImpl implements Sheet {
     }
 
     public void addRange(String name, Range range) {
-        ranges.put(name,range);
+        if (ranges.containsKey(name)) {
+            throw new RuntimeException("Name already in use");
+        }
+        ranges.put(name, range);
     }
+
 
     public Range getRange(String name) {
         return ranges.get(name);
@@ -246,7 +250,7 @@ public class SheetImpl implements Sheet {
 
     public void removeRange(String name) {
         if(!checkDeleteRange(name))
-            throw new RuntimeException("cant delete Range, there are Cells that are using it");
+            throw new RuntimeException("Range in active use");
 
         ranges.remove(name);
     }

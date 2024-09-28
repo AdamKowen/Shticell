@@ -33,9 +33,11 @@ public interface SheetEngine {
 
     boolean isCellEmpty(String str);
 
-    void deleteRange(String str);
+    void deleteRange(String str) throws Exception;
 
     Map<String, List<String>> getUniqueValuesInRange(List<Integer> rows, List<String> columns);
+
+    void addRange(String str, String from, String to) throws Exception;
 
     void setBackgrountColor(String cell, String color);
     void setFontColor(String cell, String color);

@@ -29,8 +29,8 @@ public class Main extends Application {
 
 
             // הגדרת רוחב וגובה מינימלי לחלון
-            primaryStage.setMinWidth(600); // גודל מינימלי לרוחב
-            primaryStage.setMinHeight(500); // גודל מינימלי לגובה
+            primaryStage.setMinWidth(800); // גודל מינימלי לרוחב
+            primaryStage.setMinHeight(600); // גודל מינימלי לגובה
 
 
             // הצגת החלון

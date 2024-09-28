@@ -80,7 +80,9 @@ public interface SheetController {
 
     void highlightFunctionRange(String rangeName);
 
-    boolean deleteRange(String rangeName);
+    void deleteRange(String rangeName) throws Exception;
+
+    void addRange(String rangeName) throws Exception;
 
     List<String> getSelectedColumns();
 

@@ -770,6 +770,8 @@ public class SheetControllerImpl implements SheetController {
 
 
 
+
+
     // פונקציה שמחזירה את ה-StackPane לפי קואורדינטות
     private StackPane getCellPaneByCoordinate(int row, int col) {
         for (Node node : sheetGridPane.getChildren()) {
@@ -1028,11 +1030,24 @@ public class SheetControllerImpl implements SheetController {
     }
 
 
-    //need to update with correct highlight
-    public boolean deleteRange(String rangeName)
-    {
-        sheetEngine.deleteRange(rangeName);
-        return true;
+    // Updated method to propagate exceptions
+    public void deleteRange(String rangeName) throws Exception {
+        try {
+            sheetEngine.deleteRange(rangeName);
+        } catch (Exception e) {
+            // Rethrow the exception to allow it to propagate
+            throw e;
+        }
+    }
+
+    public void addRange(String rangeName) throws Exception{
+        try {
+            sheetEngine.addRange(rangeName ,coordinateToString(selectedRange.get().getTopLeft()), coordinateToString(selectedRange.get().getBottomRight()));
+        } catch (Exception e) {
+            // Rethrow the exception to allow it to propagate
+            throw e;
+        }
+
     }
 
 

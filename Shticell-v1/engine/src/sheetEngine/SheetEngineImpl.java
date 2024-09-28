@@ -15,6 +15,9 @@ import sheet.cell.api.Cell;
 import sheet.cell.impl.CellImpl;
 import sheet.coordinate.api.Coordinate;
 import sheet.coordinate.impl.CoordinateCache;
+import sheet.range.api.Range;
+import sheet.range.boundaries.Boundaries;
+import sheet.range.impl.RangeImpl;
 import sheetCalculator.SheetCalculatorImpl;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -130,9 +133,26 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
 
 
     @Override
-    public void deleteRange(String str) {
-        currentSheet.removeRange(str);
+    public void deleteRange(String str) throws Exception {
+        try {
+            currentSheet.removeRange(str);
+        } catch (Exception e) {
+            // העברת החריגה הלאה
+            throw e;
+        }
     }
+
+
+    @Override
+    public void addRange(String str, String from, String to) throws Exception {
+        try {
+            currentSheet.addRange(str, new RangeImpl(new Boundaries(from, to), str));
+        } catch (Exception e) {
+            // העברת החריגה הלאה
+            throw e;
+        }
+    }
+
 
     @Override
    public Map<String, List<String>> getUniqueValuesInRange(List<Integer> rows, List<String> columns)
