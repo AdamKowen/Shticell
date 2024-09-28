@@ -1,11 +1,5 @@
 package controllerPack;
-import dto.CellDto;
-import dto.SheetDto;
-import javafx.animation.*;
 import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -13,7 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.ClipboardContent;
@@ -23,17 +16,11 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
-import javafx.util.Duration;
 import sheet.coordinate.api.Coordinate;
 import sheet.coordinate.impl.CoordinateCache;
-import javafx.scene.input.DragEvent;
-import sheetEngine.SheetEngine;
-import sheetEngine.SheetEngineImpl;
 
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,6 +31,8 @@ public class Controller {
     private Coordinate selectedCoordinate = null;
     private List<String> currentColsSelected;
     private boolean isProgrammaticChange = false;
+    private Coordinate topLeft;
+    private Coordinate bottomRight;
 
     @FXML
     private Button LoadButton;
@@ -57,7 +46,8 @@ public class Controller {
     @FXML
     private SheetController sheetVersionController;
 
-
+    @FXML
+    private Button resetFiltersButton;
 
     @FXML
     private ComboBox<Object> versionComboBox;
@@ -110,6 +100,14 @@ public class Controller {
 
 
     @FXML
+    private Button reSelect;
+
+    @FXML
+    private Button updateValueButton;
+
+
+
+    @FXML
     private Button addOrDeleteRange;
 
     @FXML
@@ -121,6 +119,11 @@ public class Controller {
 
     @FXML
     private Label rangeErrorMassage;
+
+
+    @FXML
+    private Label errorSelectMassage;
+
 
     @FXML
     private ProgressBar taskProgressBar;
@@ -140,6 +143,18 @@ public class Controller {
     private ColorPicker backgroundPicker;
     @FXML
     private ColorPicker fontPicker;
+
+    @FXML
+    private TabPane mainTabPane;
+
+    @FXML
+    private Tab currentSheetTab;
+
+    @FXML
+    private Tab prevSheetTab;
+
+    @FXML
+    private VBox topPane;
 
 
     @FXML
@@ -191,11 +206,11 @@ public class Controller {
         // הוספת Listener לטווח תאים
         sheetComponentController.selectedRangeProperty().addListener((observable, oldRange, newRange) -> {
             if (newRange != null) {
-                Coordinate topLeft = newRange.getTopLeft();
-                Coordinate bottomRight = newRange.getBottomRight();
-                selectedCellLabel.setText("Selected range: " + topLeft + " to " + bottomRight);
-                topLeftBox.setText(topLeft.toString());
-                bottomRightBox.setText(bottomRight.toString());
+                topLeft = newRange.getTopLeft();
+                bottomRight = newRange.getBottomRight();
+                selectedCellLabel.setText("Selected range: " + sheetComponentController.actualCellPlacedOnGrid(topLeft) + " to " + sheetComponentController.actualCellPlacedOnGrid(bottomRight));
+                topLeftBox.setText(sheetComponentController.actualCellPlacedOnGrid(topLeft).toString());
+                bottomRightBox.setText(sheetComponentController.actualCellPlacedOnGrid(bottomRight).toString());
 
                 updateColumnList(sheetComponentController.getSelectedColumns());
                 initializeTabsForSelectedColumns(sheetComponentController.getUniqueValuesInRange(topLeft, bottomRight), topLeft, bottomRight);
@@ -289,7 +304,13 @@ public class Controller {
             if (selectedIndex != -1) { // ודא שמשהו נבחר
                 // טען את הגרסה שנבחרה לפי האינדקס
                 sheetVersionController.updateSheet(sheetComponentController.getVersionDto(selectedIndex+1)); // לדוגמה, טען את הגרסה שנבחרה
+
+
+                // החלף אוטומטית לטאב של הגרסה הקודמת
+                mainTabPane.getSelectionModel().select(prevSheetTab);
             }
+
+
         });
 
         ObservableList<String> emptyList = FXCollections.observableArrayList();
@@ -297,8 +318,12 @@ public class Controller {
         //addDragEvents(emptyList); // לרשימת מיון
 
 
-
-
+        mainTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+            if (newTab == currentSheetTab) {
+                onCurrentSheetTabSelected();
+            }
+            // ניתן להוסיף תנאים נוספים אם צריך
+        });
 
 
         listOfRanges.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -346,11 +371,88 @@ public class Controller {
 
 
         taskProgressBar.setVisible(false);
+
+
+
+
+
+        mainTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+            if (newTab == prevSheetTab) {
+                // Disable controls when Previous Version Sheet tab is selected
+                setControlsDisabled(true);
+            } else {
+                setControlsDisabled(false);
+            }
+        });
+
+        sheetVersionController.setReadOnly(true);
+
+
+
+    }
+
+
+    @FXML
+    private void handleUpdate() {
+        // קבלת התא הנבחר
+        Coordinate selectedCoordinate = sheetComponentController.getSelectedCoordinate();
+
+        // קבלת הטקסט מהתיבה
+        String newValue = cellInputContentTextField.getText().trim();
+
+        // בדיקה אם יש תא נבחר וטקסט לא ריק
+        if (selectedCoordinate != null && !newValue.isEmpty()) {
+            try {
+                // עדכון התוכן של התא
+                sheetComponentController.updateCellContent(selectedCoordinate, newValue);
+
+                // עדכון רשימת הגרסאות ב-ComboBox
+                versionComboBox.getItems().clear();
+
+                // קבלת רשימת הגרסאות
+                List<Integer> versions = sheetComponentController.getVersionList();
+
+                // בניית מחרוזות הגרסאות והוספתן ל-ComboBox
+                for (int i = 0; i < versions.size(); i++) {
+                    int versionNumber = i + 1; // מספר הגרסה מתחיל מ-1
+                    int changes = versions.get(i); // מספר השינויים לאותה גרסה
+                    String versionText = "Version " + versionNumber + " - " + changes + " changes";
+
+                    versionComboBox.getItems().add(versionText);
+                }
+
+                // אפס את הבחירה ב-ComboBox כדי להחזיר את הטקסט ההתחלתי
+                versionComboBox.getSelectionModel().clearSelection();
+                versionComboBox.setValue(null);
+            } catch (Exception e) {
+                // טיפול בשגיאות אם משהו משתבש
+                //showAlert("שגיאה", "לא ניתן לעדכן את התא: " + e.getMessage());
+            }
+        } else {
+            // אין מה לעדכן - אפשר לבחור להציג הודעה או פשוט לעשות כלום
+            // לדוגמה, ניתן להציג הודעה קצרה:
+            // showAlert("שגיאה", "לא נבחר תא או אין טקסט לעדכון.");
+        }
+    }
+
+
+
+    private void onCurrentSheetTabSelected() {
     }
 
 
 
     @FXML
+    private void reSelectAction() {
+        try {
+            sheetComponentController.reSelect(topLeftBox.getText(), bottomRightBox.getText());
+        } catch (Exception e) {
+            errorSelectMassage.setText(e.getMessage());
+        }
+    }
+
+
+        @FXML
     private void handleAddOrDeleteRange() {
         String buttonText = addOrDeleteRange.getText();
         String rangeName = rangeNameTextBox.getText().trim();
@@ -413,6 +515,35 @@ public class Controller {
                 sheetComponentController.ChangeAlignment("RIGHT");
                 break;
         }
+    }
+
+
+    @FXML
+    private void handleResetFilters() {
+        // מעבר על כל הטאבים במערכת הסינון
+        for (Tab tab : columnTabPane.getTabs()) {
+            // קבלת ה-ScrollPane מתוך הטאב
+            ScrollPane scrollPane = (ScrollPane) tab.getContent();
+
+            // קבלת ה-VBox מתוך ה-ScrollPane
+            VBox vbox = (VBox) scrollPane.getContent();
+
+            // מעבר על כל ה-CheckBoxes בתוך ה-VBox
+            for (Node node : vbox.getChildren()) {
+                if (node instanceof CheckBox) {
+                    CheckBox checkBox = (CheckBox) node;
+
+                    // אם ה-CheckBox אינו מסומן, נסמן אותו ונתחיל את הסינון מחדש
+                    if (!checkBox.isSelected()) {
+                        checkBox.setSelected(true);
+
+                        // נקרא לפונקציה שמחזירה את השורות המתאימות
+                        sheetComponentController.addRowsForValue(tab.getText(), checkBox.getText(), topLeft, bottomRight);
+                    }
+                }
+            }
+        }
+
     }
 
 
@@ -502,6 +633,32 @@ public class Controller {
     }
 
  */
+
+
+
+    private void setControlsDisabled(boolean disabled) {
+        cellInputContentTextField.setDisable(disabled);
+        alignmentBox.setDisable(disabled);
+        rowHeightSlider.setDisable(disabled);
+        colWidthSlider.setDisable(disabled);
+        addOrDeleteRange.setDisable(disabled);
+        sort.setDisable(disabled);
+        resetsort.setDisable(disabled);
+        backgroundPicker.setDisable(disabled);
+        fontPicker.setDisable(disabled);
+        colList.setDisable(disabled);
+        listOfRanges.setDisable(disabled);
+        rangeNameTextBox.setDisable(disabled);
+        topLeftBox.setDisable(disabled);
+        bottomRightBox.setDisable(disabled);
+        accordion.setDisable(disabled);
+        columnTabPane.setDisable(disabled);
+        updateValueButton.setDisable(disabled);
+        reSelect.setDisable(disabled);
+        // Ensure the versionComboBox remains enabled
+        versionComboBox.setDisable(false);
+    }
+
 
 
     // אתחול הטאבים לפי העמודות שנבחרו והכנסת הערכים

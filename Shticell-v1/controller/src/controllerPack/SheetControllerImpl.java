@@ -16,6 +16,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -92,6 +93,7 @@ public class SheetControllerImpl implements SheetController {
     private double scrollDirectionX = 0;
     private double scrollDirectionY = 0;
 
+    private boolean isReadOnly = false;
 
 
     @FXML
@@ -109,7 +111,10 @@ public class SheetControllerImpl implements SheetController {
                 newSelectedLabel.setId("selected-cell");
 
                 // קבלת הקואורדינטה של התא הנבחר והצבתה ב-selectedCoordinate
-                selectedCoordinate = getCoordinateForLabel(newSelectedLabel);  // עדכון הקואורדינטה עם השורה המקורית
+                if(!isReadOnly)
+                {
+                    selectedCoordinate = getCoordinateForLabel(newSelectedLabel);  // עדכון הקואורדינטה עם השורה המקורית
+                }
             }
         });
 
@@ -146,6 +151,7 @@ public class SheetControllerImpl implements SheetController {
 
 
     private void handleMouseMove(MouseEvent event) {
+
         Bounds viewportBounds = sheetScrollPane.getViewportBounds();
         Bounds contentBounds = sheetScrollPane.getContent().getLayoutBounds();
 
@@ -203,6 +209,7 @@ public class SheetControllerImpl implements SheetController {
                 }
             }
         }
+
     }
 
     private int getColumnIndexAtX(double x) {
@@ -331,6 +338,7 @@ public class SheetControllerImpl implements SheetController {
         sheetGridPane.setVgap(0); // מרווח אנכי אפס
 
 
+        startCoordinate = CoordinateCache.createCoordinate(1,1);
 
 
 
@@ -593,7 +601,10 @@ public class SheetControllerImpl implements SheetController {
             startCoordinate = coordinate; // שמירת קואורדינטת התחלה
             endCoordinate = coordinate;
             //setSelectedRange(startCoordinate, endCoordinate);
-            selectedCell.set(getLabelByCoordinate(startCoordinate.getRow(), startCoordinate.getColumn()));
+            if(!isReadOnly)
+            {
+                selectedCell.set(getLabelByCoordinate(startCoordinate.getRow(), startCoordinate.getColumn()));
+            }
             highlightSelectedRange(startCoordinate, endCoordinate);
             System.out.println("Mouse pressed at: " + startCoordinate.getRow() + ", " + startCoordinate.getColumn());
         });
@@ -615,7 +626,11 @@ public class SheetControllerImpl implements SheetController {
                     selectedCell.set(null);
                     setSelectedRange(startCoordinate, endCoordinate);
                 } else {
-                    selectedCell.set(getLabelByCoordinate(startCoordinate.getRow(), startCoordinate.getColumn()));
+
+                    if(!isReadOnly)
+                    {
+                        selectedCell.set(getLabelByCoordinate(startCoordinate.getRow(), startCoordinate.getColumn()));
+                    }
                 }
             }
         });
@@ -626,7 +641,10 @@ public class SheetControllerImpl implements SheetController {
             isDragging = false;
             highlightSelectedRange(startCoordinate, endCoordinate); // סימון הטווח שנבחר
             if (startCoordinate == endCoordinate) {
-                selectedCell.set(getLabelByCoordinate(startCoordinate.getRow(), startCoordinate.getColumn()));
+                if(!isReadOnly)
+                {
+                    selectedCell.set(getLabelByCoordinate(startCoordinate.getRow(), startCoordinate.getColumn()));
+                }
                 selectedCoordinate = startCoordinate;
             } else {
                 selectedCell.set(null);
@@ -1487,17 +1505,21 @@ public class SheetControllerImpl implements SheetController {
 
 
     public void highlightDependencies() {
-        CellDto cell = sheetEngine.getCellDTO(coordinateToString(getSelectedCoordinate()));
-        if (cell != null) {
-            List<Coordinate> dep = cell.getDependsOn();
-            List<Coordinate> inf = cell.getInfluencingOn();
 
-            for (Coordinate depCoord : dep) {
-                highlightDepCoordinate(getDisplayedCellPosition(depCoord));
-            }
+        if(!isReadOnly)
+        {
+            CellDto cell = sheetEngine.getCellDTO(coordinateToString(getSelectedCoordinate()));
+            if (cell != null) {
+                List<Coordinate> dep = cell.getDependsOn();
+                List<Coordinate> inf = cell.getInfluencingOn();
 
-            for (Coordinate infCoord : inf) {
-                highlightInfCoordinate(getDisplayedCellPosition(infCoord));
+                for (Coordinate depCoord : dep) {
+                    highlightDepCoordinate(getDisplayedCellPosition(depCoord));
+                }
+
+                for (Coordinate infCoord : inf) {
+                    highlightInfCoordinate(getDisplayedCellPosition(infCoord));
+                }
             }
         }
     }
@@ -1544,6 +1566,45 @@ public class SheetControllerImpl implements SheetController {
     }
 
 
+
+
+    // מתודה להגדרת קריאה בלבד
+    public void setReadOnly(boolean readOnly) {
+        for (Node node : sheetGridPane.getChildren()) {
+            node.setMouseTransparent(readOnly); // מבטל אינטראקציות עכבר
+        }
+        isReadOnly = true;
+    }
+
+
+
+
+
+    // מתודה להגדרת קריאה בלבד
+    public Coordinate actualCellPlacedOnGrid(Coordinate placeOnGrid) {
+        return (CoordinateCache.createCoordinate(sortedRowOrder.get(placeOnGrid.getRow() - 1), placeOnGrid.getColumn()));
+    }
+
+
+    public void reSelect(String Topleft, String Bottomright) throws Exception{
+        Coordinate topLeftCoor = CoordinateCache.createCoordinateFromString(Topleft);
+        Coordinate bottomRightCoor = CoordinateCache.createCoordinateFromString(Bottomright);
+
+
+
+        topLeftCoor = getDisplayedCellPosition(topLeftCoor);
+        bottomRightCoor = getDisplayedCellPosition(bottomRightCoor);
+
+
+        if(topLeftCoor!= null && bottomRightCoor != null) {
+            setSelectedRange(topLeftCoor, bottomRightCoor); //sets it as it is shown on grid
+            highlightSelectedRange(topLeftCoor,bottomRightCoor );
+        }
+        else {
+            throw new IllegalArgumentException("One or both not on grid");
+        }
+
+    };
 
 
 }

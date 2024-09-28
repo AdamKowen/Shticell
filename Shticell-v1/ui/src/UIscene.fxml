@@ -24,7 +24,7 @@
 
 <BorderPane maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllerPack.Controller">
    <top>
-      <VBox prefHeight="108.0">
+      <VBox fx:id="topPane" prefHeight="108.0">
          <children>
             <GridPane fx:id="loadRow" prefHeight="96.0" prefWidth="908.0">
               <columnConstraints>
@@ -90,7 +90,7 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <Button mnemonicParsing="false" prefHeight="34.0" prefWidth="125.0" text="Update" GridPane.columnIndex="3" GridPane.vgrow="NEVER">
+                        <Button fx:id="updateValueButton" mnemonicParsing="false" onAction="#handleUpdate" prefHeight="34.0" prefWidth="125.0" text="Update" GridPane.columnIndex="3" GridPane.vgrow="NEVER">
                            <GridPane.margin>
                               <Insets left="5.0" right="5.0" />
                            </GridPane.margin>
@@ -108,18 +108,17 @@
       </VBox>
    </top>
    <center>
-      <TabPane maxHeight="Infinity" maxWidth="Infinity" prefHeight="480.0" prefWidth="791.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
+      <TabPane fx:id="mainTabPane" maxHeight="Infinity" maxWidth="Infinity" prefHeight="480.0" prefWidth="791.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
         <tabs>
-          <Tab text="Current Sheet">
+          <Tab fx:id="currentSheetTab" text="Current Sheet">
                <content>
                     <fx:include fx:id="sheetComponent" maxHeight="Infinity" maxWidth="Infinity" source="sheet.fxml" />
                </content>
             </Tab>
-          <Tab text="Previous Version Sheet">
-              <content>
+          <Tab fx:id="prevSheetTab" text="Previous Version Sheet">
+               <content>
                   <fx:include fx:id="sheetVersion" source="sheet.fxml" />
-              </content>
-          </Tab>
+               </content></Tab>
         </tabs>
       </TabPane>
    </center>
@@ -257,7 +256,7 @@
                                         </Tab>
                                       </tabs>
                                     </TabPane>
-                                    <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="116.0" text="Reset" GridPane.rowIndex="1" />
+                                    <Button fx:id="resetFiltersButton" mnemonicParsing="false" onAction="#handleResetFilters" prefHeight="26.0" prefWidth="116.0" text="Reset" GridPane.rowIndex="1" />
                                  </children>
                               </GridPane>
                            </content>
@@ -317,11 +316,12 @@
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
-                      <RowConstraints maxHeight="92.62725830078125" minHeight="10.0" prefHeight="69.97528076171875" vgrow="NEVER" />
-                      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="43.235107421875" prefHeight="44.02471923828125" vgrow="ALWAYS" />
+                      <RowConstraints maxHeight="92.62725830078125" minHeight="10.0" prefHeight="70.0" vgrow="NEVER" />
+                      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="28.5" prefHeight="37.5" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="6.5" prefHeight="17.5" vgrow="ALWAYS" />
                     </rowConstraints>
                      <children>
-                        <Button mnemonicParsing="false" prefHeight="29.0" prefWidth="100.0" text="re-select" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                        <Button fx:id="reSelect" mnemonicParsing="false" onAction="#reSelectAction" prefHeight="29.0" prefWidth="100.0" text="re-select" GridPane.rowIndex="1" GridPane.valignment="TOP">
                            <GridPane.margin>
                               <Insets left="15.0" top="4.0" />
                            </GridPane.margin></Button>
@@ -346,18 +346,23 @@
                                     <Insets left="20.0" />
                                  </GridPane.margin>
                               </Label>
-                              <TextField fx:id="topLeftBox" prefHeight="9.0" prefWidth="6.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                              <TextField fx:id="bottomRightBox" prefHeight="9.0" prefWidth="6.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <GridPane.margin>
                                     <Insets right="20.0" />
                                  </GridPane.margin>
                               </TextField>
-                              <TextField fx:id="bottomRightBox" alignment="BOTTOM_LEFT" prefHeight="26.0" prefWidth="63.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <TextField fx:id="topLeftBox" alignment="BOTTOM_LEFT" prefHeight="26.0" prefWidth="63.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets right="20.0" />
                                  </GridPane.margin>
                               </TextField>
                            </children>
                         </GridPane>
+                        <Label fx:id="errorSelectMassage" prefHeight="17.0" prefWidth="136.0" GridPane.rowIndex="2">
+                           <GridPane.margin>
+                              <Insets left="15.0" />
+                           </GridPane.margin>
+                        </Label>
                      </children>
                      <GridPane.margin>
                         <Insets />

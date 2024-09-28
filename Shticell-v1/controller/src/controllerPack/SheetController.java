@@ -121,6 +121,12 @@ public interface SheetController {
     void ChangeAlignment(String Ali);
 
     void resetStyle();
+
+    void setReadOnly(boolean readOnly);
+
+    Coordinate actualCellPlacedOnGrid(Coordinate placeOnGrid);
+
+    void reSelect(String Topleft, String Bottomright) throws Exception;
 }
 
 
