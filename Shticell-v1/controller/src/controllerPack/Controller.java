@@ -106,12 +106,14 @@ public class Controller {
     private Button updateValueButton;
 
 
-
     @FXML
     private Button addOrDeleteRange;
 
     @FXML
     private Label selectedCellLabel;
+
+    @FXML
+    private Label cellUpdateError;
 
     @FXML
     private Label LastUpdate;
@@ -192,6 +194,8 @@ public class Controller {
                 rangeNameTextBox.clear();
                 addOrDeleteRange.setText("Add Selected");
                 rangeErrorMassage.setText("");
+                cellUpdateError.setText("");
+                errorSelectMassage.setText("");
 
             } else {
                 cellInputContentTextField.setText("");
@@ -229,6 +233,8 @@ public class Controller {
                 rangeNameTextBox.clear();
                 addOrDeleteRange.setText("Add Selected");
                 rangeErrorMassage.setText("");
+                cellUpdateError.setText("");
+                errorSelectMassage.setText("");
             } else {
                 selectedCellLabel.setText("No range selected");
             }
@@ -245,7 +251,13 @@ public class Controller {
                 Coordinate selectedCoordinate = sheetComponentController.getSelectedCoordinate();
                 if (selectedCoordinate != null) {
                     String newValue = cellInputContentTextField.getText();
-                    sheetComponentController.updateCellContent(selectedCoordinate, newValue);
+
+                    try{
+                        sheetComponentController.updateCellContent(selectedCoordinate, newValue);
+                        cellUpdateError.setText("");
+                    }catch(Exception e){
+                        cellUpdateError.setText(e.getMessage());
+                    }
 
                     versionComboBox.getItems().clear();
                     // קבלת רשימת הגרסאות
@@ -404,10 +416,12 @@ public class Controller {
         if (selectedCoordinate != null && !newValue.isEmpty()) {
             try {
                 // עדכון התוכן של התא
+
                 sheetComponentController.updateCellContent(selectedCoordinate, newValue);
 
                 // עדכון רשימת הגרסאות ב-ComboBox
                 versionComboBox.getItems().clear();
+                cellUpdateError.setText("");
 
                 // קבלת רשימת הגרסאות
                 List<Integer> versions = sheetComponentController.getVersionList();
@@ -425,8 +439,7 @@ public class Controller {
                 versionComboBox.getSelectionModel().clearSelection();
                 versionComboBox.setValue(null);
             } catch (Exception e) {
-                // טיפול בשגיאות אם משהו משתבש
-                //showAlert("שגיאה", "לא ניתן לעדכן את התא: " + e.getMessage());
+                cellUpdateError.setText(e.getMessage());
             }
         } else {
             // אין מה לעדכן - אפשר לבחור להציג הודעה או פשוט לעשות כלום
