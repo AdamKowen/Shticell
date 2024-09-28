@@ -23,13 +23,7 @@ public class AbsExpression implements Expression {
         EffectiveValue argValue = arg.eval(sheet);
 
         if(!argValue.getCellType().equals(CellType.NUMERIC)){
-            if (arg.doesContainRef())
-            {
-                return new EffectiveValueImpl(CellType.STRING, "NaN"); //in the future a user can fix the problem
-            }
-            else{
-                throw new IllegalArgumentException("Invalid argument types for ABS function. Expected NUMERIC, but got " + argValue.getCellType());
-            }
+            return new EffectiveValueImpl(CellType.STRING, "NaN"); //in the future a user can fix the problem
         }
 
         double result = argValue.extractValueWithExpectation(Double.class);

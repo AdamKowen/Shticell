@@ -32,11 +32,7 @@ public class SubExpression implements Expression {
         // בדיקת סוגי הנתונים
         if (!sourceEffectiveValue.getCellType().equals(CellType.STRING) || !startEffectiveValue.getCellType().equals(CellType.NUMERIC) || !finishEffectiveValue.getCellType().equals(CellType.NUMERIC))
         {
-            if (checkValidation(sourceEffectiveValue, startEffectiveValue, finishEffectiveValue)) {
-                return new EffectiveValueImpl(CellType.STRING, "!UNDEFINED!");
-            } else {
-                throw new IllegalArgumentException("Invalid argument types for SUB function. Expected STRING and two NUMERIC, but got " + sourceEffectiveValue.getCellType() + " and " + startEffectiveValue.getCellType() + ", " + finishEffectiveValue.getCellType());
-            }
+            return new EffectiveValueImpl(CellType.STRING, "!UNDEFINED!");
         }
 
         Double startD = startEffectiveValue.extractValueWithExpectation(Double.class);

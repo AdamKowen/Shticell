@@ -25,11 +25,7 @@ public class TimesExpression implements Expression {
         EffectiveValue rightValue = right.eval(sheet);
 
         if (!leftValue.getCellType().equals(CellType.NUMERIC) || !rightValue.getCellType().equals(CellType.NUMERIC)) {
-            if (checkValidation(leftValue, rightValue)) {
-                return new EffectiveValueImpl(CellType.STRING, "NaN");
-            } else {
-                throw new IllegalArgumentException("Invalid argument types for TIMES function. Expected NUMERIC, but got " + leftValue.getCellType() + " and " + rightValue.getCellType());
-            }
+            return new EffectiveValueImpl(CellType.STRING, "NaN");
         }
 
 

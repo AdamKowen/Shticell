@@ -27,14 +27,7 @@ public class ConcatExpression implements Expression {
 
         if (!evalLeft.getCellType().equals(CellType.STRING) || !evalLeft.getCellType().equals(CellType.STRING)) { //there is a problem with at least one arg
 
-            if(checkValidation(evalLeft, evalRight)) //check if problem came from REF or not
-            {
-                return new EffectiveValueImpl(CellType.STRING, "!UNDEFINED!");
-            }
-            else
-            {
-                throw new IllegalArgumentException("Invalid argument types for CONCAT function. Expected STRING, but got " + evalLeft.getCellType() + " and " + evalRight.getCellType());
-            }
+            return new EffectiveValueImpl(CellType.STRING, "!UNDEFINED!");
         }
 
         String strLeft = evalLeft.extractValueWithExpectation(String.class);

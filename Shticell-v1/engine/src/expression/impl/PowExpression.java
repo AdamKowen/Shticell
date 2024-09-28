@@ -26,11 +26,7 @@ public class PowExpression implements Expression {
 
 
         if (!leftValue.getCellType().equals(CellType.NUMERIC) || !rightValue.getCellType().equals(CellType.NUMERIC)) {
-            if (checkValidation(leftValue, rightValue)) {
-                return new EffectiveValueImpl(CellType.STRING, "NaN");
-            } else {
-                throw new IllegalArgumentException("Invalid argument types for POW function. Expected NUMERIC, but got " + leftValue.getCellType() + " and " + rightValue.getCellType());
-            }
+            return new EffectiveValueImpl(CellType.STRING, "NaN");
         }
 
         Double result =leftValue.extractValueWithExpectation(Double.class);
