@@ -7,20 +7,16 @@
 
 /* עיצוב האזור של ה-Accordion */
 #leftPane {
-    -fx-background-color: #ba8990; /* צבע התואם לצבעים החדשים */
+    -fx-background-color: #6c8f8f; /* צבע התואם לצבעים החדשים */
     -fx-padding: 5; /* ריווח פנימי */
     -fx-background-radius: 10; /* פינות מעוגלות */
 }
 
-/* עיצוב השורה העליונה (עם הכותרת "Shticell") */
-#topRow {
-    -fx-background-color: #bc909c; /* צבע כהה יותר */
-    -fx-background-radius: 0; /* פינות עליונות מעוגלות */
-}
+
 
 /* עיצוב השורה עם כפתור ה-Load ושאר האיברים */
 #loadRow {
-    -fx-background-color: #c8c3cc; /* צבע נוסף */
+    -fx-background-color: #6c8f8f; /* צבע נוסף */
 }
 
 /* עיצוב השורה מתחת עם הכפתורים */
@@ -44,7 +40,7 @@
 
 
 
-    -fx-background-color: rgb(103, 71, 71); /* צבע הרקע עם שקיפות */
+    -fx-background-color: rgb(16, 64, 53); /* צבע הרקע עם שקיפות */
     -fx-background-radius: 16px; /* עיגול פינות של הרקע */
     -fx-border-color: rgba(255, 255, 255, 0.3); /* צבע הגבול */
     -fx-border-width: 1px; /* רוחב הגבול */
@@ -60,18 +56,18 @@
 }
 
 .button:pressed {
-    -fx-background-color: #484f4f; /* צבע כהה יותר */
+    -fx-background-color: #629797; /* צבע כהה יותר */
 }
 
 /* עיצוב ה-Label */
 .label {
-    -fx-text-fill: #563f46; /* צבע טקסט כהה */
+    -fx-text-fill: #153a13; /* צבע טקסט כהה */
     -fx-font-weight: normal;
 }
 
 /* עיצוב ה-ProgressBar */
 .progress-bar {
-    -fx-accent: #563f46; /* צבע כהה יותר */
+    -fx-accent: #44563f; /* צבע כהה יותר */
 }
 
 
@@ -98,7 +94,7 @@
 
 
 .tab-pane .tab-header-area .tab-header-background {
-    -fx-background-color: rgba(108, 52, 64, 0.65); /* צבע רקע */
+    -fx-background-color: rgb(16, 64, 53); /* צבע רקע */
     -fx-background-radius: 10px 10px 0 0; /* רדיוס עיגול רק לפינות העליונות */
 }
 
@@ -106,7 +102,7 @@
 /* עיצוב עבור ה-tabs */
 .tab {
     -fx-background-color: #552f39; /* צבע כהה */
-    -fx-text-base-color: #a89f9f;
+    -fx-text-base-color: #4c5c50;
     -fx-background-radius: 5 5 0 0;
 
 
@@ -217,7 +213,7 @@
     -fx-padding: 10; /* ריווח פנימי */
 }
 
-/* עיצוב עבור TextField */
+/* עיצוב עבור TextField עם צללית פנימית */
 .text-field {
     -fx-background-color: #c8c3cc;
     -fx-border-color: #563f46;
@@ -225,7 +221,9 @@
     -fx-background-radius: 15;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
+
 }
+
 
 .text-field:focused {
     -fx-border-color: #484f4f;
@@ -390,7 +388,7 @@
 
 /* הגדרת המחלקה עבור ה-Column Header */
 .sheet-header-background {
-    -fx-background-color: #50363c;
+    -fx-background-color: rgb(16, 64, 53);
     -fx-alignment: center;
     -fx-padding: 5px;
 }
@@ -425,7 +423,7 @@
 
 /* CSS עבור ה-Pane */
 .highlighted-pane {
-    -fx-background-color: rgb(191, 163, 173); /* צבע הרקע עם שקיפות */
+    -fx-background-color: #c8c3cc; /* צבע הרקע עם שקיפות */
     -fx-background-radius: 4px; /* פינות מעוגלות */
 }
 
