@@ -682,10 +682,13 @@ public class SheetControllerImpl implements SheetController {
 
     private void highlightSelectedRange(Coordinate start, Coordinate end) {
         // ניקוי הסימון הקודם
+        // איפוס הסימון הקודם
         overlayMap.values().forEach(overlay -> {
-            overlay.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+            // הסרת כל מחלקות ה-CSS שקשורות לסימון כדי להחזיר למצב המקורי
+            overlay.getStyleClass().removeAll("highlighted-pane", "highlighted-influence", "highlighted-dependency");
+            // הוספת מחלקת CSS ברירת מחדל
+            overlay.getStyleClass().add("default-cell");
         });
-
         // חישוב הטווח
         int startRow = Math.min(start.getRow(), end.getRow());
         int endRow = Math.max(start.getRow(), end.getRow());
@@ -697,7 +700,8 @@ public class SheetControllerImpl implements SheetController {
                 Coordinate coordinate = CoordinateCache.createCoordinate(row, col);
                 Pane overlay = overlayMap.get(coordinate);
                 if (overlay != null) {
-                    overlay.setBackground(new Background(new BackgroundFill(Color.web("#ffd5e9", 0.7), CornerRadii.EMPTY, Insets.EMPTY)));
+                    overlay.getStyleClass().remove("default-cell"); // הסר את עיצוב ברירת המחדל
+                    overlay.getStyleClass().add("highlighted-pane"); // הוספת העיצוב שנבחר
                 }
             }
         }
@@ -1451,16 +1455,19 @@ public class SheetControllerImpl implements SheetController {
 
     private void highlightDepCoordinate(Coordinate curr) {
         Pane overlay = overlayMap.get(curr);
-        if (overlay != null) {
-            overlay.setBackground(new Background(new BackgroundFill(Color.web("lightblue", 0.5), CornerRadii.EMPTY, Insets.EMPTY)));
-        }
+        if (overlay != null) {// הסרת מחלקות CSS קודמות במידת הצורך
+            overlay.getStyleClass().removeAll("highlighted-influence", "highlighted-pane", "default-cell");
+            // הוספת מחלקת ה-CSS המתאימה
+            overlay.getStyleClass().add("highlighted-dependency");}
     }
 
     private void highlightInfCoordinate(Coordinate curr) {
         Pane overlay = overlayMap.get(curr);
         if (overlay != null) {
-            overlay.setBackground(new Background(new BackgroundFill(Color.web("lightgreen", 0.5), CornerRadii.EMPTY, Insets.EMPTY)));
-        }
+            // הסרת מחלקות CSS קודמות במידת הצורך
+            overlay.getStyleClass().removeAll("highlighted-dependency", "highlighted-pane", "default-cell");
+            // הוספת מחלקת ה-CSS המתאימה
+            overlay.getStyleClass().add("highlighted-influence");}
     }
 
 

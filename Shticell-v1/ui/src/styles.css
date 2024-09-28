@@ -7,14 +7,14 @@
 
 /* עיצוב האזור של ה-Accordion */
 #leftPane {
-    -fx-background-color: #0fa1a1; /* צבע התואם לצבעים החדשים */
+    -fx-background-color: #ba8990; /* צבע התואם לצבעים החדשים */
     -fx-padding: 5; /* ריווח פנימי */
     -fx-background-radius: 10; /* פינות מעוגלות */
 }
 
 /* עיצוב השורה העליונה (עם הכותרת "Shticell") */
 #topRow {
-    -fx-background-color: #563f46; /* צבע כהה יותר */
+    -fx-background-color: #bc909c; /* צבע כהה יותר */
     -fx-background-radius: 0; /* פינות עליונות מעוגלות */
 }
 
@@ -75,8 +75,10 @@
 }
 
 .tab-pane .tab-header-area .tab-header-background {
-    -fx-background-color: #ffffff; /* צבע רקע בהיר */
+    -fx-background-color: #754f5c; /* צבע רקע */
+    -fx-background-radius: 10px 10px 0 0; /* רדיוס עיגול רק לפינות העליונות */
 }
+
 
 .titled-pane > .title {
     -fx-background-color: rgba(86, 63, 70, 0.5); /* התאמה לצבע #563f46 עם שקיפות */
@@ -391,11 +393,29 @@
 }
 
 
+/* CSS עבור תא ברירת המחדל */
+.default-cell {
+    -fx-background-color: transparent; /* חזרה לרקע ברירת מחדל */
+}
+
+
+/* CSS עבור תא שמודגש כתלות (Dependency) */
+.highlighted-dependency {
+    -fx-background-color: rgba(173, 216, 230, 0.5); /* צבע רקע כחול בהיר עם שקיפות */
+    -fx-background-radius: 4px; /* פינות מעוגלות */
+}
+
+/* CSS עבור תא שמודגש כהשפעה (Influence) */
+.highlighted-influence {
+    -fx-background-color: rgba(144, 238, 144, 0.5); /* צבע רקע ירוק בהיר עם שקיפות */
+    -fx-background-radius: 4px; /* פינות מעוגלות */
+}
+
+
 /* CSS עבור ה-Pane */
 .highlighted-pane {
-    -fx-background-color: rgba(255, 213, 233, 0.7); /* צבע הרקע עם שקיפות */
-    -fx-background-radius: 10px; /* פינות מעוגלות */
-    -fx-padding: 5px; /* ריווח פנימי אם תרצה */
+    -fx-background-color: rgb(191, 163, 173); /* צבע הרקע עם שקיפות */
+    -fx-background-radius: 4px; /* פינות מעוגלות */
 }
 
 
