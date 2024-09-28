@@ -332,6 +332,8 @@ public class SheetControllerImpl implements SheetController {
 
 
 
+
+
         // קביעת גודל הגריד לפי מספר השורות והעמודות של הגיליון
         sheetGridPane.getRowConstraints().clear();
         sheetGridPane.getColumnConstraints().clear();
@@ -350,24 +352,25 @@ public class SheetControllerImpl implements SheetController {
         for (int col = 0; col < sheetDto.getNumOfColumns(); col++) {
             char columnLetter = (char) ('A' + col); // A, B, C וכו'
             Label columnHeader = new Label(String.valueOf(columnLetter));
-            columnHeader.setStyle("-fx-alignment: CENTER; -fx-padding: 5px;");
+            columnHeader.getStyleClass().add("sheet-header-text");
             columnHeader.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
             // החלת רקע ורוד
             sheetGridPane.add(columnHeader, col + 1, 0);
-            columnHeader.setStyle("-fx-background-color: lightpink; -fx-alignment: CENTER; -fx-padding: 5px;");
+            columnHeader.getStyleClass().add("sheet-header-background");
+
         }
 
         // הוספת כותרות שורות לפי הסדר המודפס
         for (int rowIndex = 0; rowIndex < sortedRowOrder.size(); rowIndex++) {
             int actualRow = sortedRowOrder.get(rowIndex);  // שורה לפי הסדר המודפס
             Label rowHeader = new Label(String.valueOf(actualRow)); // הדפסה לפי מספר השורה המקורי
-            rowHeader.setStyle("-fx-alignment: CENTER; -fx-padding: 5px;");
+            rowHeader.getStyleClass().add("sheet-header-text");
             rowHeader.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
             // החלת רקע ורוד
             sheetGridPane.add(rowHeader, 0, rowIndex + 1); // מיקום השורה +1 כי שורה 0 לכותרות
-            rowHeader.setStyle("-fx-background-color: lightpink; -fx-alignment: CENTER; -fx-padding: 5px;");
+            rowHeader.getStyleClass().add("sheet-header-background");
         }
 
 

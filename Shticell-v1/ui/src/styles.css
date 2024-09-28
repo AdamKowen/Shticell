@@ -7,7 +7,7 @@
 
 /* עיצוב האזור של ה-Accordion */
 #leftPane {
-    -fx-background-color: #229191; /* צבע התואם לצבעים החדשים */
+    -fx-background-color: #0fa1a1; /* צבע התואם לצבעים החדשים */
     -fx-padding: 5; /* ריווח פנימי */
     -fx-background-radius: 10; /* פינות מעוגלות */
 }
@@ -375,6 +375,28 @@
     -fx-faint-focus-color: transparent; /* הסרת צבע הפוקוס המעודן */
 }
 
+/* הגדרת המחלקה עבור ה-Column Header */
+.sheet-header-background {
+    -fx-background-color: #50363c;
+    -fx-alignment: center;
+    -fx-padding: 5px;
+}
+
+
+/* מחלקת CSS עבור ה-Column Header */
+.sheet-header-text {
+    -fx-alignment: center; /* יישור הטקסט */
+    -fx-padding: 5px;      /* ריווח פנימי */
+    -fx-text-fill: #ffffff; /* צבע הטקסט (לבן) */
+}
+
+
+/* CSS עבור ה-Pane */
+.highlighted-pane {
+    -fx-background-color: rgba(255, 213, 233, 0.7); /* צבע הרקע עם שקיפות */
+    -fx-background-radius: 10px; /* פינות מעוגלות */
+    -fx-padding: 5px; /* ריווח פנימי אם תרצה */
+}
 
 
 
