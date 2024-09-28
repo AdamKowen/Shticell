@@ -288,6 +288,7 @@ public class Controller {
             }
         });
 
+        enableColumnReordering();
 
 
         columnTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
@@ -505,13 +506,22 @@ public class Controller {
         colList.setCellFactory(lv -> {
             ListCell<String> cell = new ListCell<>();
 
-            cell.textProperty().bind(cell.itemProperty()); // קישור הטקסט של התאים לנתונים ברשימה
+            // קישור הטקסט של התאים לנתונים ברשימה
+            cell.textProperty().bind(cell.itemProperty());
 
             // הגדרת גרירה
             cell.setOnDragDetected(event -> {
                 if (cell.getItem() == null) return;
 
                 Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
+
+                // ביטול כל בחירה כאשר הגרירה מתחילה
+                colList.getSelectionModel().clearSelection();
+
+                // יצירת Snapshot של הטקסט הנגרר
+                WritableImage snapshot = cell.snapshot(null, null);
+                db.setDragView(snapshot);  // הגדרת האות הנגררת במקום סמל הדף
+
                 ClipboardContent cc = new ClipboardContent();
                 cc.putString(cell.getItem());
                 db.setContent(cc);
@@ -522,6 +532,9 @@ public class Controller {
             cell.setOnDragOver(event -> {
                 if (event.getGestureSource() != cell && event.getDragboard().hasString()) {
                     event.acceptTransferModes(TransferMode.MOVE);
+
+                    // הוספת אינדיקציה בצבע בזמן גרירה על תא אחר
+                    cell.setStyle("-fx-background-color: #bc93a3; -fx-border-color: #cc9daa; -fx-border-width: 2px;");
                 }
                 event.consume();
             });
@@ -546,8 +559,44 @@ public class Controller {
                 event.consume();
             });
 
+            // החזרת העיצוב המקורי לאחר שהגרירה הסתיימה
+            cell.setOnDragExited(event -> {
+                if (cell.isSelected()) {
+                    // ודא שהסגנון נשאר בצבע החום כאשר הגרירה יוצאת מהתא הנבחר
+                    cell.setStyle("-fx-background-color: #8b5e3c; -fx-text-fill: #ffffff;");
+                } else {
+                    cell.setStyle(""); // חזרה לעיצוב המקורי כאשר הגרירה מסתיימת
+                }
+            });
+
             // מחיקת גרירה לאחר סיום
-            cell.setOnDragDone(DragEvent::consume);
+            cell.setOnDragDone(event -> {
+                colList.getSelectionModel().clearSelection(); // ביטול הבחירה ברשימה
+                cell.setStyle(""); // הסרת הסגנון כאשר הגרירה מסתיימת
+                event.consume();
+            });
+
+            // שינוי הצבע של השורה בזמן בחירה (לחום ולא כחול)
+            cell.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+                if (isSelected) {
+                    cell.setStyle("-fx-background-color: #8b5e3c; -fx-text-fill: #ffffff;"); // צבע חום עם טקסט לבן
+                } else {
+                    cell.setStyle(""); // חזרה לעיצוב המקורי כאשר לא נבחר
+                }
+            });
+
+            // וידוא שהסגנון נשמר כאשר העכבר נכנס ויוצא מהשורה
+            cell.setOnMouseEntered(event -> {
+                if (cell.isSelected()) {
+                    cell.setStyle("-fx-background-color: #8b5e3c; -fx-text-fill: #ffffff;");
+                }
+            });
+
+            cell.setOnMouseExited(event -> {
+                if (cell.isSelected()) {
+                    cell.setStyle("-fx-background-color: #8b5e3c; -fx-text-fill: #ffffff;");
+                }
+            });
 
             return cell;
         });

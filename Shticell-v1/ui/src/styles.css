@@ -7,7 +7,7 @@
 
 /* עיצוב האזור של ה-Accordion */
 #leftPane {
-    -fx-background-color: #818193; /* צבע התואם לצבעים החדשים */
+    -fx-background-color: #229191; /* צבע התואם לצבעים החדשים */
     -fx-padding: 5; /* ריווח פנימי */
     -fx-background-radius: 10; /* פינות מעוגלות */
 }
@@ -30,18 +30,33 @@
 
 /* עיצוב הכפתורים */
 .button {
-    -fx-background-color: #563f46; /* צבע כהה יותר */
+    /* צבע כהה יותר */
     -fx-text-fill: #FFFFFF; /* טקסט לבן */
     -fx-font-weight: normal;
-    -fx-background-radius: 8;
+    /*-fx-background-radius: 8;
     -fx-border-color: transparent;
     -fx-border-radius: 8;
+
+     */
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
+
+
+
+
+    -fx-background-color: rgb(103, 71, 71); /* צבע הרקע עם שקיפות */
+    -fx-background-radius: 16px; /* עיגול פינות של הרקע */
+    -fx-border-color: rgba(255, 255, 255, 0.3); /* צבע הגבול */
+    -fx-border-width: 1px; /* רוחב הגבול */
+    -fx-border-radius: 16px; /* עיגול פינות של הגבול */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0.0, 0, 4); /* אפקט צל */
+
+
+
 }
 
 .button:hover {
-    -fx-background-color: #8ca3a3; /* צבע בהיר יותר */
+    -fx-background-color: #a1a8a8; /* צבע בהיר יותר */
 }
 
 .button:pressed {
@@ -88,6 +103,15 @@
     -fx-background-color: #958084; /* צבע כהה */
     -fx-text-base-color: #FFFFFF; /* טקסט לבן */
     -fx-background-radius: 5 5 0 0;
+
+
+
+
+    -fx-background-color: rgba(255, 255, 255, 0.2); /* צבע הרקע עם שקיפות */
+    -fx-border-color: rgba(255, 255, 255, 0.3); /* צבע הגבול */
+    -fx-border-width: 1px; /* רוחב הגבול */
+    -fx-border-radius: 5 5 0 0; /* עיגול פינות של הגבול */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0.0, 0, 4); /* אפקט צל */
 }
 
 .tab:selected {
@@ -106,6 +130,14 @@
     -fx-font-weight: normal;
     -fx-background-radius: 10; /* פינות מעוגלות */
     -fx-padding: 7; /* ריווח פנימי */
+
+    /* התאמה ל-JavaFX */
+    -fx-background-color: rgba(255, 255, 255, 0.2); /* צבע הרקע עם שקיפות */
+    -fx-border-color: rgba(255, 255, 255, 0.3); /* צבע הגבול */
+    -fx-border-width: 1px; /* רוחב הגבול */
+    -fx-border-radius: 10; /* עיגול פינות של הגבול */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0.0, 0, 4); /* אפקט צל */
+
 }
 
 .titled-pane > .content {
@@ -140,7 +172,7 @@
 }
 
 .scroll-bar .thumb {
-    -fx-background-color: #8ca3a3; /* צבע בהיר יותר */
+    -fx-background-color: #b4d6d6; /* צבע בהיר יותר */
     -fx-background-radius: 20; /* עיגול פינות */
     -fx-padding: 0; /* ריווח פנימי ל-thumb */
 }
@@ -215,6 +247,40 @@
 }
 
 /* עיצוב ה-Checkbox */
+
+
+/* הוספת ריווח בין ה-checkbox לטקסט */
+.check-box {
+    -fx-spacing: 10px; /* ריווח בין ה-checkbox לטקסט */
+    -fx-padding: 5px;  /* ריווח פנימי */
+}
+
+/* ריווח פנימי של ה-ListView או Container שמחזיק את ה-checkboxes */
+.list-view {
+    -fx-padding: 5px; /* ריווח פנימי */
+    -fx-spacing: 2px; /* ריווח בין האלמנטים בתוך ה-ListView */
+}
+
+/* הגדרה של גודל ה-checkbox */
+.check-box .box {
+    -fx-border-color: #563f46;
+    -fx-border-width: 2px;
+    -fx-background-color: transparent;
+    -fx-border-radius: 4;
+    -fx-padding: 2px; /* מקטין את הרווח הפנימי של הקופסה */
+    -fx-min-width: 14px; /* רוחב מינימלי של ה-checkbox */
+    -fx-min-height: 14px; /* גובה מינימלי של ה-checkbox */
+    -fx-max-width: 14px; /* רוחב מקסימלי של ה-checkbox */
+    -fx-max-height: 14px; /* גובה מקסימלי של ה-checkbox */
+}
+
+/* עיצוב הסימון (ה-"וי") של ה-CheckBox */
+.check-box:selected .box .mark {
+    -fx-background-color: #ffffff; /* שנה לצבע ה-"וי" הרצוי */
+}
+
+
+
 .check-box {
     -fx-text-fill: #563f46;
     -fx-background-color: transparent;
@@ -272,6 +338,44 @@
 .color-picker:pressed {
     -fx-background-color: #484f4f;
 }
+
+
+/* הסרת המסגרת האפורה מסביב לרשימות */
+.list-view {
+    -fx-border-color: transparent; /* מסגרת שקופה */
+    -fx-background-insets: 0; /* מסיר את הרווח של הרקע */
+    -fx-border-insets: 0; /* מסיר את הרווח של המסגרת */
+    -fx-focus-color: transparent; /* הסרת צבע הפוקוס */
+    -fx-faint-focus-color: transparent; /* הסרת צבע הפוקוס המעודן */
+}
+
+.list-view:focused,
+.list-view:hover {
+    -fx-border-color: transparent; /* מסגרת שקופה גם כאשר האלמנט בפוקוס או במצב hover */
+}
+
+/* הסרת המסגרת האפורה מסביב ל-ScrollPane של הגיליון */
+.scroll-pane {
+    -fx-border-color: transparent; /* מסגרת שקופה */
+    -fx-background-insets: 0; /* מסיר את הרווח של הרקע */
+    -fx-border-insets: 0; /* מסיר את הרווח של המסגרת */
+    -fx-focus-color: transparent; /* הסרת צבע הפוקוס */
+    -fx-faint-focus-color: transparent; /* הסרת צבע הפוקוס המעודן */
+}
+
+.scroll-pane:focused,
+.scroll-pane:hover {
+    -fx-border-color: transparent; /* מסגרת שקופה גם כאשר האלמנט בפוקוס או במצב hover */
+}
+
+/* הסרת המסגרת מתאי הרשימה */
+.list-cell {
+    -fx-border-color: transparent; /* מסגרת שקופה */
+    -fx-focus-color: transparent; /* הסרת צבע הפוקוס */
+    -fx-faint-focus-color: transparent; /* הסרת צבע הפוקוס המעודן */
+}
+
+
 
 
 /* הסרת סימון כחול סביב אלמנטים */
