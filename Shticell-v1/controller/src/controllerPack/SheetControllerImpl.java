@@ -367,6 +367,9 @@ public class SheetControllerImpl implements SheetController {
             sheetGridPane.add(columnHeader, col + 1, 0);
             columnHeader.getStyleClass().add("sheet-header-background");
 
+            // הוספת אירועי עכבר לכותרת העמודה
+            addMouseEventsToColumnHeader(columnHeader, col + 1);
+
         }
 
         // הוספת כותרות שורות לפי הסדר המודפס
@@ -379,6 +382,9 @@ public class SheetControllerImpl implements SheetController {
             // החלת רקע ורוד
             sheetGridPane.add(rowHeader, 0, rowIndex + 1); // מיקום השורה +1 כי שורה 0 לכותרות
             rowHeader.getStyleClass().add("sheet-header-background");
+
+            // הוספת אירועי עכבר לכותרת השורה
+            addMouseEventsToRowHeader(rowHeader, rowIndex + 1);
         }
 
 
@@ -593,6 +599,9 @@ public class SheetControllerImpl implements SheetController {
 
 
 
+
+
+
     // הוספת אירועים ללחיצה, גרירה ושחרור עבור תאים
     private void addMouseEvents(StackPane cellPane, Coordinate coordinate) {
 
@@ -695,6 +704,65 @@ public class SheetControllerImpl implements SheetController {
 
 
 
+    private void addMouseEventsToColumnHeader(Label columnHeader, int colIndex) {
+        columnHeader.setOnMousePressed(event -> {
+            isDragging = true;
+            startCoordinate = CoordinateCache.createCoordinate(1, colIndex);
+            endCoordinate = CoordinateCache.createCoordinate(sheetGridPane.getRowConstraints().size() - 1, colIndex);
+            highlightSelectedRange(startCoordinate, endCoordinate);
+        });
+
+        columnHeader.setOnMouseDragged(event -> {
+            Point2D mouseSceneCoords = new Point2D(event.getSceneX(), event.getSceneY());
+            Point2D mouseGridCoords = sheetGridPane.sceneToLocal(mouseSceneCoords);
+            int currentCol = getColumnIndexAtX(mouseGridCoords.getX());
+
+            if (currentCol >= 1 && currentCol <= sheetGridPane.getColumnConstraints().size()) {
+                int minCol = Math.min(colIndex, currentCol);
+                int maxCol = Math.max(colIndex, currentCol);
+
+                startCoordinate = CoordinateCache.createCoordinate(1, minCol);
+                endCoordinate = CoordinateCache.createCoordinate(sheetGridPane.getRowConstraints().size() - 1, maxCol);
+                highlightSelectedRange(startCoordinate, endCoordinate);
+            }
+        });
+
+        columnHeader.setOnMouseReleased(event -> {
+            isDragging = false;
+            setSelectedRange(startCoordinate, endCoordinate);
+        });
+    }
+
+
+
+    private void addMouseEventsToRowHeader(Label rowHeader, int rowIndex) {
+        rowHeader.setOnMousePressed(event -> {
+            isDragging = true;
+            startCoordinate = CoordinateCache.createCoordinate(rowIndex, 1);
+            endCoordinate = CoordinateCache.createCoordinate(rowIndex, sheetGridPane.getColumnConstraints().size() - 1);
+            highlightSelectedRange(startCoordinate, endCoordinate);
+        });
+
+        rowHeader.setOnMouseDragged(event -> {
+            Point2D mouseSceneCoords = new Point2D(event.getSceneX(), event.getSceneY());
+            Point2D mouseGridCoords = sheetGridPane.sceneToLocal(mouseSceneCoords);
+            int currentRow = getRowIndexAtY(mouseGridCoords.getY());
+
+            if (currentRow >= 1 && currentRow <= sheetGridPane.getRowConstraints().size()) {
+                int minRow = Math.min(rowIndex, currentRow);
+                int maxRow = Math.max(rowIndex, currentRow);
+
+                startCoordinate = CoordinateCache.createCoordinate(minRow, 1);
+                endCoordinate = CoordinateCache.createCoordinate(maxRow, sheetGridPane.getColumnConstraints().size() - 1);
+                highlightSelectedRange(startCoordinate, endCoordinate);
+            }
+        });
+
+        rowHeader.setOnMouseReleased(event -> {
+            isDragging = false;
+            setSelectedRange(startCoordinate, endCoordinate);
+        });
+    }
 
 
 

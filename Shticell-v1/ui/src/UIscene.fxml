@@ -250,7 +250,7 @@
                                   <RowConstraints maxHeight="109.19094848632812" minHeight="10.0" prefHeight="51.5" vgrow="NEVER" />
                                 </rowConstraints>
                                  <children>
-                                    <TabPane fx:id="columnTabPane" prefWidth="117.0" tabClosingPolicy="UNAVAILABLE">
+                                    <TabPane fx:id="columnTabPane" prefHeight="172.0" prefWidth="139.0" tabClosingPolicy="UNAVAILABLE">
                                       <tabs>
                                         <Tab text="Cols Items">
                                           <content>

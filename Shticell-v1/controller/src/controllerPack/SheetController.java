@@ -126,7 +126,7 @@ public interface SheetController {
 
     Coordinate actualCellPlacedOnGrid(Coordinate placeOnGrid);
 
-    void reSelect(String Topleft, String Bottomright) throws Exception;
+    void reSelect(String Topleft, String Bottomright)throws Exception;
 }
 
 

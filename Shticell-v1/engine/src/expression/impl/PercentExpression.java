@@ -21,6 +21,7 @@ public class PercentExpression implements Expression {
 
     @Override
     public EffectiveValue eval(SheetReadActions sheet) {
+
         double partValue = part.eval(sheet).extractValueWithExpectation(Double.class);
         double wholeValue = whole.eval(sheet).extractValueWithExpectation(Double.class);
 
