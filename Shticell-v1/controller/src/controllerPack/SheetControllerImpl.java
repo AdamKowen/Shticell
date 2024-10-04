@@ -834,21 +834,12 @@ public class SheetControllerImpl implements SheetController {
     // פונקציה לסימון טווח תאים לפי הגרירה (עבודה על StackPane ולא על Label)
     private void highlightSelectedRangeAccordingToOgRange(Coordinate start, Coordinate end) {
         // ניקוי כל התאים מסימון קודם, למעט הכותרות (שורות ועמודות)
-        sheetGridPane.getChildren().forEach(node -> {
-            if (node instanceof StackPane) {
-                StackPane cellPane = (StackPane) node;
-
-                // בדיקת מיקום התא - אם הוא בכותרת עמודה (שורה 0) או בכותרת שורה (עמודה 0)
-                Integer row = GridPane.getRowIndex(node);
-                Integer col = GridPane.getColumnIndex(node);
-
-                // אם התא הוא לא כותרת עמודה או שורה, נצבע אותו בלבן
-                if (row != null && col != null && row > 0 && col > 0) {
-                    cellPane.setStyle("-fx-background-color: white; -fx-padding: 5px;");
-                }
-            }
+        overlayMap.values().forEach(overlay -> {
+            // הסרת כל מחלקות ה-CSS שקשורות לסימון כדי להחזיר למצב המקורי
+            overlay.getStyleClass().removeAll("highlighted-pane", "highlighted-influence", "highlighted-dependency");
+            // הוספת מחלקת CSS ברירת מחדל
+            overlay.getStyleClass().add("default-cell");
         });
-
         // סימון טווח חדש
         int startRow = Math.min(start.getRow(), end.getRow());
         int endRow = Math.max(start.getRow(), end.getRow());
@@ -872,12 +863,15 @@ public class SheetControllerImpl implements SheetController {
                 if (col == 0) continue;
 
                 // קבלת ה-StackPane לפי הקואורדינטות ב-GridPane
-                StackPane cellPane = getCellPaneByCoordinate(gridRowIndex, col);
-                if (cellPane != null) {
-                    cellPane.setStyle("-fx-background-color: #ffd5e9; -fx-padding: 5px;"); // סימון התא בצבע ורוד
+                Pane overlay = overlayMap.get(CoordinateCache.createCoordinate(gridRowIndex, col));
+
+                if (overlay != null) {
+                    overlay.getStyleClass().remove("default-cell"); // הסר את עיצוב ברירת המחדל
+                    overlay.getStyleClass().add("highlighted-pane"); // הוספת העיצוב שנבחר
                 }
             }
         }
+
     }
 
 
