@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.ClipboardContent;
@@ -56,8 +57,10 @@ public class Controller {
     @FXML
     private ComboBox<Object> alignmentBox;
 
-    //@FXML
-    //private ScrollPane sheetScrollPane;
+
+    @FXML
+    private ToggleButton darkModeToggle;
+
 
     @FXML
     private Accordion accordion;
@@ -400,6 +403,30 @@ public class Controller {
         sheetVersionController.setReadOnly(true);
 
 
+
+
+
+
+
+
+
+        // מאזין שיופעל כאשר ה־ToggleButton יתווסף ל־Scene
+        darkModeToggle.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) { // לוודא שה־Scene כבר קיים
+                // מאזין להחלפת העיצוב במצב כהה/בהיר
+                darkModeToggle.selectedProperty().addListener((obsSelected, oldVal, newVal) -> {
+                    if (newVal) {
+                        // מצב כהה
+                        newScene.getStylesheets().clear();
+                        newScene.getStylesheets().add(getClass().getResource("/stylesDarkMode.css").toExternalForm());
+                    } else {
+                        // מצב בהיר
+                        newScene.getStylesheets().clear();
+                        newScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                    }
+                });
+            }
+        });
 
     }
 

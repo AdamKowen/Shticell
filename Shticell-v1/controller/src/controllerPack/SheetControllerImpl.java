@@ -17,6 +17,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -43,6 +44,7 @@ public class SheetControllerImpl implements SheetController {
     private Label leftLabel;
     @FXML
     private Label rightLabel;
+
 
     private ObjectProperty<Label> selectedCell;
 
@@ -501,6 +503,7 @@ public class SheetControllerImpl implements SheetController {
 
 
 
+
                 // יצירת Pane שישמש כשכבת סימון
                 Pane selectionOverlay = new Pane();
                 selectionOverlay.setPadding(Insets.EMPTY);
@@ -540,19 +543,43 @@ public class SheetControllerImpl implements SheetController {
 
 
                     alignment = cell.getStyle().getAlignment();
+
+
+                    if (Objects.equals(backgroundColor, "#FFFFFF"))
+                    {
+                        // הגדרת סגנון הרקע של התא עם הצבע שהתקבל
+                        cellPane.getStyleClass().add("cellDefault");
+
+                    }
+                    else
+                    {
+                        // הגדרת סגנון הרקע של התא עם הצבע שהתקבל
+                        cellPane.setStyle("-fx-background-color: " + backgroundColor + "; -fx-padding: 5px;");
+
+                    }
+
+
+                    if (Objects.equals(fontColor, "#000000"))
+                    {
+                        // החלת צבע הפונט של התווית
+                        label.getStyleClass().add("labelDefault");
+                    }
+                    else
+                    {
+                        // החלת צבע הפונט של התווית
+                        label.setStyle("-fx-text-fill: " + fontColor + ";");
+                    }
                 }
                 else {
-                    backgroundColor = "white";
-                    fontColor = "black"; // צבע ברירת מחדל לפונט
+                    // הגדרת סגנון הרקע של התא עם הצבע שהתקבל
+                    cellPane.getStyleClass().add("cellDefault");
+
+                    // החלת צבע הפונט של התווית
+                    label.getStyleClass().add("labelDefault");
+
                     alignment  = "LEFT";
                 }
 
-                // הגדרת סגנון הרקע של התא עם הצבע שהתקבל
-                cellPane.setStyle("-fx-background-color: " + backgroundColor + "; -fx-padding: 5px;");
-
-
-                // החלת צבע הפונט של התווית
-                label.setStyle("-fx-text-fill: " + fontColor + ";");
 
 
                 switch (alignment) {

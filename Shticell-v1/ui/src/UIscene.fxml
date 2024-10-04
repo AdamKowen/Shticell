@@ -14,6 +14,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -30,8 +31,8 @@
               <columnConstraints>
                 <ColumnConstraints hgrow="NEVER" maxWidth="339.2989807128906" minWidth="10.0" prefWidth="119.03758239746094" />
                 <ColumnConstraints hgrow="NEVER" maxWidth="707.1642456054688" minWidth="10.0" prefWidth="176.35235595703125" />
-                  <ColumnConstraints hgrow="NEVER" maxWidth="707.1642456054688" minWidth="10.0" prefWidth="299.50360107421875" />
-                  <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="0.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="0.0" />
+                  <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="320.9515380859375" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -45,7 +46,7 @@
                      <font>
                         <Font size="14.0" />
                      </font></Label>
-                  <ProgressBar fx:id="taskProgressBar" maxWidth="1.7976931348623157E308" minWidth="0.0" prefHeight="30.0" prefWidth="551.0" progress="0.0" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS">
+                  <ProgressBar fx:id="taskProgressBar" maxWidth="1.7976931348623157E308" minWidth="0.0" prefHeight="30.0" prefWidth="551.0" progress="0.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS">
                      <opaqueInsets>
                         <Insets bottom="10.0" />
                      </opaqueInsets>
@@ -53,11 +54,37 @@
                         <Insets right="10.0" />
                      </padding>
                   </ProgressBar>
-                  <Label fx:id="cellUpdateError" alignment="BASELINE_LEFT" prefHeight="69.0" prefWidth="300.0" GridPane.columnIndex="2">
+                  <Label fx:id="cellUpdateError" alignment="BASELINE_LEFT" prefHeight="26.0" prefWidth="300.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.valignment="BOTTOM">
                      <GridPane.margin>
                         <Insets bottom="3.0" />
                      </GridPane.margin>
                   </Label>
+                  <GridPane GridPane.columnIndex="3">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="175.911865234375" minWidth="10.0" prefWidth="25.685546875" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="175.911865234375" minWidth="10.0" prefWidth="70.814453125" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="125.19366455078125" minWidth="10.0" prefWidth="46.81451416015625" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="137.70184326171875" minWidth="10.0" prefWidth="50.95159912109375" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="137.70184326171875" minWidth="10.0" prefWidth="128.74212646484375" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="Dark Mode:" GridPane.columnIndex="1" />
+                        <ToggleButton fx:id="darkModeToggle" mnemonicParsing="false" text="⬤" GridPane.columnIndex="2">
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </ToggleButton>
+                        <Label text="Theme:" GridPane.columnIndex="3" />
+                        <ComboBox prefWidth="150.0" promptText="Default" GridPane.columnIndex="4">
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin>
+                        </ComboBox>
+                     </children>
+                  </GridPane>
                </children>
             </GridPane>
             <GridPane maxWidth="1.7976931348623157E308" prefHeight="91.0" prefWidth="924.0">

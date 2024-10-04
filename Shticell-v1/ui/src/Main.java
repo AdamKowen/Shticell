@@ -26,7 +26,7 @@ public class Main extends Application {
 
             // טוען את קובץ ה-CSS
             scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-
+            //scene.getStylesheets().add(getClass().getResource("/stylesDarkMode.css").toExternalForm());
 
             // הגדרת רוחב וגובה מינימלי לחלון
             primaryStage.setMinWidth(800); // גודל מינימלי לרוחב
