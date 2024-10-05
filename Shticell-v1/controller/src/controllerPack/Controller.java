@@ -7,7 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.ClipboardContent;
@@ -21,6 +20,7 @@ import sheet.coordinate.api.Coordinate;
 import sheet.coordinate.impl.CoordinateCache;
 
 
+import javax.swing.plaf.BorderUIResource;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -394,16 +394,13 @@ public class Controller {
         mainTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if (newTab == prevSheetTab) {
                 // Disable controls when Previous Version Sheet tab is selected
-                setControlsDisabled(true);
+                setControlsDisabledVersionMode(true);
             } else {
-                setControlsDisabled(false);
+                setControlsDisabledVersionMode(false);
             }
         });
 
         sheetVersionController.setReadOnly(true);
-
-
-
 
 
 
@@ -427,6 +424,10 @@ public class Controller {
                 });
             }
         });
+
+
+
+        setControlsDisabledAppStart(true);
 
     }
 
@@ -676,7 +677,7 @@ public class Controller {
 
 
 
-    private void setControlsDisabled(boolean disabled) {
+    private void setControlsDisabledVersionMode(boolean disabled) {
         cellInputContentTextField.setDisable(disabled);
         alignmentBox.setDisable(disabled);
         rowHeightSlider.setDisable(disabled);
@@ -697,6 +698,31 @@ public class Controller {
         reSelect.setDisable(disabled);
         // Ensure the versionComboBox remains enabled
         versionComboBox.setDisable(false);
+    }
+
+
+
+    private void setControlsDisabledAppStart(boolean disabled) {
+        cellInputContentTextField.setDisable(disabled);
+        alignmentBox.setDisable(disabled);
+        rowHeightSlider.setDisable(disabled);
+        colWidthSlider.setDisable(disabled);
+        addOrDeleteRange.setDisable(disabled);
+        sort.setDisable(disabled);
+        resetsort.setDisable(disabled);
+        backgroundPicker.setDisable(disabled);
+        fontPicker.setDisable(disabled);
+        colList.setDisable(disabled);
+        listOfRanges.setDisable(disabled);
+        rangeNameTextBox.setDisable(disabled);
+        topLeftBox.setDisable(disabled);
+        bottomRightBox.setDisable(disabled);
+        accordion.setDisable(disabled);
+        columnTabPane.setDisable(disabled);
+        updateValueButton.setDisable(disabled);
+        reSelect.setDisable(disabled);
+        mainTabPane.setDisable(disabled);
+        versionComboBox.setDisable(disabled);
     }
 
 
@@ -964,7 +990,6 @@ public class Controller {
 
 
 
-
     @FXML
     void loadButtonActionListener(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -1032,6 +1057,8 @@ public class Controller {
                         Platform.runLater(() -> {
                             taskProgressBar.setVisible(false); // מסתיר את ה-progress bar לאחר סיום הטעינה
                         });
+
+                        setControlsDisabledAppStart(false);
 
                     } catch (Exception e) {
                         Platform.runLater(() -> {
