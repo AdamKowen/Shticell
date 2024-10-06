@@ -63,10 +63,34 @@
     -fx-font-weight: normal;
 }
 
-/* עיצוב ה-ProgressBar */
+
 .progress-bar {
-    -fx-accent: #0c322e; /* ירוק כהה יותר */
+    -fx-background-radius: 10px; /* עיגול פינות הרקע */
+    -fx-border-radius: 10px; /* עיגול פינות הגבול */
+    -fx-border-width: 1px; /* רוחב הגבול */
+    -fx-pref-height: 30px; /* גובה מותאם אישית */
+    -fx-padding: 2px; /* ריווח פנימי */
+    -fx-background-color: rgba(30, 30, 30, 0.2); /* רקע כהה עם שקיפות */
+    -fx-border-color: rgba(255, 255, 255, 0.53); /* צבע הגבול */
+    -fx-transition: -fx-background-color 0.5s ease, -fx-border-color 0.5s ease; /* מעבר חלק */
 }
+
+/* הרצועה של ה-ProgressBar */
+.progress-bar .track {
+    -fx-background-color: transparent; /* רקע שקוף */
+    -fx-background-radius: 16px; /* עיגול פינות */
+}
+
+/* החלק המלא של ה-ProgressBar */
+.progress-bar .bar {
+    -fx-background-color: rgb(255, 255, 255); /* צבע לבן */
+    -fx-background-radius: 3px; /* עיגול פינות - תואם לגבול */
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.7), 10, 0.4, 0, 0); /* אפקט זוהר */
+}
+
+
+
+
 
 .titled-pane > .title {
     -fx-background-color: rgba(0, 64, 64, 0.5); /* ירוק כהה */
