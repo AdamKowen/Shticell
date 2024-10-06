@@ -172,10 +172,12 @@
 
 /* עיצוב עבור ScrollPane */
 .scroll-pane {
+
     -fx-background: #f0f0f0; /* צבע רקע בהיר יותר */
     -fx-background-radius: 5; /* פינות מעוגלות */
     -fx-padding: 5; /* ריווח פנימי */
 }
+
 .scroll-bar {
     -fx-background-color: transparent; /* צבע שקוף */
 }

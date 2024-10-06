@@ -22,7 +22,7 @@ public class Main extends Application {
 
             // הגדרת הסצנה
             primaryStage.setScene(scene);
-
+//
 
             // טוען את קובץ ה-CSS
             scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
