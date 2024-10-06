@@ -219,9 +219,10 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
             currentSheet.getCell(coordinate).getStyle().setToDefault();
         }
     }
+    public boolean isEmptyCell(Cell cell){
+        return cell == null || cell.getOriginalValue().isBlank();
+    }
 
-    // פונקציות נוספות לעבודה עם הגיליון
-    // public void updateCell(...) { ... }
-    // public void saveSheet(...) { ... }
+
 
 }

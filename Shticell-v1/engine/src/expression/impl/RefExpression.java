@@ -33,9 +33,10 @@ public class RefExpression implements Expression {
             else
             {
 
-                return new EffectiveValueImpl(CellType.UNKNOWN, null); //empty cell
+                return new EffectiveValueImpl(CellType.UNKNOWN, "!UNDEFINED!"); //empty cell
             }
         }
+
         if(refCell.getExpression() instanceof SumExpression){
             SumExpression resE=(SumExpression)refCell.getExpression();
             return resE.eval(sheet);

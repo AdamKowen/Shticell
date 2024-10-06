@@ -39,6 +39,7 @@ public interface SheetReadActions {
 
     boolean isCellEmpty(Coordinate coordinate);
 
+
      List<Cell> getCellsInRange(String name);
 
     Map<String, Range> getRanges();

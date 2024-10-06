@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sheet.cell.api.CellStyle;
+import sheet.cell.api.CellType;
 import sheet.cell.api.EffectiveValue;
 import sheet.coordinate.api.*;
 import sheet.coordinate.impl.CoordinateImpl;
@@ -84,6 +85,9 @@ public class CellImpl implements Cell {
         EffectiveValue newCreatedValue = expression.eval(sheet);
 
         if (effectiveValue != null){
+
+
+
             if (!newCreatedValue.getValue().equals(effectiveValue.getValue()))
             {
                 this.version = sheet.getVersion() + 1; // add one for new version
@@ -109,6 +113,7 @@ public class CellImpl implements Cell {
 
         return expression.doesContainRef();
     }
+
 
 
     @Override
@@ -151,5 +156,10 @@ public class CellImpl implements Cell {
     public CellStyle getStyle() {
         return style;
     }
+    public boolean isEmptyCell(){
+        return  this.getOriginalValue().isBlank();
+    }
+
+
 
 }

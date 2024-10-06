@@ -31,7 +31,7 @@ public enum FunctionParser {
             } else if (isNumeric(actualValue)) {
                 return new IdentityExpression(Double.parseDouble(actualValue), CellType.NUMERIC);
             } else {
-                if(actualValue.isEmpty()) //for empty cell
+                if(actualValue.isEmpty()||actualValue.isBlank()) //for empty cell
                 {
                     return new IdentityExpression(actualValue, CellType.UNKNOWN);
                 }
