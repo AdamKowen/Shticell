@@ -4,8 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Shticell-v1.iml" filepath="$PROJECT_DIR$/Shticell-v1.iml" />
       <module fileurl="file://$PROJECT_DIR$/controller/controller.iml" filepath="$PROJECT_DIR$/controller/controller.iml" />
-      <module fileurl="file://$PROJECT_DIR$/engine/engine.iml" filepath="$PROJECT_DIR$/engine/engine.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ui/ui.iml" filepath="$PROJECT_DIR$/ui/ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ServerApp/engine/engine.iml" filepath="$PROJECT_DIR$/ServerApp/engine/engine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ClientApp/ui/ui.iml" filepath="$PROJECT_DIR$/ClientApp/ui/ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ServerApp/webEngine/webEngine.iml" filepath="$PROJECT_DIR$/ServerApp/webEngine/webEngine.iml" />
     </modules>
   </component>
 </project>

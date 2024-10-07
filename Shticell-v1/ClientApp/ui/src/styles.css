@@ -65,10 +65,40 @@
     -fx-font-weight: normal;
 }
 
-/* עיצוב ה-ProgressBar */
 .progress-bar {
-    -fx-accent: #44563f; /* צבע כהה יותר */
+    -fx-background-radius: 10px; /* עיגול פינות הרקע */
+    -fx-border-radius: 10px; /* עיגול פינות הגבול */
+    -fx-border-width: 1px; /* רוחב הגבול */
+    -fx-pref-height: 30px; /* גובה מותאם אישית */
+    -fx-padding: 2px; /* ריווח פנימי */
+    -fx-background-color: rgba(255, 255, 255, 0.2); /* רקע עם שקיפות */
+    -fx-border-color: rgba(255, 255, 255, 0.53); /* צבע הגבול */
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.7), 10, 0.3, 0, 0); /* אפקט זוהר */
+    -fx-transition: -fx-background-color 0.5s ease, -fx-border-color 0.5s ease; /* מעבר חלק */
 }
+
+/* הרצועה של ה-ProgressBar */
+.progress-bar .track {
+    -fx-background-color: transparent; /* רקע שקוף */
+    -fx-background-radius: 16px; /* עיגול פינות */
+}
+
+/* החלק המלא של ה-ProgressBar */
+.progress-bar .bar {
+    -fx-background-color: rgb(255, 255, 255); /* צבע כהה */
+    -fx-background-radius: 5px; /* עיגול פינות */
+    -fx-transition: -fx-background-color 0.5s ease; /* מעבר חלק */
+}
+
+
+/* טקסט בתוך ה-ProgressBar (אם יש) */
+.progress-bar .text {
+    -fx-fill: #FFFFFF; /* טקסט לבן */
+    -fx-font-weight: normal;
+    -fx-font-size: 12px;
+    -fx-alignment: center; /* יישור מרכזי */
+}
+
 
 
 .titled-pane > .title {
