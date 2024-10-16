@@ -3,10 +3,22 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/jaxb-ri-4.0.5" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="ui" exported="" />
+    <orderEntry type="library" name="Shticell-v1" level="project" />
+    <orderEntry type="library" name="mod" level="project" />
+    <orderEntry type="module" module-name="inline-customize" />
+    <orderEntry type="module" module-name="vendor-extensions" />
+    <orderEntry type="module" module-name="subgroup-extend" />
+    <orderEntry type="module" module-name="j2s-xmlType" />
+    <orderEntry type="module" module-name="streaming-unmarshalling" />
+    <orderEntry type="module" module-name="j2s-xmlRootElement" />
+    <orderEntry type="module" module-name="j2s-create-marshal" />
+    <orderEntry type="module" module-name="j2s-xmlAccessorOrder" />
+    <orderEntry type="module" module-name="j2s-xmlSchemaType" />
+    <orderEntry type="module" module-name="j2s-xmlAttribute" />
+    <orderEntry type="module" module-name="j2s-xmlAdapter" />
   </component>
 </module>
