@@ -152,7 +152,7 @@ that what they have is not the original version, so that the original
 author's reputation will not be affected by problems that might be
 introduced by others.
 
-  Finally, software patents pose a constant threat to the existence of
+  Finally, software patents pose a constants threat to the existence of
 any free program.  We wish to make sure that a company cannot
 effectively restrict the users of a free program by obtaining a
 restrictive license from a patent holder.  Therefore, we insist that

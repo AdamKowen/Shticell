@@ -807,7 +807,7 @@
         There is an observation being made. It is the comparison of the method name. One way to do this would be to do
         <code>"close".equals(method.getName())</code>.
         Above we see a direct reference comparison between the method name and <code>static final String</code> reference.
-        According to the JVM spec, method names and static final String end up in a shared constant pool, so the reference comparison should work.
+        According to the JVM spec, method names and static final String end up in a shared constants pool, so the reference comparison should work.
         One could of course do this as well:
     </p>
 <div class="codeBox"><pre><code>  if (compare(CLOSE_VAL,method)) {

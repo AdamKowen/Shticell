@@ -29,7 +29,17 @@ import java.util.Map;
 public class SheetEngineImpl implements sheetEngine.SheetEngine {
 
     private Sheet currentSheet;
+
+    // hash map - string - name of file -> sheet - my files
+    // hash map - string - name of file -> sheet - reader
+    // hash map - string - name of file -> sheet - writes
+
     private Loader loader;
+
+
+    // change current sheet
+
+
 
     public SheetEngineImpl() {
         this.loader = new LoaderImpl(); // loading

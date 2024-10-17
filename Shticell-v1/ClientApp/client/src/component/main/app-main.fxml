@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="447.0" prefWidth="454.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chat.client.component.main.ChatAppMainController">
+<SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="447.0" prefWidth="454.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.main.AppMainController">
   <items>
     <AnchorPane minHeight="300.0" minWidth="500.0" prefHeight="100.0" prefWidth="160.0">
          <children>

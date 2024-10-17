@@ -14,10 +14,13 @@ import java.io.IOException;
 @WebServlet("/sheet")
 public class SheetServlet extends HttpServlet {
 
+    /*
     private SheetEngine sheetEngine = new SheetEngineImpl();
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
+
             throws ServletException, IOException {
         // מחזיר את מצב הגיליון הנוכחי כ-JSON
         String sheetJson = JSONUtils.toJson(sheetEngine.getCurrentSheetDTO());
@@ -43,5 +46,7 @@ public class SheetServlet extends HttpServlet {
             response.getWriter().write("Failed to update cell: " + e.getMessage());
         }
     }
+
+     */
 }
 
