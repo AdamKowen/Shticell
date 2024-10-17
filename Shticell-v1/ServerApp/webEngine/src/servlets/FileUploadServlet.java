@@ -26,7 +26,7 @@ public class FileUploadServlet extends HttpServlet {
 
         try {
             // קריאה וטעינת הגיליון ממנוע ה-SheetEngine
-            sheetEngine.loadSheetFromXML(fileContent);
+            //sheetEngine.loadSheetFromXML(fileContent);
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write("File uploaded successfully and loaded into the sheet.");
         } catch (Exception e) {

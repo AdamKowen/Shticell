@@ -24,28 +24,30 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../external libraries/gson/gson-2.1.jar!/" />
+          <root url="jar://$USER_HOME$/external libraries/gson/gson-2.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$MODULE_DIR$/../../../../external libraries/gson/gson-2.1-javadoc.jar!/" />
+          <root url="jar://$USER_HOME$/external libraries/gson/gson-2.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../external libraries/gson/gson-2.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/external libraries/gson/gson-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../../../external libraries/gson" />
+          <root url="file://$USER_HOME$/external libraries/gson" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="file://$MODULE_DIR$/../../../../external libraries/gson" />
+          <root url="file://$USER_HOME$/external libraries/gson" />
         </SOURCES>
-        <jarDirectory url="file://$MODULE_DIR$/../../../../external libraries/gson" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/../../../../external libraries/gson" recursive="false" type="SOURCES" />
+        <jarDirectory url="file://$USER_HOME$/external libraries/gson" recursive="false" />
+        <jarDirectory url="file://$USER_HOME$/external libraries/gson" recursive="false" type="SOURCES" />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="OkHttp" level="project" />
+    <orderEntry type="library" name="gson-2.1" level="project" />
   </component>
 </module>

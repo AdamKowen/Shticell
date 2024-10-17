@@ -2,47 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Client/Client.iml" filepath="$PROJECT_DIR$/Client/Client.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ClientApp/ClientApp.iml" filepath="$PROJECT_DIR$/ClientApp/ClientApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/Shticell-v1.iml" filepath="$PROJECT_DIR$/Shticell-v1.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/character-escape/character-escape.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/character-escape/character-escape.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/class-resolver/class-resolver.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/class-resolver/class-resolver.iml" />
-      <module fileurl="file://$PROJECT_DIR$/controller/controller.iml" filepath="$PROJECT_DIR$/controller/controller.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/create-marshal/create-marshal.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/create-marshal/create-marshal.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/cycle-recovery/cycle-recovery.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/cycle-recovery/cycle-recovery.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/datatypeconverter/datatypeconverter.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/datatypeconverter/datatypeconverter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/docs/docs.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/docs/docs.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/dtd/dtd.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/dtd/dtd.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/element-substitution/element-substitution.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/element-substitution/element-substitution.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ClientApp/client/client.iml" filepath="$PROJECT_DIR$/ClientApp/client/client.iml" />
       <module fileurl="file://$PROJECT_DIR$/ServerApp/engine/engine.iml" filepath="$PROJECT_DIR$/ServerApp/engine/engine.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/external-customize/external-customize.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/external-customize/external-customize.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/fix-collides/fix-collides.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/fix-collides/fix-collides.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/inline-customize/inline-customize.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/inline-customize/inline-customize.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/spec-samples/j2s/j2s.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/spec-samples/j2s/j2s.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/j2s-create-marshal/j2s-create-marshal.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/j2s-create-marshal/j2s-create-marshal.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/j2s-xmlAccessorOrder/j2s-xmlAccessorOrder.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/j2s-xmlAccessorOrder/j2s-xmlAccessorOrder.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/j2s-xmlAdapter/j2s-xmlAdapter.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/j2s-xmlAdapter/j2s-xmlAdapter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/j2s-xmlAttribute/j2s-xmlAttribute.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/j2s-xmlAttribute/j2s-xmlAttribute.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/j2s-xmlRootElement/j2s-xmlRootElement.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/j2s-xmlRootElement/j2s-xmlRootElement.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/j2s-xmlSchemaType/j2s-xmlSchemaType.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/j2s-xmlSchemaType/j2s-xmlSchemaType.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/j2s-xmlType/j2s-xmlType.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/j2s-xmlType/j2s-xmlType.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/locator-support/locator-support.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/locator-support/locator-support.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/modify-marshal/modify-marshal.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/modify-marshal/modify-marshal.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/namespace-prefix/namespace-prefix.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/namespace-prefix/namespace-prefix.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/partial-unmarshalling/partial-unmarshalling.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/partial-unmarshalling/partial-unmarshalling.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/pull-parser/pull-parser.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/pull-parser/pull-parser.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/relaxng/relaxng.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/relaxng/relaxng.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/spec-samples/runtime/runtime.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/spec-samples/runtime/runtime.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/streaming-unmarshalling/streaming-unmarshalling.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/streaming-unmarshalling/streaming-unmarshalling.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/subgroup-extend/subgroup-extend.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/subgroup-extend/subgroup-extend.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/type-substitution/type-substitution.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/type-substitution/type-substitution.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/unmarshal-read/unmarshal-read.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/unmarshal-read/unmarshal-read.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/unmarshal-validate/unmarshal-validate.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/unmarshal-validate/unmarshal-validate.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/updateablePartialBind/updateablePartialBind.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/updateablePartialBind/updateablePartialBind.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/vendor-extensions/vendor-extensions.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/vendor-extensions/vendor-extensions.iml" />
       <module fileurl="file://$PROJECT_DIR$/ServerApp/webEngine/webEngine.iml" filepath="$PROJECT_DIR$/ServerApp/webEngine/webEngine.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/xml-channel/xml-channel.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/xml-channel/xml-channel.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jaxb-ri-4.0.5/samples/xml-stylesheet/xml-stylesheet.iml" filepath="$PROJECT_DIR$/jaxb-ri-4.0.5/samples/xml-stylesheet/xml-stylesheet.iml" />
     </modules>
   </component>
 </project>
