@@ -10,5 +10,6 @@
     <orderEntry type="library" name="Shticell-v1" level="project" />
     <orderEntry type="library" name="mod" level="project" />
     <orderEntry type="library" name="angus-activation1" level="project" />
+    <orderEntry type="library" name="Jaxb" level="project" />
   </component>
 </module>

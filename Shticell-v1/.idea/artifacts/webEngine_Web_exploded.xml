@@ -6,6 +6,8 @@
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="webEngine" />
+          <element id="module-output" name="engine" />
+          <element id="module-source" name="engine" />
         </element>
       </element>
     </root>

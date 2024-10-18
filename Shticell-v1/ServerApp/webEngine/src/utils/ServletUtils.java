@@ -1,9 +1,10 @@
 package utils;
 
 import chat.ChatManager;
-import users.UserManager;
+
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
+import users.UserManager;
 
 import static constants.Constants.INT_PARAMETER_ERROR;
 

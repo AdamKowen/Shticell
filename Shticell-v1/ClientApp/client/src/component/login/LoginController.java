@@ -54,6 +54,8 @@ public class LoginController {
                         .build()
                         .toString();
 
+        System.out.println("Requesting URL: " + finalUrl);
+
         updateHttpStatusLine("New request is launched for: " + finalUrl);
 
         HttpClientUtil.runAsync(finalUrl, new Callback() {
