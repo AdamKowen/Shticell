@@ -4,6 +4,7 @@ import component.api.HttpStatusUpdate;
 import component.chatroom.ChatRoomMainController;
 import component.login.LoginController;
 import component.status.StatusController;
+import component.users.UsersListController;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
@@ -31,6 +32,7 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
 
     private Parent chatRoomComponent;
     private ChatRoomMainController chatRoomComponentController;
+    @FXML private UsersListController usersListComponentController;
 
     @FXML private Label userGreetingLabel;
     @FXML private AnchorPane mainPanel;
@@ -95,9 +97,14 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
         }
     }
 
+
+
+
+
+
     @Override
     public void updateHttpLine(String line) {
-        httpStatusComponentController.addHttpStatusLine(line);
+        //httpStatusComponentController.addHttpStatusLine(line);
     }
 
     public void switchToChatRoom() {
