@@ -35,7 +35,7 @@
       </AnchorPane>
     <AnchorPane minHeight="200.0" minWidth="500.0" prefHeight="257.0" prefWidth="586.0">
          <children>
-            <fx:include fx:id="httpStatusComponent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../status/status.fxml" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+
          </children>
       </AnchorPane>
   </items>
