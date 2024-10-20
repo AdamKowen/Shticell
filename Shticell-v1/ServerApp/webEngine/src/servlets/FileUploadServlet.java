@@ -50,7 +50,7 @@ public class FileUploadServlet extends HttpServlet {
             engine.loadSheetFromXML(tempFile.getAbsolutePath());
             resp.getWriter().write("Sheet loaded successfully");
         } catch (ParserConfigurationException | IOException | SAXException e) {
-            resp.getWriter().write("Error loading the sheet: " + e.getMessage());
+            resp.getWriter().write("Server Error loading the sheet: " + e.getMessage());
         } catch (SheetLoadingException e) {
             throw new RuntimeException(e);
         }

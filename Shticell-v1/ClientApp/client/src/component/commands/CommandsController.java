@@ -2,6 +2,7 @@ package component.commands;
 
 import component.api.ChatCommands;
 import javafx.stage.FileChooser;
+import okhttp3.*;
 import util.Constants;
 import util.http.HttpClientUtil;
 import javafx.application.Platform;
@@ -11,9 +12,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -89,49 +87,40 @@ public class CommandsController {
 
 
     private void uploadFileToServer(File file) throws IOException {
-        String boundary = "===" + System.currentTimeMillis() + "===";
-        String serverUrl = "http://localhost:8080/webEngine_Web_exploded/uploadSheet";
+        // Define the URL of the server to which the file will be uploaded
+        String RESOURCE = "/uploadSheet";  // The path where the file should be uploaded
+        String BASE_URL = "http://localhost:8080/webEngine_Web_exploded";  // Base URL of your application
 
-        HttpURLConnection connection = (HttpURLConnection) new URL(serverUrl).openConnection();
-        connection.setDoOutput(true);
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+        // Create a multipart request body for the file upload
+        RequestBody body = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", file.getName(),
+                        RequestBody.create(file, MediaType.parse("text/plain")))  // Media type of the file (adjust if needed)
+                .build();
 
-        try (OutputStream outputStream = connection.getOutputStream()) {
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, "UTF-8"), true);
+        // Create an HTTP request to send the file
+        Request request = new Request.Builder()
+                .url(BASE_URL + RESOURCE)  // Full URL of the server endpoint
+                .post(body)  // POST method for file upload
+                .build();
 
-            // כותב את הנתונים על הקובץ
-            writer.append("--").append(boundary).append("\r\n");
-            writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"")
-                    .append(file.getName()).append("\"\r\n");
-            writer.append("Content-Type: ").append(Files.probeContentType(file.toPath())).append("\r\n\r\n");
-            writer.flush();
+        // Use OkHttpClient to execute the request
+        OkHttpClient client = new OkHttpClient();
+        Call call = client.newCall(request);
 
-            // מעתיק את הקובץ לתוך זרם היציאה
-            Files.copy(file.toPath(), outputStream);
-            outputStream.flush();
-
-            // מסיים את ה-body של ה-request
-            writer.append("\r\n").flush();
-            writer.append("--").append(boundary).append("--\r\n");
-            writer.close();
-
-            // קריאת תגובת השרת
-            int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                // קבלת הודעת הצלחה מהשרת
-                InputStream responseStream = connection.getInputStream();
-                String responseMessage = new BufferedReader(new InputStreamReader(responseStream))
-                        .lines().collect(Collectors.joining("\n"));
-
-                System.out.println("Server response: " + responseMessage);
+        try (Response response = call.execute()) {
+            // Check if the response is successful
+            if (response.isSuccessful()) {
+                System.out.println("File uploaded successfully: " + response.body().string());
             } else {
-                System.out.println("Failed to upload file. Response code: " + responseCode);
+                System.out.println("Failed to upload file. Response code: " + response.code()+response.body().string());
             }
-        } finally {
-            connection.disconnect();
+        } catch (IOException e) {
+            System.out.println("Error during file upload: " + e.getMessage());
+            throw e;  // Rethrow the exception to be handled by the caller
         }
     }
+
 
 
 
