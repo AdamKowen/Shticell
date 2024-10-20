@@ -37,8 +37,12 @@ public class FileUploadServlet extends HttpServlet {
         }
 
         // Step 3: Retrieve the current user's SheetEngine from the session
-        HttpSession session = req.getSession();
+       // HttpSession session = req.getSession();
         String username = SessionUtils.getUsername(req);
+
+
+
+        resp.getWriter().write("connected username:"+username);
        // User currentUser = (User) session.getAttribute("user");
 
 
