@@ -4,6 +4,8 @@ import component.api.HttpStatusUpdate;
 import component.chatroom.ChatRoomMainController;
 import component.login.LoginController;
 import component.status.StatusController;
+import component.accountarea.AccountController;
+import component.status.StatusController;
 import component.users.UsersListController;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -30,9 +32,13 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
     private GridPane loginComponent;
     private LoginController logicController;
 
-    private Parent chatRoomComponent;
-    private ChatRoomMainController chatRoomComponentController;
-    @FXML private UsersListController usersListComponentController;
+    //private Parent chatRoomComponent;
+    //private ChatRoomMainController chatRoomComponentController;
+    //@FXML private UsersListController usersListComponentController;
+
+
+    private Parent accountAreaComponent;
+    private AccountController accountAreaController;
 
     @FXML private Label userGreetingLabel;
     @FXML private AnchorPane mainPanel;
@@ -49,7 +55,8 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
 
         // prepare components
         loadLoginPage();
-        loadChatRoomPage();
+        loadAccountPage();
+        //loadChatRoomPage();
     }
 
     public void updateUserName(String userName) {
@@ -67,7 +74,7 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
 
     @Override
     public void close() throws IOException {
-        chatRoomComponentController.close();
+        accountAreaController.close();
     }
 
     private void loadLoginPage() {
@@ -84,6 +91,23 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
         }
     }
 
+
+
+    private void loadAccountPage() {
+        URL loginPageUrl = getClass().getResource(ACCOUNT_AREA_FXML_RESOURCE_LOCATION);
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(loginPageUrl);
+            accountAreaComponent = fxmlLoader.load();
+            accountAreaController = fxmlLoader.getController();
+            accountAreaController.setChatAppMainController(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /*
     private void loadChatRoomPage() {
         URL loginPageUrl = getClass().getResource(CHAT_ROOM_FXML_RESOURCE_LOCATION);
         try {
@@ -96,11 +120,9 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
             e.printStackTrace();
         }
     }
+     */
 
-
-
-
-
+    
 
     @Override
     public void updateHttpLine(String line) {
@@ -108,14 +130,14 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
     }
 
     public void switchToChatRoom() {
-        setMainPanelTo(chatRoomComponent);
-        chatRoomComponentController.setActive();
+        setMainPanelTo(accountAreaComponent);
+        accountAreaController.setActive();
     }
 
     public void switchToLogin() {
         Platform.runLater(() -> {
             currentUserName.set(JHON_DOE);
-            chatRoomComponentController.setInActive();
+            accountAreaController.setInActive();
             setMainPanelTo(loginComponent);
         });
     }

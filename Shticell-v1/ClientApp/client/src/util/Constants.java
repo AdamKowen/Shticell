@@ -14,6 +14,7 @@ public class Constants {
     public final static String MAIN_PAGE_FXML_RESOURCE_LOCATION = "/component/main/app-main.fxml";
     public final static String LOGIN_PAGE_FXML_RESOURCE_LOCATION = "/component/login/login.fxml";
     public final static String CHAT_ROOM_FXML_RESOURCE_LOCATION = "/component/chatroom/chat-room-main.fxml";
+    public final static String ACCOUNT_AREA_FXML_RESOURCE_LOCATION = "/component/accountarea/account-area.fxml";
 
     // Server resources locations
     public final static String BASE_DOMAIN = "localhost";

@@ -25,7 +25,7 @@ public class LogoutServlet extends HttpServlet {
             SessionUtils.clearSession(request);
 
             // used mainly for the web version. irrelevant in the desktop client version
-            response.sendRedirect(request.getContextPath() + "/index.html");
+            //response.sendRedirect(request.getContextPath() + "/index.html");
         }
     }
 
