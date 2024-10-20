@@ -8,6 +8,7 @@
    <children>
       <ToggleButton id="auto-updates-button" fx:id="autoUpdatesButton" mnemonicParsing="false" prefWidth="100.0" selected="true" styleClass="main-action-button" text="Auto Updates" textAlignment="CENTER" wrapText="true" />
       <Button mnemonicParsing="false" onAction="#logoutClicked" prefWidth="100.0" styleClass="main-action-button" text="Logout" />
+      <Button mnemonicParsing="false" onAction="#loadSheetClicked" prefWidth="100.0" styleClass="main-action-button" text="Load Sheet" />
       <Button id="quit-button" mnemonicParsing="false" onAction="#quitClicked" prefWidth="100.0" styleClass="main-action-button" text="Quit" />
    </children>
    <padding>
