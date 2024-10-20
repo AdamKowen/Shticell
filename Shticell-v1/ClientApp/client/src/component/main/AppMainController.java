@@ -147,4 +147,6 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
             mainBorderPane.setCenter(loginComponent); // Switch back to login page
         });
     }
+
+
 }

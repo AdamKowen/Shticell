@@ -44,6 +44,17 @@ public class SheetImpl implements Sheet {
         this.numCellChangedHistory = new ArrayList<>();
         this.ranges = rangesInSheet;
     }
+    public SheetImpl(){
+        this.numOfColumns = 0;
+        this.numOfRows = 0;
+        this.version = 0;
+        this.columnUnits = 0;
+        this.rowUnits = 0;
+        this.cellsInSheet = new HashMap<>();
+        this.versionHistory = new HashMap<>();
+        this.numCellChangedHistory = new ArrayList<>();
+        this.ranges = new HashMap<>();
+    }
 
     @Override
     public Cell getCell(int row, int column) {

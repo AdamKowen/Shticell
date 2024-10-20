@@ -18,6 +18,7 @@ public class AppMain extends Application {
 
     private AppMainController chatAppMainController;
 
+
     @Override
     public void start(Stage primaryStage) {
 

@@ -58,10 +58,12 @@ public class LoginController {
 
         updateHttpStatusLine("New request is launched for: " + finalUrl);
 
+
         HttpClientUtil.runAsync(finalUrl, new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
                 Platform.runLater(() ->
                         errorMessageProperty.set("Something went wrong: " + e.getMessage())
                 );

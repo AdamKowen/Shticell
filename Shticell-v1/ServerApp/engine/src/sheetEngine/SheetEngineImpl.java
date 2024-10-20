@@ -23,6 +23,7 @@ import sheetCalculator.SheetCalculatorImpl;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,11 +31,11 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
 
     private Sheet currentSheet;
 
-    // hash map - string - name of file -> sheet - my files
-    // hash map - string - name of file -> sheet - reader
-    // hash map - string - name of file -> sheet - writes
 
     private Loader loader;
+    private HashMap<String, Sheet> MyFiles;
+    private HashMap<String, Sheet> readerFiles;
+    private HashMap<String, Sheet> writerFiles;
 
 
     // change current sheet
@@ -42,7 +43,10 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
 
 
     public SheetEngineImpl() {
-        this.loader = new LoaderImpl(); // loading
+        this.loader = new LoaderImpl();
+        this.MyFiles = new HashMap<>();
+        this.readerFiles = new HashMap<>();
+        this.writerFiles = new HashMap<>();
     }
 
     //  XML load with og value in cells
@@ -233,6 +237,24 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         return cell == null || cell.getOriginalValue().isBlank();
     }
 
+    public HashMap<String, Sheet> getMyFiles() {
+        return MyFiles;
+    }
+    public HashMap<String, Sheet> getReaderFiles() {
+        return readerFiles;
+    }
+    public HashMap<String, Sheet> getWriterFiles() {
+        return writerFiles;
+    }
 
+    public void setMyFiles(HashMap<String, Sheet> myFiles) {
+        MyFiles = myFiles;
+    }
+    public void setReaderFiles(HashMap<String, Sheet> readerFiles) {
+        this.readerFiles = readerFiles;
+    }
+    public void setWriterFiles(HashMap<String, Sheet> writerFiles) {
+        this.writerFiles = writerFiles;
+    }
 
 }
