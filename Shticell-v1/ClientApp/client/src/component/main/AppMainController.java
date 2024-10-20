@@ -16,6 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 import java.io.Closeable;
@@ -31,6 +32,8 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
 
     private GridPane loginComponent;
     private LoginController logicController;
+
+    @FXML private BorderPane mainBorderPane;
 
     //private Parent chatRoomComponent;
     //private ChatRoomMainController chatRoomComponentController;
@@ -51,7 +54,7 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
 
     @FXML
     public void initialize() {
-        userGreetingLabel.textProperty().bind(Bindings.concat("Hello ", currentUserName));
+        //userGreetingLabel.textProperty().bind(Bindings.concat("Hello ", currentUserName));
 
         // prepare components
         loadLoginPage();
@@ -85,7 +88,8 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
             loginComponent = fxmlLoader.load();
             logicController = fxmlLoader.getController();
             logicController.setChatAppMainController(this);
-            setMainPanelTo(loginComponent);
+            mainBorderPane.setCenter(loginComponent); // Place in center
+            //setMainPanelTo(loginComponent);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -130,7 +134,8 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
     }
 
     public void switchToChatRoom() {
-        setMainPanelTo(accountAreaComponent);
+        //setMainPanelTo(accountAreaComponent);
+        mainBorderPane.setCenter(accountAreaComponent); // Switch to account page
         accountAreaController.setActive();
     }
 
@@ -138,7 +143,8 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
         Platform.runLater(() -> {
             currentUserName.set(JHON_DOE);
             accountAreaController.setInActive();
-            setMainPanelTo(loginComponent);
+            //setMainPanelTo(loginComponent);
+            mainBorderPane.setCenter(loginComponent); // Switch back to login page
         });
     }
 }
