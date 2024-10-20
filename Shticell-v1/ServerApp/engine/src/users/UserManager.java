@@ -1,6 +1,10 @@
 package users;
 
+import sheet.api.Sheet;
+import sheet.impl.SheetImpl;
+
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,14 +15,14 @@ of the user of this class to handle the synchronization of isUserExists with oth
  */
 public class UserManager {
 
-    private final Set<String> usersSet;
+    private final HashMap<String, User> usersSet;
 
     public UserManager() {
-        usersSet = new HashSet<>();
+        usersSet = new HashMap<>();
     }
 
     public synchronized void addUser(String username) {
-        usersSet.add(username);
+        usersSet.put(username,new User(username));
     }
 
     public synchronized void removeUser(String username) {
@@ -26,10 +30,10 @@ public class UserManager {
     }
 
     public synchronized Set<String> getUsers() {
-        return Collections.unmodifiableSet(usersSet);
+        return Collections.unmodifiableSet(usersSet.keySet());
     }
 
     public boolean isUserExists(String username) {
-        return usersSet.contains(username);
+        return usersSet.containsKey(username);
     }
 }
