@@ -247,7 +247,7 @@
     -fx-padding: 10; /* ריווח פנימי */
 }
 
-/* עיצוב עבור TextField עם צללית פנימית */
+
 .text-field {
     -fx-background-color: #c8c3cc;
     -fx-border-color: #563f46;
