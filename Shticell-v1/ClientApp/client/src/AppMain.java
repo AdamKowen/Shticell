@@ -22,7 +22,7 @@ public class AppMain extends Application {
     public void start(Stage primaryStage) {
 
         primaryStage.setMinHeight(600);
-        primaryStage.setMinWidth(600);
+        primaryStage.setMinWidth(800);
         primaryStage.setTitle("Shticell");
 
         URL loginPage = getClass().getResource(MAIN_PAGE_FXML_RESOURCE_LOCATION);
@@ -32,7 +32,7 @@ public class AppMain extends Application {
             Parent root = fxmlLoader.load();
             chatAppMainController = fxmlLoader.getController();
 
-            Scene scene = new Scene(root, 700, 600);
+            Scene scene = new Scene(root, 800, 600);
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException e) {

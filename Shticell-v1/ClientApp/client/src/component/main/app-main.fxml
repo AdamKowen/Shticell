@@ -8,12 +8,12 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.main.AppMainController">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.main.AppMainController">
    <center>
-      <GridPane hgap="3.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@app-main.css" vgap="3.0" BorderPane.alignment="CENTER">
+      <GridPane hgap="3.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" stylesheets="@app-main.css" vgap="3.0" BorderPane.alignment="CENTER">
         <columnConstraints>
-          <ColumnConstraints hgrow="NEVER" maxWidth="97.0" minWidth="80.0" prefWidth="97.0" />
-          <ColumnConstraints hgrow="ALWAYS" maxWidth="507.0" minWidth="490.0" prefWidth="490.0" />
+          <ColumnConstraints hgrow="NEVER" minWidth="0.0" />
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="507.0" minWidth="72.0" prefWidth="131.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints vgrow="NEVER" />
@@ -22,7 +22,7 @@
         </rowConstraints>
          <children>
             <AnchorPane fx:id="mainPanel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
-            <Label fx:id="userGreetingLabel" prefHeight="17.0" prefWidth="90.0" text="jjjj" />
+            <Label fx:id="userGreetingLabel" text="jjjj" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

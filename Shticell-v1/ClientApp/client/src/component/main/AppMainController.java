@@ -122,7 +122,7 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
     }
      */
 
-    
+
 
     @Override
     public void updateHttpLine(String line) {
