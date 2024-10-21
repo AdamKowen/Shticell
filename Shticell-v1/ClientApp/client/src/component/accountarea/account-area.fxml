@@ -1,45 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="412.0" prefWidth="888.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.accountarea.AccountController">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="600.0" minWidth="800.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.accountarea.AccountController">
    <center>
    </center>
    <center>
-      <GridPane prefHeight="412.0" prefWidth="858.0" BorderPane.alignment="CENTER">
+      <GridPane prefHeight="387.0" prefWidth="150.0" BorderPane.alignment="CENTER">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="576.3561401367188" minWidth="10.0" prefWidth="487.74371337890625" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="293.4217529296875" minWidth="10.0" prefWidth="150.0" />
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="597.611083984375" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="395.55120849609375" minWidth="0.0" prefWidth="200.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
         </rowConstraints>
          <children>
-            <GridPane GridPane.columnIndex="1">
+            <GridPane prefHeight="413.0" prefWidth="90.0" GridPane.columnIndex="1">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="200.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="150.0" prefHeight="30.0" vgrow="NEVER" />
+                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
-                  <fx:include fx:id="actionCommandsComponent" source="../../component/commands/action-commands.fxml" GridPane.rowIndex="1" />
-                  <fx:include fx:id="usersListComponent" maxHeight="1.7976931348623157E308" source="../../component/users/users.fxml" />
+                  <fx:include fx:id="actionCommandsComponent" minWidth="0.0" source="../../component/commands/action-commands.fxml" GridPane.rowIndex="1" />
+                  <fx:include fx:id="usersListComponent" maxHeight="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" source="../../component/users/users.fxml" />
                </children>
             </GridPane>
             <GridPane>
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints maxHeight="130.42176818847656" minHeight="0.0" prefHeight="43.94559097290039" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="275.0" minHeight="10.0" prefHeight="158.92625427246094" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="244.45816040039062" minHeight="10.0" prefHeight="204.07374572753906" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="149.038635969162" minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
+                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" vgrow="ALWAYS" />
+                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" vgrow="ALWAYS" />
               </rowConstraints>
+               <children>
+                  <TableView minHeight="0.0" minWidth="0.0" GridPane.rowIndex="1">
+                    <columns>
+                      <TableColumn prefWidth="75.0" text="C1" />
+                      <TableColumn prefWidth="75.0" text="C2" />
+                    </columns>
+                  </TableView>
+                  <TableView minHeight="0.0" minWidth="0.0" GridPane.rowIndex="2">
+                    <columns>
+                      <TableColumn prefWidth="75.0" text="C1" />
+                      <TableColumn prefWidth="75.0" text="C2" />
+                    </columns>
+                  </TableView>
+               </children>
             </GridPane>
          </children>
       </GridPane>
