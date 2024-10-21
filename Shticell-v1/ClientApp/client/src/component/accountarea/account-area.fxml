@@ -1,13 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.BorderPane?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="412.0" prefWidth="888.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.accountarea.AccountController">
-   <left>
-      <fx:include fx:id="usersListComponent" maxHeight="1.7976931348623157E308" source="../../component/users/users.fxml" />
-   </left>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="412.0" prefWidth="888.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.accountarea.AccountController">
    <center>
    </center>
-   <right>
-      <fx:include fx:id="actionCommandsComponent" source="../../component/commands/action-commands.fxml" />
-   </right>
+   <center>
+      <GridPane prefHeight="412.0" prefWidth="858.0" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="576.3561401367188" minWidth="10.0" prefWidth="487.74371337890625" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="293.4217529296875" minWidth="10.0" prefWidth="150.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <GridPane GridPane.columnIndex="1">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <fx:include fx:id="actionCommandsComponent" source="../../component/commands/action-commands.fxml" GridPane.rowIndex="1" />
+                  <fx:include fx:id="usersListComponent" maxHeight="1.7976931348623157E308" source="../../component/users/users.fxml" />
+               </children>
+            </GridPane>
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="130.42176818847656" minHeight="0.0" prefHeight="43.94559097290039" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="275.0" minHeight="10.0" prefHeight="158.92625427246094" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="244.45816040039062" minHeight="10.0" prefHeight="204.07374572753906" vgrow="SOMETIMES" />
+              </rowConstraints>
+            </GridPane>
+         </children>
+      </GridPane>
+   </center>
 </BorderPane>
