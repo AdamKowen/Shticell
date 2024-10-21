@@ -36,13 +36,6 @@
         <url-pattern>/userslist</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>FileUploadServlet</servlet-name>
-        <servlet-class>servlets.FileUploadServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>FileUploadServlet</servlet-name>
-        <url-pattern>/uploadSheet</url-pattern>
-    </servlet-mapping>
+
 </web-app>
 

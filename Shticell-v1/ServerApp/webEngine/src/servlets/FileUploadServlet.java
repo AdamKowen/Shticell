@@ -9,6 +9,7 @@ import org.xml.sax.SAXException;
 import sheetEngine.SheetEngine;
 import sheetEngine.SheetEngineImpl;
 import users.User;
+import utils.SessionUtils;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
@@ -36,14 +37,16 @@ public class FileUploadServlet extends HttpServlet {
         }
 
         // Step 3: Retrieve the current user's SheetEngine from the session
-        HttpSession session = req.getSession();
-        User currentUser = (User) session.getAttribute("user");
-        if (currentUser == null) {
-            resp.getWriter().write("Error: No user found in session");
-            return;
-        }
+       // HttpSession session = req.getSession();
+        String username = SessionUtils.getUsername(req);
 
-        SheetEngine engine = currentUser.getSheetEngine();
+
+
+        resp.getWriter().write("connected username:"+username);
+       // User currentUser = (User) session.getAttribute("user");
+
+
+        SheetEngine engine = new SheetEngineImpl();//currentUser.getSheetEngine();
 
         // Step 4: Load the sheet using the loadSheetFromXML method
         try {

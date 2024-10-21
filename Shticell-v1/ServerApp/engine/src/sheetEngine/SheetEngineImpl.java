@@ -43,11 +43,9 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
 
 
     public SheetEngineImpl() {
-        this.loader = new LoaderImpl();
-        this.MyFiles = new HashMap<>();
-        this.readerFiles = new HashMap<>();
-        this.writerFiles = new HashMap<>();
+        this.loader = new LoaderImpl(); // loading
     }
+
 
     //  XML load with og value in cells
     @Override
