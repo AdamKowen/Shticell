@@ -28,6 +28,24 @@
 }
 
 
+#sheetCard{
+    /* צבע כהה יותר */
+    -fx-text-fill: #3a3a3a; /* טקסט לבן */
+    -fx-font-weight: normal;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    /* מעבר לינארי לרקע */
+    /* מעבר לינארי לרקע */
+
+    -fx-background-color: rgb(216, 216, 216);
+    -fx-background-radius: 40px; /* עיגול פינות של הרקע */
+    -fx-border-color: linear-gradient(to top, rgb(182, 182, 182, 0.65), rgba(237, 237, 237)); /* צבע הגבול */
+    -fx-border-width: 1.3; /* רוחב הגבול */
+    -fx-border-radius: 40px; /* עיגול פינות של הגבול */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.14), 8, 0.0, 0, 4); /* אפקט צל */
+    -fx-transition: background-color 0.3s ease, -fx-text-fill 0.3s ease;
+}
+
 
 
 

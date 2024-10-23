@@ -1,6 +1,6 @@
 package component.commands;
 
-import component.api.ChatCommands;
+import component.api.AccountCommands;
 import javafx.stage.FileChooser;
 import okhttp3.*;
 import util.Constants;
@@ -15,14 +15,10 @@ import javafx.scene.control.ToggleButton;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.file.Files;
-import java.util.stream.Collectors;
 
 public class CommandsController {
 
-    private ChatCommands chatCommands;
+    private AccountCommands accountCommands;
     private final BooleanProperty autoUpdates;
     @FXML private ToggleButton autoUpdatesButton;
 
@@ -41,18 +37,18 @@ public class CommandsController {
 
     @FXML
     void logoutClicked(ActionEvent event) {
-        chatCommands.updateHttpLine(Constants.LOGOUT);
+        accountCommands.updateHttpLine(Constants.LOGOUT);
         HttpClientUtil.runAsync(Constants.LOGOUT, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                chatCommands.updateHttpLine("Logout request ended with failure...:(");
+                accountCommands.updateHttpLine("Logout request ended with failure...:(");
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.isSuccessful() || response.isRedirect()) {
                     HttpClientUtil.removeCookiesOf(Constants.BASE_DOMAIN);
-                    chatCommands.logout();
+                    accountCommands.logout();
                 }
             }
         });
@@ -132,7 +128,7 @@ public class CommandsController {
         Platform.exit();
     }
 
-    public void setChatCommands(ChatCommands chatRoomMainController) {
-        this.chatCommands = chatRoomMainController;
+    public void setAccountCommands(AccountCommands chatRoomMainController) {
+        this.accountCommands = chatRoomMainController;
     }
 }

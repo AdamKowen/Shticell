@@ -1,6 +1,6 @@
 package component.chatroom;
 
-import component.api.ChatCommands;
+import component.api.AccountCommands;
 import component.api.HttpStatusUpdate;
 import component.chatarea.ChatAreaController;
 import component.commands.CommandsController;
@@ -13,7 +13,7 @@ import javafx.scene.layout.VBox;
 import java.io.Closeable;
 import java.io.IOException;
 
-public class ChatRoomMainController implements Closeable, HttpStatusUpdate, ChatCommands {
+public class ChatRoomMainController implements Closeable, HttpStatusUpdate, AccountCommands {
 
     @FXML private VBox usersListComponent;
     @FXML private UsersListController usersListComponentController;
@@ -27,7 +27,7 @@ public class ChatRoomMainController implements Closeable, HttpStatusUpdate, Chat
     @FXML
     public void initialize() {
         usersListComponentController.setHttpStatusUpdate(this);
-        actionCommandsComponentController.setChatCommands(this);
+        actionCommandsComponentController.setAccountCommands(this);
         chatAreaComponentController.setHttpStatusUpdate(this);
 
         chatAreaComponentController.autoUpdatesProperty().bind(actionCommandsComponentController.autoUpdatesProperty());
