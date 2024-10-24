@@ -5,6 +5,7 @@ import component.api.HttpStatusUpdate;
 import component.commands.CommandsController;
 import component.main.AppMainController;
 import component.users.UsersListController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
@@ -116,7 +117,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     }
 
 
-
+/*
     private void uploadFileToServer(File file) throws IOException {
         // Define the URL of the server to which the file will be uploaded
         String RESOURCE = "/uploadSheet";  // The path where the file should be uploaded
@@ -150,6 +151,47 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
             System.out.println("Error during file upload: " + e.getMessage());
             throw e;  // Rethrow the exception to be handled by the caller
         }
+    }
+
+ */
+
+    private void uploadFileToServer(File file) throws IOException {
+        String RESOURCE = "/uploadSheet";
+        String BASE_URL = "http://localhost:8080/webEngine_Web_exploded";
+        String finalUrl = BASE_URL + RESOURCE;  // משתמש באותו BASE_URL כמו שאר הקוד
+
+        RequestBody body = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", file.getName(),
+                        RequestBody.create(file, MediaType.parse("application/xml")))
+                .build();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .post(body)  // משתמש ב-POST במקום GET
+                .build();
+
+        // משתמש באותו HTTP_CLIENT עם אותו CookieManager
+        HttpClientUtil.runAsync(request, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        updateHttpLine("Error during file upload: " + e.getMessage())
+                );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseBody = response.body().string();
+                Platform.runLater(() -> {
+                    if (response.isSuccessful()) {
+                        updateHttpLine("Success: " + responseBody);
+                    } else {
+                        updateHttpLine("Error: " + responseBody + " (Code: " + response.code() + ")");
+                    }
+                });
+            }
+        });
     }
 
 

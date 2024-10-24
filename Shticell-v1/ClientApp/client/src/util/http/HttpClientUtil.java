@@ -34,6 +34,13 @@ public class HttpClientUtil {
         call.enqueue(callback);
     }
 
+
+    // מתודה חדשה שתומכת בשליחת Request מותאם אישית
+    public static void runAsync(Request request, Callback callback) {
+        Call call = HTTP_CLIENT.newCall(request);
+        call.enqueue(callback);
+    }
+
     public static void shutdown() {
         System.out.println("Shutting down HTTP CLIENT");
         HTTP_CLIENT.dispatcher().executorService().shutdown();

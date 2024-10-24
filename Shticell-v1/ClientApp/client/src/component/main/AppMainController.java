@@ -131,6 +131,7 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
     @Override
     public void updateHttpLine(String line) {
         //httpStatusComponentController.addHttpStatusLine(line);
+        System.out.println(line);
     }
 
     public void switchToChatRoom() {

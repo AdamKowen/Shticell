@@ -30,8 +30,6 @@ import java.util.Map;
 public class SheetEngineImpl implements sheetEngine.SheetEngine {
 
     private Sheet currentSheet;
-
-
     private Loader loader;
     private HashMap<String, Sheet> MyFiles;
     private HashMap<String, Sheet> readerFiles;
@@ -43,14 +41,18 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
 
 
     public SheetEngineImpl() {
-        this.loader = new LoaderImpl(); // loading
+        this.loader = new LoaderImpl();
+        this.MyFiles = new HashMap<>();
+        this.readerFiles = new HashMap<>();
+        this.writerFiles = new HashMap<>();
     }
 
 
     //  XML load with og value in cells
     @Override
     public void loadSheetFromXML(String filePath) throws ParserConfigurationException, IOException, SheetLoadingException, SAXException {
-        this.currentSheet = loader.loadSheetFromXML(filePath); //with only og value in!
+        currentSheet = loader.loadSheetFromXML(filePath); //with only og value in!
+        MyFiles.put(currentSheet.getName(), currentSheet);
         recalculateSheet();
     }
 

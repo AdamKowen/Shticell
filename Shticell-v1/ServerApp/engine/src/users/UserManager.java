@@ -33,6 +33,10 @@ public class UserManager {
         return Collections.unmodifiableSet(usersSet.keySet());
     }
 
+    public synchronized User getUser(String username) {
+        return usersSet.get(username);
+    }
+
     public boolean isUserExists(String username) {
         return usersSet.containsKey(username);
     }

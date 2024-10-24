@@ -80,8 +80,47 @@ public class CommandsController {
         }
     }
 
+    private void uploadFileToServer(File file) throws IOException {
+        String RESOURCE = "/uploadSheet";
+        String BASE_URL = "http://localhost:8080/webEngine_Web_exploded";
 
+        RequestBody body = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", file.getName(),
+                        RequestBody.create(file, MediaType.parse("text/plain")))
+                .build();
 
+        Request request = new Request.Builder()
+                .url(BASE_URL + RESOURCE)
+                .post(body)
+                .build();
+
+        // Use HttpClientUtil instead of creating a new client
+        HttpClientUtil.runAsync(String.valueOf(request), new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        accountCommands.updateHttpLine("Error during file upload: " + e.getMessage())
+                );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    Platform.runLater(() ->
+                            accountCommands.updateHttpLine("File uploaded successfully")
+                    );
+                } else {
+                    String error = response.body().string();
+                    Platform.runLater(() ->
+                            accountCommands.updateHttpLine("Upload failed: " + error)
+                    );
+                }
+            }
+        });
+    }
+
+/*
     private void uploadFileToServer(File file) throws IOException {
         // Define the URL of the server to which the file will be uploaded
         String RESOURCE = "/uploadSheet";  // The path where the file should be uploaded
@@ -116,6 +155,8 @@ public class CommandsController {
             throw e;  // Rethrow the exception to be handled by the caller
         }
     }
+
+ */
 
 
 
