@@ -5,6 +5,7 @@ import component.api.AccountCommands;
 import component.api.HttpStatusUpdate;
 import component.commands.CommandsController;
 import component.main.AppMainController;
+import component.sheetViewfinder.SheetViewfinderController;
 import component.users.UsersListController;
 import dto.SheetInfoDto;
 import javafx.application.Platform;
@@ -12,6 +13,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -35,6 +39,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.Timer;
 import java.util.TimerTask;
+import javafx.scene.input.MouseEvent;
 
 import static util.Constants.REFRESH_RATE;
 
@@ -69,6 +74,8 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     @FXML
     private TableColumn<SheetInfoDto, String> ownerColumn;  // עמודת שם הבעלים
 
+    private String selectedSheetName = null;  // משתנה לשמירת שם הגיליון הנבחר
+
 
     @FXML
     public void initialize() {
@@ -77,6 +84,14 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         usersListComponentController.autoUpdatesProperty().bind(actionCommandsComponentController.autoUpdatesProperty());
         initTableColumns();  // אתחול העמודות בעת ההפעלה
         startSheetListRefresher();   // התחלת עדכון הטבלה כל 2 שניות (REFRESH_RATE)
+        // מאזין ללחיצה על שורה בטבלה
+        sheetTableView.setOnMouseClicked((MouseEvent event) -> {
+            SheetInfoDto selectedSheet = sheetTableView.getSelectionModel().getSelectedItem();
+            if (selectedSheet != null) {
+                selectedSheetName = selectedSheet.getSheetName();  // שמירת שם הגיליון הנבחר
+                System.out.println("Selected sheet: " + selectedSheetName);  // להדגמה
+            }
+        });
     }
 
 
@@ -156,6 +171,20 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
             //fileNameLabel.setText("No file selected or an error occurred.");
         }
     }
+
+
+
+
+    @FXML
+    // פעולה לפתיחת ה-Viewfinder
+    public void openSheetViewfinder() {
+        if (selectedSheetName != null) {
+            chatAppMainController.switchToViewfinder(selectedSheetName);  // מעבר ל-viewfinder
+        } else {
+            System.out.println("No sheet selected");
+        }
+    }
+
 
 
 /*

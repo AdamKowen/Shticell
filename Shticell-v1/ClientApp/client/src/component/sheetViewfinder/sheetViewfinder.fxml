@@ -38,7 +38,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button fx:id="backButton" mnemonicParsing="false" onAction="#backButtonActionListener" prefHeight="42.0" prefWidth="98.0" text="← Back">
+                  <Button fx:id="backButton" mnemonicParsing="false" onAction="#goBackToSheetList" prefHeight="42.0" prefWidth="98.0" text="← Back">
                      <GridPane.margin>
                         <Insets left="15.0" />
                      </GridPane.margin></Button>

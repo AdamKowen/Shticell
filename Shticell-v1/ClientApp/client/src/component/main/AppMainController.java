@@ -3,6 +3,7 @@ package component.main;
 import component.api.HttpStatusUpdate;
 import component.chatroom.ChatRoomMainController;
 import component.login.LoginController;
+import component.sheetViewfinder.SheetViewfinderController;
 import component.status.StatusController;
 import component.accountarea.AccountController;
 import component.status.StatusController;
@@ -43,7 +44,10 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
     private Parent accountAreaComponent;
     private AccountController accountAreaController;
 
-    @FXML private Label userGreetingLabel;
+    private Parent viewfinderComponent;
+    private SheetViewfinderController viewfinderController;
+
+
     @FXML private AnchorPane mainPanel;
 
     private final StringProperty currentUserName;
@@ -54,11 +58,11 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
 
     @FXML
     public void initialize() {
-        //userGreetingLabel.textProperty().bind(Bindings.concat("Hello ", currentUserName));
 
         // prepare components
         loadLoginPage();
         loadAccountPage();
+        loadViewfinderPage();
         //loadChatRoomPage();
     }
 
@@ -111,6 +115,19 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
     }
 
 
+    private void loadViewfinderPage() {
+        URL viewfinderPageUrl = getClass().getResource("/component/sheetViewfinder/sheetViewfinder.fxml");
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(viewfinderPageUrl);
+            viewfinderComponent = fxmlLoader.load();
+            viewfinderController = fxmlLoader.getController();
+            viewfinderController.setAppMainController(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /*
     private void loadChatRoomPage() {
         URL loginPageUrl = getClass().getResource(CHAT_ROOM_FXML_RESOURCE_LOCATION);
@@ -147,6 +164,28 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
             //setMainPanelTo(loginComponent);
             mainBorderPane.setCenter(loginComponent); // Switch back to login page
         });
+    }
+
+
+
+    public void switchToViewfinder(String sheetName) {
+        viewfinderController.setSheetName(sheetName);  // מעביר את השם של הגיליון הנבחר
+        mainBorderPane.setCenter(viewfinderComponent);  // החלפה של התצוגה הראשית
+    }
+
+
+
+    @FXML
+    public void openSheetViewfinder(String selectedSheetName) {
+        if (selectedSheetName != null) {
+            switchToViewfinder(selectedSheetName);  // מעבר ל-viewfinder
+        } else {
+            System.out.println("No sheet selected");
+        }
+    }
+
+    public void switchToAccountArea() {
+        mainBorderPane.setCenter(accountAreaComponent);  // חזרה למסך ה-account
     }
 
 

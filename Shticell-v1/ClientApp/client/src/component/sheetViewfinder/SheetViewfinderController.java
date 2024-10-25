@@ -1,4 +1,5 @@
 package component.sheetViewfinder;
+import component.main.AppMainController;
 import component.sheet.SheetController;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 
 public class SheetViewfinderController {
 
+    private AppMainController appMainController;
     private Label selectedLabel = null;
     private Coordinate selectedCoordinate = null;
     private List<String> currentColsSelected;
@@ -857,7 +859,19 @@ public class SheetViewfinderController {
     }
 
 
+    public void setAppMainController(AppMainController appMainControll) {
+        this.appMainController = appMainControll;
+    }
 
+
+    public void setSheetName(String sheetName) {
+        System.out.println("Displaying sheet: " + sheetName);  // רק להדגמה
+    }
+
+    @FXML
+    private void goBackToSheetList() {
+        appMainController.switchToAccountArea();  // חזרה למסך הרשימה
+    }
 
 
     @FXML

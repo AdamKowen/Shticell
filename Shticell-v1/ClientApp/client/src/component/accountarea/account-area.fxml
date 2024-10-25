@@ -41,7 +41,7 @@
                      <children>
                         <fx:include fx:id="actionCommandsComponent" minWidth="0.0" source="../../component/commands/action-commands.fxml" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
                         <fx:include fx:id="usersListComponent" maxHeight="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" source="../../component/users/users.fxml" GridPane.vgrow="ALWAYS" />
-                        <Button mnemonicParsing="false" prefHeight="46.0" prefWidth="98.0" text="View Sheet" GridPane.rowIndex="1" />
+                        <Button fx:id="openSheetViewfinder" mnemonicParsing="false" onAction="#openSheetViewfinder" prefHeight="46.0" prefWidth="98.0" text="View Sheet" GridPane.rowIndex="1" />
                      </children>
                   </GridPane>
                   <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="0.0">

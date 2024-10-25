@@ -991,19 +991,6 @@ public class SheetControllerImpl implements SheetController {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     private List<Integer> getRowsFromCoordinates(Coordinate topLeft, Coordinate bottomRight) {
         List<Integer> rowsInRange = new ArrayList<>();
 

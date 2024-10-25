@@ -36,6 +36,7 @@ public class ChatAreaController implements Closeable {
     private ChatAreaRefresher chatAreaRefresher;
     private Timer timer;
 
+
     @FXML private ToggleButton autoScrollButton;
     @FXML private TextArea chatLineTextArea;
     @FXML private TextArea mainChatLinesTextArea;
