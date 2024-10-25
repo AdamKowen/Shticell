@@ -1,12 +1,11 @@
 package users;
 
+import dto.SheetInfoDto;
 import sheet.api.Sheet;
 import sheet.impl.SheetImpl;
+import sheetEngine.SheetEngine;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /*
 Adding and retrieving users is synchronized and in that manner - these actions are thread safe
@@ -40,4 +39,30 @@ public class UserManager {
     public boolean isUserExists(String username) {
         return usersSet.containsKey(username);
     }
+
+
+    // המתודה מחזירה רשימה של SheetInfoDto לכל הגיליונות של המשתמשים
+    public List<SheetInfoDto> getAllSheetsInfo() {
+        List<SheetInfoDto> sheetList = new ArrayList<>();
+
+        // מעבר על כל המשתמשים במערכת (ערכים במפת HashMap)
+        for (User user : usersSet.values()) {
+            SheetEngine sheetEngine = user.getSheetEngine();
+
+            // מעבר על כל הגיליונות במפת HashMap של המשתמש
+            for (Sheet sheet : sheetEngine.getMyFiles().values()) {
+                // יצירת SheetInfoDto עבור כל גיליון
+                SheetInfoDto sheetInfo = new SheetInfoDto(
+                        sheet.getName(),
+                        sheet.getNumOfRows(),
+                        sheet.getNumOfColumns(),
+                        user.getUsername()  // הבעלים של הגיליון
+                );
+                sheetList.add(sheetInfo);
+            }
+        }
+
+        return sheetList;
+    }
+
 }

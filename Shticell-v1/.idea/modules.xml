@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/Shticell-v1.iml" filepath="$PROJECT_DIR$/Shticell-v1.iml" />
       <module fileurl="file://$PROJECT_DIR$/ClientApp/client/client.iml" filepath="$PROJECT_DIR$/ClientApp/client/client.iml" />
       <module fileurl="file://$PROJECT_DIR$/ServerApp/engine/engine.iml" filepath="$PROJECT_DIR$/ServerApp/engine/engine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SharedInfo/shared/shared.iml" filepath="$PROJECT_DIR$/SharedInfo/shared/shared.iml" />
       <module fileurl="file://$PROJECT_DIR$/ServerApp/webEngine/webEngine.iml" filepath="$PROJECT_DIR$/ServerApp/webEngine/webEngine.iml" />
     </modules>
   </component>

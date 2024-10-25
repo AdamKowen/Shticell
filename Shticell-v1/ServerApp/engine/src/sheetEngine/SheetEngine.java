@@ -4,10 +4,11 @@ import dto.CellDto;
 import dto.SheetDto;
 import loader.SheetLoadingException;
 import org.xml.sax.SAXException;
-import sheet.coordinate.api.Coordinate;
+import sheet.api.Sheet;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,4 +44,12 @@ public interface SheetEngine {
     void setFontColor(String cell, String color);
     void setAlignment(String cell, String Ali);
     void resetStyle(String cell);
+
+
+    HashMap<String, Sheet> getMyFiles();
+    HashMap<String, Sheet> getReaderFiles();
+    HashMap<String, Sheet> getWriterFiles();
+
+    void setMyFiles(HashMap<String, Sheet> myFiles);
+    void setReaderFiles(HashMap<String, Sheet> readerFiles);
 }

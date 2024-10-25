@@ -1,5 +1,4 @@
 package dto;
-import sheet.cell.api.EffectiveValue;
 import sheet.coordinate.api.Coordinate;
 
 import java.util.List;

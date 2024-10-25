@@ -1,13 +1,20 @@
 package component.accountarea;
 
+import com.google.gson.Gson;
 import component.api.AccountCommands;
 import component.api.HttpStatusUpdate;
 import component.commands.CommandsController;
 import component.main.AppMainController;
 import component.users.UsersListController;
+import dto.SheetInfoDto;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -19,6 +26,17 @@ import util.http.HttpClientUtil;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.List;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static util.Constants.REFRESH_RATE;
 
 public class AccountController implements Closeable, HttpStatusUpdate, AccountCommands {
 
@@ -31,11 +49,34 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
     private AppMainController chatAppMainController;
 
+    private Timer timer;  // משתנה שיחזיק את ה-Timer
+    private TimerTask sheetListRefresher;  // משתנה שיחזיק את ה-TimerTask
+
+
+
+    @FXML
+    private TableView<SheetInfoDto> sheetTableView;
+
+    @FXML
+    private TableColumn<SheetInfoDto, String> nameColumn;  // עמודת שם הגיליון
+
+    @FXML
+    private TableColumn<SheetInfoDto, Integer> rowsColumn;  // עמודת שורות
+
+    @FXML
+    private TableColumn<SheetInfoDto, Integer> columnsColumn;  // עמודת עמודות
+
+    @FXML
+    private TableColumn<SheetInfoDto, String> ownerColumn;  // עמודת שם הבעלים
+
+
     @FXML
     public void initialize() {
         usersListComponentController.setHttpStatusUpdate(this);
         accountCommands = this;
         usersListComponentController.autoUpdatesProperty().bind(actionCommandsComponentController.autoUpdatesProperty());
+        initTableColumns();  // אתחול העמודות בעת ההפעלה
+        startSheetListRefresher();   // התחלת עדכון הטבלה כל 2 שניות (REFRESH_RATE)
     }
 
 
@@ -200,5 +241,39 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     public void setAccountCommands(AccountCommands chatRoomMainController) {
         this.accountCommands = chatRoomMainController;
     }
+
+
+
+    private void initTableColumns() {
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("sheetName"));
+        rowsColumn.setCellValueFactory(new PropertyValueFactory<>("numberOfRows"));
+        columnsColumn.setCellValueFactory(new PropertyValueFactory<>("numberOfColumns"));
+        ownerColumn.setCellValueFactory(new PropertyValueFactory<>("ownerName"));
+    }
+
+
+    // הפונקציה שמתחילה את הרענון המחזורי של רשימת הגיליונות
+    private void startSheetListRefresher() {
+        sheetListRefresher = new component.sheets.SheetListRefresher(
+                this::logHttpRequest,
+                this::updateSheetTable);
+        timer = new Timer();
+        timer.schedule(sheetListRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
+
+    // עדכון הטבלה עם הנתונים החדשים
+    private void updateSheetTable(List<SheetInfoDto> sheetInfoDtoList) {
+        Platform.runLater(() -> {
+            ObservableList<SheetInfoDto> data = FXCollections.observableArrayList(sheetInfoDtoList);
+            sheetTableView.setItems(data);
+        });
+    }
+
+    // לוג הבקשה לשרת
+    private void logHttpRequest(String logMessage) {
+        System.out.println(logMessage);  // יכול לשמש למעקב אחר בקשות
+    }
+
+
 }
 

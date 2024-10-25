@@ -7,7 +7,6 @@ import sheet.cell.api.Cell;
 import sheet.coordinate.api.*;
 import sheet.coordinate.impl.CoordinateCache;
 import sheet.range.api.Range;
-import sheet.range.boundaries.Boundaries;
 
 import java.util.ArrayList;
 import java.util.HashMap;

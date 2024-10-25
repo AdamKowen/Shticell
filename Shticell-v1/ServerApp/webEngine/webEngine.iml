@@ -50,5 +50,6 @@
     <orderEntry type="library" name="OkHttp" level="project" />
     <orderEntry type="library" name="gson-2.1" level="project" />
     <orderEntry type="library" name="Jaxb" level="project" />
+    <orderEntry type="module" module-name="shared" />
   </component>
 </module>

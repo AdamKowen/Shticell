@@ -36,7 +36,6 @@ public class CellDtoImpl implements CellDto {
         return originalValue;
     }
 
-
     public String getValue() {
         Object curr = effectiveValue.getValue();
         if (curr != null)
@@ -64,7 +63,6 @@ public class CellDtoImpl implements CellDto {
     public CellStyleDto getStyle() {
         return style;
     }
-
 
 
 }

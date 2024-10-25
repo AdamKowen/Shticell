@@ -41,6 +41,7 @@
                      <children>
                         <fx:include fx:id="actionCommandsComponent" minWidth="0.0" source="../../component/commands/action-commands.fxml" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
                         <fx:include fx:id="usersListComponent" maxHeight="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" source="../../component/users/users.fxml" GridPane.vgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" prefHeight="46.0" prefWidth="98.0" text="View Sheet" GridPane.rowIndex="1" />
                      </children>
                   </GridPane>
                   <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="0.0">
@@ -83,12 +84,13 @@
                               </GridPane>
                            </center>
                         </BorderPane>
-                        <TableView prefHeight="200.0" prefWidth="200.0">
+                        <TableView fx:id="sheetTableView" prefHeight="200.0" prefWidth="200.0">
                           <columns>
-                            <TableColumn prefWidth="93.13738632202148" text="Sheet Name" />
-                            <TableColumn prefWidth="94.28239440917969" text="Owner" />
-                              <TableColumn prefWidth="75.0" text="Size" />
-                              <TableColumn maxWidth="1.7976931348623157E308" prefWidth="75.0" text="Access" />
+                            <TableColumn fx:id="nameColumn" prefWidth="93.13738632202148" text="Sheet Name" />
+                            <TableColumn fx:id="ownerColumn" prefWidth="94.28239440917969" text="Owner" />
+                              <TableColumn fx:id="columnsColumn" prefWidth="75.0" text="Column" />
+                              <TableColumn fx:id="rowsColumn" maxWidth="1.7976931348623157E308" prefWidth="75.0" text="Rows" />
+                              <TableColumn prefWidth="75.0" text="Access" />
                           </columns>
                            <GridPane.margin>
                               <Insets left="40.0" right="40.0" top="20.0" />

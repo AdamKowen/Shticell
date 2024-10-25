@@ -12,7 +12,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
             // טוען את קובץ ה-FXML
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("UIscene.fxml")));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("sheetViewfinder.fxml")));
 
             // יצירת סצנה מה-FXML
             Scene scene = new Scene(root);

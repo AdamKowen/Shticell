@@ -26,6 +26,7 @@ public class UsersListController implements Closeable {
     private final IntegerProperty totalUsers;
     private HttpStatusUpdate httpStatusUpdate;
 
+
     @FXML private ListView<String> usersListView;
     @FXML private Label chatUsersLabel;
 

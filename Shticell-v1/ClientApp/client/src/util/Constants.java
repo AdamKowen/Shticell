@@ -27,6 +27,7 @@ public class Constants {
     public final static String LOGOUT = FULL_SERVER_PATH + "/logout";
     public final static String SEND_CHAT_LINE = FULL_SERVER_PATH + "/pages/chatroom/sendChat";
     public final static String CHAT_LINES_LIST = FULL_SERVER_PATH + "/chat";
+    public final static String SHEET_LIST = FULL_SERVER_PATH + "/getSheets";
 
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();
