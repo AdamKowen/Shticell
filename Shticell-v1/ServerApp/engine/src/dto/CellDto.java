@@ -21,4 +21,6 @@ public interface CellDto {
     List<Coordinate> getInfluencingOn();
 
     CellStyleDto getStyle();
+
+    String getLastUserUpdated();
 }

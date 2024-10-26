@@ -313,4 +313,11 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         return true;
     }
 
+
+
+    @Override
+    public int getCurrentSheetVersion()
+    {
+        return currentSheet.getVersion();
+    }
 }

@@ -4,6 +4,7 @@ import component.main.AppMainController;
 import component.sheet.SheetController;
 import dto.SheetDto;
 import dto.SheetDtoImpl;
+import jakarta.servlet.http.HttpServletResponse;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -209,10 +210,6 @@ public class SheetViewfinderController {
 
 
 
-                // הגדרת המיקוד על תיבת הטקסט כך שהסמן יהיה בפנים
-                cellInputContentTextField.requestFocus();
-                // ממקם את הסמן בסוף הטקסט הקיים
-                cellInputContentTextField.positionCaret(cellInputContentTextField.getText().length());
 
                 listOfRanges.getSelectionModel().clearSelection();
                 rangeNameTextBox.clear();
@@ -220,6 +217,13 @@ public class SheetViewfinderController {
                 rangeErrorMassage.setText("");
                 cellUpdateError.setText("");
                 errorSelectMassage.setText("");
+
+                // מוודא שהסמן בסוף ומבצע הסרת סימון
+                Platform.runLater(() -> {
+                    cellInputContentTextField.requestFocus(); // מוודא שהתיבה ממוקדת
+                    cellInputContentTextField.positionCaret(cellInputContentTextField.getText().length()); // ממקם את הסמן בסוף
+                    cellInputContentTextField.selectRange(cellInputContentTextField.getText().length(), cellInputContentTextField.getText().length()); // מסיר את הסימון
+                });
 
             } else {
                 cellInputContentTextField.setText("");
@@ -257,6 +261,8 @@ public class SheetViewfinderController {
                 rangeErrorMassage.setText("");
                 cellUpdateError.setText("");
                 errorSelectMassage.setText("");
+
+
             } else {
                 selectedCellLabel.setText("No range selected");
             }
@@ -268,33 +274,11 @@ public class SheetViewfinderController {
 
         // הוספת Listener ללחיצה על Enter בתיבת הטקסט
         cellInputContentTextField.setOnKeyPressed(event -> {
+
             if (event.getCode() == KeyCode.ENTER) {
-                // עדכון התא שנבחר בתוכן החדש
-                Coordinate selectedCoordinate = sheetComponentController.getSelectedCoordinate();
-                if (selectedCoordinate != null) {
-                    String newValue = cellInputContentTextField.getText();
-
-                    try{
-                        sheetComponentController.updateCellContent(selectedCoordinate, newValue);
-                        cellUpdateError.setText("");
-                    }catch(Exception e){
-                        cellUpdateError.setText(e.getMessage());
-                    }
-
-                    versionComboBox.getItems().clear();
-                    // קבלת רשימת הגרסאות
-                    List<Integer> versions = new ArrayList<>(Arrays.asList(1));
-                    // עבור על הרשימה ובנה מחרוזות עם מספרי גרסאות ומספרי שינויים
-                    for (int i = 0; i < versions.size(); i++) {
-                        int versionNumber = i + 1; // מספר הגרסה מתחיל מ-1
-                        int changes = versions.get(i); // מספר השינויים לאותה גרסה
-                        String versionText = "Version " + versionNumber + " - " + changes + " changes";
-
-                        // הוסף את המחרוזת ל-ComboBox
-                        versionComboBox.getItems().add(versionText);
-                    }
-                }
+                handleUpdate();
             }
+
         });
 
 
@@ -423,6 +407,9 @@ public class SheetViewfinderController {
     }
 
 
+
+
+    // Cell value update functions:
     @FXML
     private void handleUpdate() {
         // קבלת התא הנבחר
@@ -434,48 +421,94 @@ public class SheetViewfinderController {
         // בדיקה אם יש תא נבחר וטקסט לא ריק
         if (selectedCoordinate != null && !newValue.isEmpty()) {
             try {
-                // עדכון התוכן של התא
+                // הגדרת פרמטרים לבקשת העדכון
+                String coordinate = coordinateToString(selectedCoordinate); // המרה למחרוזת של הקואורדינטה (לדוגמה: "A1")
+                int currentSheetVersion = sheetComponentController.getCurrentSheetVersion(); // קבלת גרסת הגיליון הנוכחית
 
-                sheetComponentController.updateCellContent(selectedCoordinate, newValue);
+                // יצירת הבקשה לעדכון התא
+                sendUpdateRequest(coordinate, newValue, currentSheetVersion);
 
-                // עדכון רשימת הגרסאות ב-ComboBox
-                versionComboBox.getItems().clear();
-                cellUpdateError.setText("");
-
-                // קבלת רשימת הגרסאות
-                List<Integer> versions = new ArrayList<>(Arrays.asList(1));
-
-                // בניית מחרוזות הגרסאות והוספתן ל-ComboBox
-                for (int i = 0; i < versions.size(); i++) {
-                    int versionNumber = i + 1; // מספר הגרסה מתחיל מ-1
-                    int changes = versions.get(i); // מספר השינויים לאותה גרסה
-                    String versionText = "Version " + versionNumber + " - " + changes + " changes";
-
-                    versionComboBox.getItems().add(versionText);
-                }
-
-                // אפס את הבחירה ב-ComboBox כדי להחזיר את הטקסט ההתחלתי
-                versionComboBox.getSelectionModel().clearSelection();
-                versionComboBox.setValue(null);
             } catch (Exception e) {
                 cellUpdateError.setText(e.getMessage());
             }
         } else {
             // אין מה לעדכן - אפשר לבחור להציג הודעה או פשוט לעשות כלום
-            // לדוגמה, ניתן להציג הודעה קצרה:
-            // showAlert("שגיאה", "לא נבחר תא או אין טקסט לעדכון.");
+            cellUpdateError.setText("לא נבחר תא או אין טקסט לעדכון.");
         }
     }
 
+    private void sendUpdateRequest(String coordinate, String newValue, int currentSheetVersion) {
+        // יצירת הגוף של בקשת ה-POST
+        RequestBody formBody = new FormBody.Builder()
+                .add("coordinate", coordinate)
+                .add("newValue", newValue)
+                .add("sheetVersion", String.valueOf(currentSheetVersion))
+                .build();
 
-/*
-    private void onCurrentSheetTabSelected() {
+        Request request = new Request.Builder()
+                .url(Constants.UPDATE_CELL_URL) // ה-URL של ה-Servlet לעדכון תא
+                .post(formBody)
+                .build();
+
+        // שליחת הבקשה באופן אסינכרוני
+        HttpClientUtil.runAsync(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Platform.runLater(() -> cellUpdateError.setText("Failed to update cell: " + e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    Platform.runLater(() -> {
+                        cellUpdateError.setText("Cell updated successfully.");
+                        refreshSheet();
+                        refreshVersionComboBox();
+                    });
+                } else if (response.code() == HttpServletResponse.SC_CONFLICT) {
+                    Platform.runLater(() -> cellUpdateError.setText("Version conflict: Please refresh the sheet."));
+                } else {
+                    Platform.runLater(() -> cellUpdateError.setText("Failed to update cell. Response code: " + response.code()));
+                }
+                response.close();
+            }
+        });
     }
 
- */
 
 
 
+
+
+
+
+    // Version functions:
+    // פונקציה לרענון ה-ComboBox של הגרסאות
+    private void refreshVersionComboBox() {
+        versionComboBox.getItems().clear();
+        List<Integer> versions = new ArrayList<>(Arrays.asList(1));
+
+        for (int i = 0; i < versions.size(); i++) {
+            int versionNumber = i + 1; // מספר הגרסה מתחיל מ-1
+            int changes = versions.get(i); // מספר השינויים לאותה גרסה
+            String versionText = "Version " + versionNumber + " - " + changes + " changes";
+            versionComboBox.getItems().add(versionText);
+        }
+
+        versionComboBox.getSelectionModel().clearSelection();
+        versionComboBox.setValue(null);
+    }
+
+
+
+
+
+
+
+
+
+
+    // Selection:
     @FXML
     private void reSelectAction() {
         try {
@@ -485,7 +518,23 @@ public class SheetViewfinderController {
         }
     }
 
+    private String coordinateToString(Coordinate coordinate) {
+        // המרת העמודה לאות (A, B, C, ...)
+        int column = coordinate.getColumn();
+        char columnLetter = (char) ('A' + column - 1); // המרה מ-1 ל-A, מ-2 ל-B וכדומה
 
+        // המרת השורה למספר (ללא שינוי)
+        int row = coordinate.getRow();
+
+        // חיבור האות למספר ויצירת המחרוזת הסופית
+        return String.valueOf(columnLetter) + row;
+    }
+
+
+
+
+
+    // Range:
     @FXML
     private void handleAddOrDeleteRange() {
         String buttonText = addOrDeleteRange.getText();
@@ -517,6 +566,9 @@ public class SheetViewfinderController {
             rangeErrorMassage.setText("Error: " + e.getMessage());
         }
     }
+
+
+
 
 
 
@@ -914,20 +966,17 @@ public class SheetViewfinderController {
         }
 
 
-        SheetDto sheetDto;
-
-        try {
-            sheetDto = getCurrentSheet();
-
-            // בדיקה של ה-DTO ב-debugger
+        // בקשה אסינכרונית לקבלת ה-SheetDto המעודכן
+        getCurrentSheet(sheetDto -> {
+            // בדיקה אם ה-DTO התקבל
             if (sheetDto != null) {
-                System.out.println("Sheet is here maybe ");  // דוגמה להדפסת שם הגיליון
+                System.out.println("Sheet is here maybe");  // דוגמה להדפסת שם הגיליון
+                sheetComponentController.setPresentedSheet(sheetDto);  // עדכון תצוגת הגיליון ב-UI
             }
-            sheetComponentController.setPresentedSheet(sheetDto);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        }, errorMessage -> {
+            // טיפול בשגיאה (הודעה ל-UI או ללוג)
+            System.out.println("Error: " + errorMessage);
+        });
     }
 
     @FXML
@@ -969,8 +1018,8 @@ public class SheetViewfinderController {
     }
 
 
-    // פונקציה שמבצעת בקשת GET סינכרונית ומחזירה את ה-SheetDto
-    public SheetDto getCurrentSheet() throws IOException {
+    // פונקציה אסינכרונית שמבצעת בקשת GET ומקבלת את ה-SheetDto
+    public void getCurrentSheet(Consumer<SheetDto> onSuccess, Consumer<String> onError) {
         String finalUrl = HttpUrl
                 .parse(String.valueOf(URI.create(Constants.SHEET_URL)))
                 .toString();
@@ -980,28 +1029,43 @@ public class SheetViewfinderController {
                 .url(finalUrl)
                 .build();
 
-        // שליחת הבקשה (סינכרונית) וקבלת התשובה
-        try (Response response = HttpClientUtil.HTTP_CLIENT.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                // בדוק אם גוף התגובה אינו null
-                if (response.body() != null) {
+        // שליחת הבקשה באופן אסינכרוני
+        HttpClientUtil.runAsync(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // במקרה של כשל - קרא לפונקציית השגיאה
+                Platform.runLater(() -> onError.accept("Error fetching sheet: " + e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful() && response.body() != null) {
                     // המרת התגובה ל-SheetDto באמצעות JSONUtils
                     String responseBody = response.body().string();
-                    return JSONUtils.fromJson(responseBody, SheetDtoImpl.class);
+                    SheetDto sheetDto = JSONUtils.fromJson(responseBody, SheetDtoImpl.class);
+
+                    // קריאה לפונקציית ההצלחה ב-UI Thread
+                    Platform.runLater(() -> onSuccess.accept(sheetDto));
                 } else {
-                    throw new IOException("Response body is null");
+                    // קריאה לפונקציית השגיאה אם הבקשה נכשלה
+                    String errorMessage = "Failed to fetch current sheet. Response code: " + response.code();
+                    Platform.runLater(() -> onError.accept(errorMessage));
                 }
-            } else {
-                throw new IOException("Failed to fetch current sheet. Response code: " + response.code());
             }
-        }
+        });
     }
 
 
+    private void refreshSheet() {
+        // בקשת ה-sheetDTO מהשרת
+        getCurrentSheet(sheetDto -> {
+            sheetComponentController.setPresentedSheet(sheetDto);
+            System.out.println("Updated sheet to version: " + sheetDto.getVersion());
 
-
-
-
+        }, errorMessage -> {
+            System.out.println("Error refreshing sheet: " + errorMessage);
+        });
+    }
 
     // keep until loading is complete! so we can use the loading progress
     /*

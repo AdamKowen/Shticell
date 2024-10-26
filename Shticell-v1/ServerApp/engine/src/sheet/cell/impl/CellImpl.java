@@ -24,6 +24,7 @@ public class CellImpl implements Cell {
     private List<Coordinate> dependsOn;
     private List<Coordinate> influencingOn;
     private CellStyle style;
+    private String lastUserUpdated = null;
 
     public CellImpl(int row, int column, String originalValue, int version)  {
         this.coordinate = new CoordinateImpl(row, column);
@@ -31,10 +32,9 @@ public class CellImpl implements Cell {
         this.version = version;
         this.dependsOn = new ArrayList<>();
         this.influencingOn = new ArrayList<>();
-
         this.style = new CellStyle();
-
     }
+
     @Override
     public Coordinate getCoordinate() {
         return coordinate;
@@ -44,9 +44,6 @@ public class CellImpl implements Cell {
     public String getOriginalValue() {
         return originalValue;
     }
-
-
-
 
     @Override
     public void setCellOriginalValue(String value, int currVersion) {
@@ -58,9 +55,6 @@ public class CellImpl implements Cell {
         this.originalValue = value;
 
     }
-
-
-
 
 
     @Override
@@ -115,7 +109,6 @@ public class CellImpl implements Cell {
     }
 
 
-
     @Override
     public int getVersion() {
         return version;
@@ -156,10 +149,14 @@ public class CellImpl implements Cell {
     public CellStyle getStyle() {
         return style;
     }
+
     public boolean isEmptyCell(){
         return  this.getOriginalValue().isBlank();
     }
 
-
+    @Override
+    public String getLastUserUpdated() {
+        return lastUserUpdated;
+    }
 
 }

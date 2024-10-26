@@ -129,6 +129,9 @@ public interface SheetController {
 
     //sets the dto of sheet to be displayed
     void setPresentedSheet(SheetDto sheetDto);
+
+
+    int getCurrentSheetVersion();
 }
 
 

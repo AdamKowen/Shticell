@@ -889,6 +889,7 @@ public class SheetControllerImpl implements SheetController {
         return null;
     }
 
+
     @Override
     public void updateCellContent(Coordinate coordinate, String content) {
 
@@ -1692,6 +1693,12 @@ public class SheetControllerImpl implements SheetController {
     {
         DisplayedSheet = sheetDto;
         updateSheet();
+    }
+
+
+    public int getCurrentSheetVersion()
+    {
+        return DisplayedSheet.getVersion();
     }
 
 

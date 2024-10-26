@@ -42,6 +42,8 @@ public class CellDtoAdapter extends TypeAdapter<CellDto> {
         out.name("style");
         writeCellStyle(out, cellDto.getStyle());
 
+        out.name("lastUserUpdated").value(cellDto.getLastUserUpdated());
+
         out.endObject();
     }
 
@@ -54,6 +56,7 @@ public class CellDtoAdapter extends TypeAdapter<CellDto> {
         List<Coordinate> dependsOn = new ArrayList<>();
         List<Coordinate> influencingOn = new ArrayList<>();
         CellStyleDto style = null;
+        String lastUserUpdated = null;
 
         in.beginObject();
         while (in.hasNext()) {
@@ -79,6 +82,9 @@ public class CellDtoAdapter extends TypeAdapter<CellDto> {
                 case "style":
                     style = readCellStyle(in);
                     break;
+                case "lastUserUpdated":
+                    lastUserUpdated = in.nextString();
+                    break;
                 default:
                     in.skipValue();
                     break;
@@ -90,7 +96,7 @@ public class CellDtoAdapter extends TypeAdapter<CellDto> {
         EffectiveValue effectiveValue = new EffectiveValueImpl(CellType.STRING, value);
 
         // יצירת CellDtoImpl עם הערכים שנקראו
-        return new CellDtoImpl(coordinate, originalValue, effectiveValue, version, dependsOn, influencingOn, style);
+        return new CellDtoImpl(coordinate, originalValue, effectiveValue, version, dependsOn, influencingOn, style, lastUserUpdated);
     }
 
     private void writeCoordinateList(JsonWriter out, List<Coordinate> coordinates) throws IOException {

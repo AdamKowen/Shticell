@@ -22,7 +22,7 @@ public interface SheetEngine {
 
     void recalculateSheet();
 
-    void updateCellValue(String cell, String newValue);
+    void updateCellValue(String cell, String newValue) throws Exception;
 
     List<Integer> getNumChangedCellsInAllVersions();
 
@@ -55,4 +55,7 @@ public interface SheetEngine {
 
 
     boolean setCurrentSheet(String sheetName);
+
+    int getCurrentSheetVersion();
+
 }
