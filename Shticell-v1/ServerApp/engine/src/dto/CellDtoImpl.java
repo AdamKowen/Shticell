@@ -2,6 +2,7 @@ package dto;
 
 import sheet.cell.api.Cell;
 import sheet.cell.api.EffectiveValue;
+import sheet.cell.impl.EffectiveValueImpl;
 import sheet.coordinate.api.Coordinate;
 
 import java.util.ArrayList;
@@ -63,6 +64,17 @@ public class CellDtoImpl implements CellDto {
     public CellStyleDto getStyle() {
         return style;
     }
+
+    public CellDtoImpl(Coordinate coordinate, String originalValue, EffectiveValue effectiveValue, int version, List<Coordinate> dependsOn, List<Coordinate> influencingOn, CellStyleDto style) {
+        this.coordinate = coordinate;
+        this.originalValue = originalValue;
+        this.effectiveValue = effectiveValue; // שמירת ה-EffectiveValue המקורי
+        this.version = version;
+        this.dependsOn = new ArrayList<>(dependsOn);
+        this.influencingOn = new ArrayList<>(influencingOn);
+        this.style = style;
+    }
+
 
 
 }

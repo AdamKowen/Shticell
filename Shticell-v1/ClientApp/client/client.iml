@@ -16,5 +16,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Tomcat 10.1.26" level="application_server_libraries" />
     <orderEntry type="module" module-name="shared" />
     <orderEntry type="module" module-name="engine" />
+    <orderEntry type="module" module-name="webEngine" />
   </component>
 </module>

@@ -37,6 +37,27 @@ import java.util.*;
 
 public class SheetControllerImpl implements SheetController {
 
+
+    SheetDto DisplayedSheet = null;
+
+    private ObjectProperty<Label> selectedCell;
+
+    private UImodel uiModel;
+
+    private Coordinate selectedCoordinate; // משתנה שומר על הקואורדינטה הנבחרת
+
+
+
+    // SheetEngine sheetEngine = new SheetEngineImpl();       להפטר כשהמעבר הושלם!
+
+
+
+    private boolean readOnly = false;
+
+    private final double cellWidth = 100.0; // רוחב קבוע לכל תא
+    private final double cellHeight = 40.0; // גובה קבוע לכל תא
+
+
     public ScrollPane sheetScrollPane;
     @FXML
     private GridPane sheetGridPane;
@@ -47,20 +68,9 @@ public class SheetControllerImpl implements SheetController {
     private Label rightLabel;
 
 
-    private ObjectProperty<Label> selectedCell;
-
-    private UImodel uiModel;
-
-    private Coordinate selectedCoordinate; // משתנה שומר על הקואורדינטה הנבחרת
-
-    private boolean readOnly = false;
-
-    SheetEngine sheetEngine = new SheetEngineImpl();
 
     private List<Integer> sortedRowOrder; // printing list
 
-    private final double cellWidth = 100.0; // רוחב קבוע לכל תא
-    private final double cellHeight = 40.0; // גובה קבוע לכל תא
 
     private final Map<Coordinate, Pane> overlayMap = new HashMap<>();
 
@@ -97,6 +107,7 @@ public class SheetControllerImpl implements SheetController {
     private double scrollDirectionY = 0;
 
     private boolean isReadOnly = false;
+
 
 
     @FXML
@@ -261,28 +272,6 @@ public class SheetControllerImpl implements SheetController {
 
 
 
-    /*
-    // פונקציה שמחזירה את הקואורדינטה המקורית עבור תא GridPane
-    private Coordinate getCoordinateForCell(Coordinate gridpaneCoordinate) {
-        // קבלת השורה מה-GridPane
-        int displayedRow = gridpaneCoordinate.getRow();
-        int column = gridpaneCoordinate.getColumn();
-
-        // תרגום השורה המוצגת לשורה המקורית על פי סדר המיון
-        if (displayedRow > 0 && displayedRow <= sortedRowOrder.size()) {
-            // קבלת השורה המקורית מה- sortedRowOrder
-            int originalRow = sortedRowOrder.get(displayedRow - 1);
-
-            // החזרת קואורדינטה עם השורה המקורית והעמודה ללא שינוי
-            return CoordinateCache.createCoordinate(originalRow, column);
-        } else {
-            // במקרה של שגיאה או קואורדינטה מחוץ לטווח, נחזיר את השורה הראשונה
-            return CoordinateCache.createCoordinate(sortedRowOrder.get(0), column);
-        }
-    }
-
-     */
-
     @Override
     public void alignCells(Pos alignment) {
         for (Node node : sheetGridPane.getChildren().filtered(node -> node instanceof StackPane)) {
@@ -330,7 +319,7 @@ public class SheetControllerImpl implements SheetController {
     }
 
     @Override
-    public void updateSheet(SheetDto sheetDto) {
+    public void updateSheet() {
         String backgroundColor;
         String fontColor;
         String alignment;
@@ -351,7 +340,7 @@ public class SheetControllerImpl implements SheetController {
 
 
         if (sortedRowOrder == null) {
-            sortedRowOrder = sheetDto.resetSoretedOrder();
+            sortedRowOrder = DisplayedSheet.resetSoretedOrder();
         }
 
         if (lastSortedOrderBeforeFiltering == null) {
@@ -360,7 +349,7 @@ public class SheetControllerImpl implements SheetController {
         }
 
         // הוספת כותרות עמודות
-        for (int col = 0; col < sheetDto.getNumOfColumns(); col++) {
+        for (int col = 0; col < DisplayedSheet.getNumOfColumns(); col++) {
             char columnLetter = (char) ('A' + col); // A, B, C וכו'
             Label columnHeader = new Label(String.valueOf(columnLetter));
             columnHeader.getStyleClass().add("sheet-header-text");
@@ -430,7 +419,7 @@ public class SheetControllerImpl implements SheetController {
         sheetGridPane.getColumnConstraints().add(headerColConstraints);
 
 // הוספת הגדרות עבור השורות המוצגות
-        for (int col = 1; col <= sheetDto.getNumOfColumns(); col++) {
+        for (int col = 1; col <= DisplayedSheet.getNumOfColumns(); col++) {
             ColumnConstraints colConstraints = new ColumnConstraints();
 
             // קבלת שם העמודה (בהנחה שהעמודות מתחילות מ-1)
@@ -471,9 +460,9 @@ public class SheetControllerImpl implements SheetController {
         // הוספת התאים לפי סדר השורות המודפסות
         for (int rowIndex = 0; rowIndex < sortedRowOrder.size(); rowIndex++) {
             int actualRow = sortedRowOrder.get(rowIndex);  // שורה לפי הסדר המודפס
-            for (int col = 1; col <= sheetDto.getNumOfColumns(); col++) {
+            for (int col = 1; col <= DisplayedSheet.getNumOfColumns(); col++) {
                 Coordinate coordinate = CoordinateCache.createCoordinate(rowIndex + 1, col); // coordinate according to gridpane
-                CellDto cell = sheetDto.getCell(actualRow, col);
+                CellDto cell = DisplayedSheet.getCell(actualRow, col);
 
 
 
@@ -624,7 +613,6 @@ public class SheetControllerImpl implements SheetController {
 
         sheetGridPane.setGridLinesVisible(true); // הצגת קווי ההפרדה
     }
-
 
 
 
@@ -903,6 +891,8 @@ public class SheetControllerImpl implements SheetController {
 
     @Override
     public void updateCellContent(Coordinate coordinate, String content) {
+
+        /*
         try {
             // המרה של הקואורדינטה למחרוזת (לדוגמה: "A1")
             String cellReference = coordinateToString(coordinate);
@@ -913,20 +903,7 @@ public class SheetControllerImpl implements SheetController {
             // קבלת ה- SheetDto המעודכן
             SheetDto sheetDto = sheetEngine.getCurrentSheetDTO();
 
-            /*
-            // עדכון כל התאים ב-UI Model
-            for (int row = 0; row < sheetDto.getNumOfRows(); row++) {
-                for (int col = 0; col < sheetDto.getNumOfColumns(); col++) {
-                    Coordinate currCoordinate = CoordinateCache.createCoordinate(row, col);
-                    CellDto cell = sheetDto.getCell(row, col);
 
-                    // קישור ה-Label ל-StringProperty מתוך ה-UImodel
-                    String cellValue = (cell != null && cell.getValue() != null && !cell.getValue().isEmpty()) ? cell.getValue() : "";
-                    uiModel.updateCell(currCoordinate, cellValue);  // עדכון כל התאים ב-UImodel
-                }
-            }
-
-             */
 
             updateSheet(sheetDto);
 
@@ -935,6 +912,8 @@ public class SheetControllerImpl implements SheetController {
             System.err.println("Error updating cell content: " + e.getMessage());
             e.printStackTrace();
         }
+
+         */
     }
 
     public Coordinate getSelectedCoordinate() {
@@ -945,8 +924,13 @@ public class SheetControllerImpl implements SheetController {
         return selectedCell;  // החזרת ה-Property של התא הנבחר
     }
 
+
+
+
+    //delete after everything working!!!!!!!!!!
     @Override
     public void loadSheetFromFile(String filename) throws ParserConfigurationException, IOException, SheetLoadingException, SAXException {
+        /*
         sheetEngine.loadSheetFromXML(filename);
         // קביעת גודל השורות והעמודות
 
@@ -964,7 +948,11 @@ public class SheetControllerImpl implements SheetController {
         }
 
 
+         */
     }
+
+
+
 
     private String coordinateToString(Coordinate coordinate) {
         // המרת העמודה לאות (A, B, C, ...)
@@ -990,7 +978,6 @@ public class SheetControllerImpl implements SheetController {
     }
 
 
-
     private List<Integer> getRowsFromCoordinates(Coordinate topLeft, Coordinate bottomRight) {
         List<Integer> rowsInRange = new ArrayList<>();
 
@@ -1006,9 +993,10 @@ public class SheetControllerImpl implements SheetController {
         return rowsInRange;
     }
 
+
     public String getSelectedCoordinateOriginalValue()
     {
-        CellDto cell = sheetEngine.getCellDTO(coordinateToString(getSelectedCoordinate()));
+        CellDto cell = DisplayedSheet.getCell(getSelectedCoordinate());
         if(cell != null)
         {
             return cell.getOriginalValue();
@@ -1019,44 +1007,54 @@ public class SheetControllerImpl implements SheetController {
 
     public int getLastUpdatedVersion()
     {
-        CellDto cell = sheetEngine.getCellDTO(coordinateToString(getSelectedCoordinate()));
+
+        CellDto cell = DisplayedSheet.getCell(getSelectedCoordinate());
         if(cell != null)
         {
             return cell.getVersion();
         }
+
         return 0; // this will
     }
 
 
-    public List<Integer> getVersionList()
-    {
-        return sheetEngine.getNumChangedCellsInAllVersions();
-    }
 
 
 
     public void resetSorting() {
-        sortedRowOrder = sheetEngine.getCurrentSheetDTO().resetSoretedOrder();
+
+        sortedRowOrder = DisplayedSheet.resetSoretedOrder();
+
+
     }
 
 
-    public void loadSheetVersion(int version)
+    public void loadSheetVersion(int version) //delete after moved!!!!!!!!!!!
     {
+        /*
         SheetDto versionDTO = sheetEngine.getVersionDto(version);
         updateSheet(versionDTO);
+
+         */
     }
 
 
-    public void loadSheetCurrent()
+    public void loadSheetCurrent() //Delete after moved!!!
     {
-        SheetDto sheetDtoCurrent = sheetEngine.getCurrentSheetDTO();
-        updateSheet(sheetDtoCurrent);
+
+        //SheetDto sheetDtoCurrent = sheetEngine.getCurrentSheetDTO();
+        updateSheet();
+
     }
 
 
-    public SheetDto getVersionDto(int version)
+    public SheetDto getVersionDto(int version) //delete after move!!!!!!!!!!!!!
     {
+        /*
         return sheetEngine.getVersionDto(version);
+
+         */
+        return DisplayedSheet;
     }
 
 
@@ -1066,7 +1064,7 @@ public class SheetControllerImpl implements SheetController {
         List<Integer> rowsInRange = getRowsFromCoordinates(topLeft, bottomRight);
 
 
-        List<Integer> rangeSorted = sheetEngine.getCurrentSheetDTO().sortRowsByColumns(rowsInRange, colList);
+        List<Integer> rangeSorted = DisplayedSheet.sortRowsByColumns(rowsInRange, colList);
 
         // החזרת השורות הממוינות לרשימת sortedRowOrder במקום הנכון
         replaceSortedRangeInOrder(rowsInRange, rangeSorted);
@@ -1099,25 +1097,18 @@ public class SheetControllerImpl implements SheetController {
     }
 
 
-    /*
-    // פונקציה לעדכון תוכן תא
-    @Override
-    public void updateCellContent(Coordinate coordinate, String content) {
-        uiModel.updateCell(coordinate, content); // עדכון התוכן במודל UI
-    }
 
-     */
 
     public Map<String, RangeDto> getRanges()
     {
-        return sheetEngine.getCurrentSheetDTO().getRanges();
-    }
+        return DisplayedSheet.getRanges();
+    } // delete after usage changed to the viewfinder????? yes keep track of range versions as well! because changed range affects sheet as well!
 
 
-    //need to update with correct highlight
+    //keep here
     public void highlightFunctionRange(String rangeName)
     {
-        BoundariesDto currBoundaries = sheetEngine.getCurrentSheetDTO().getRanges().get(rangeName).getBoundaries();
+        BoundariesDto currBoundaries = DisplayedSheet.getRanges().get(rangeName).getBoundaries();
         Coordinate from = CoordinateCache.createCoordinateFromString(currBoundaries.getFrom());
         Coordinate to = CoordinateCache.createCoordinateFromString(currBoundaries.getTo());
 
@@ -1125,19 +1116,25 @@ public class SheetControllerImpl implements SheetController {
     }
 
 
-    // Updated method to propagate exceptions
+    //Delete after move!!!!
     public void deleteRange(String rangeName) throws Exception {
         try {
+            /*
             sheetEngine.deleteRange(rangeName);
+
+             */
         } catch (Exception e) {
             // Rethrow the exception to allow it to propagate
             throw e;
         }
     }
 
+    //Delete after move!!!!
     public void addRange(String rangeName) throws Exception{
         try {
+            /*
             sheetEngine.addRange(rangeName ,coordinateToString(selectedRange.get().getTopLeft()), coordinateToString(selectedRange.get().getBottomRight()));
+             */
         } catch (Exception e) {
             // Rethrow the exception to allow it to propagate
             throw e;
@@ -1175,6 +1172,7 @@ public class SheetControllerImpl implements SheetController {
         return selectedColumns;
     }
 
+
     // פונקציה המסייעת להמרת מספר עמודה למחרוזת (למשל: 1 -> "A", 2 -> "B")
     private String convertColumnNumberToString(int columnNumber) {
         StringBuilder columnName = new StringBuilder();
@@ -1187,21 +1185,22 @@ public class SheetControllerImpl implements SheetController {
     }
 
 
+
+    // move code to dto!!!!!! but keep here the function
     public Map<String, List<String>> getUniqueValuesInRange(Coordinate topLeft, Coordinate bottomRight)
     {
 
         List<Integer> rows = getRowsFromCoordinates(topLeft, bottomRight);
 
 
-        return sheetEngine.getUniqueValuesInRange(rows,getSelectedColumns());
+        //return sheetEngine.getUniqueValuesInRange(rows,getSelectedColumns());
+        return null;
     }
 
 
 
 
-
-
-
+    // check if exception might be from here!!!
     public void removeRowsForValue(String columnName, String value, Coordinate topLeft, Coordinate bottomRight) {
         // חיפוש כל השורות שיש להסיר על פי הערך המסומן והעמודה
         List<Integer> rowsToRemove = new ArrayList<>();
@@ -1210,8 +1209,7 @@ public class SheetControllerImpl implements SheetController {
             // do this more readble!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             int actualRow = lastSortedOrderBeforeFiltering.get(gridRow - 1); // מקבל את השורה המקורית לפי התרגום ב-sortedRowOrder
             Coordinate coordinate = CoordinateCache.createCoordinate(actualRow, convertColumnNameToNumber(columnName));
-            CellDto cell = sheetEngine.getCellDTO(coordinateToString(coordinate));
-
+            CellDto cell = DisplayedSheet.getCell(coordinate);
             if (cell != null && cell.getValue().equals(value)) {
                 // עדכון מפת הספירה
                 removalCountMap.put(actualRow, removalCountMap.getOrDefault(actualRow, 0) + 1);
@@ -1223,8 +1221,9 @@ public class SheetControllerImpl implements SheetController {
         sortedRowOrder.removeAll(rowsToRemove);
 
         // עדכון התצוגה שלך, לוודא שהרשימה מעודכנת כראוי ב-UI
-        updateSheet(sheetEngine.getCurrentSheetDTO());
+        updateSheet();
     }
+
 
     public void addRowsForValue(String columnName, String value, Coordinate topLeft, Coordinate bottomRight) {
         // השגת רשימת השורות המתורגמות לפי הסדר הנוכחי
@@ -1236,7 +1235,7 @@ public class SheetControllerImpl implements SheetController {
         // מעבר על השורות המתורגמות שהתקבלו
         for (Integer actualRow : rowsInRange) {
             Coordinate coordinate = CoordinateCache.createCoordinate(actualRow, convertColumnNameToNumber(columnName));
-            CellDto cell = sheetEngine.getCellDTO(coordinateToString(coordinate));
+            CellDto cell = DisplayedSheet.getCell(coordinate);
 
             if (cell != null && cell.getValue().equals(value)) {
                 // עדכון מפת הספירה והחזרה לשורות ההדפסה
@@ -1259,7 +1258,7 @@ public class SheetControllerImpl implements SheetController {
         }
 
         // עדכון התצוגה שלך, לוודא שהרשימה מעודכנת כראוי ב-UI
-        updateSheet(sheetEngine.getCurrentSheetDTO());
+        updateSheet();
     }
 
 
@@ -1499,6 +1498,7 @@ public class SheetControllerImpl implements SheetController {
 
 
 
+    // move to viewfinder!
     public void ChangeBackground(String colorHex) {
 
             // קבלת העמודות והשורות שנבחרו
@@ -1511,15 +1511,17 @@ public class SheetControllerImpl implements SheetController {
                     // יצירת מחרוזת המייצגת את התא, לדוגמה: "A1"
                     String cellReference = column + row;
 
-                    sheetEngine.setBackgrountColor(cellReference, colorHex);
+                    //sheetEngine.setBackgrountColor(cellReference, colorHex);
                 }
             }
 
-            updateSheet(sheetEngine.getCurrentSheetDTO());
+            updateSheet();
     }
 
 
 
+
+    // move to viewfinder!
     public void ChangeTextColor(String colorHex) {
 
         // קבלת העמודות והשורות שנבחרו
@@ -1532,11 +1534,11 @@ public class SheetControllerImpl implements SheetController {
                 // יצירת מחרוזת המייצגת את התא, לדוגמה: "A1"
                 String cellReference = column + row;
 
-                sheetEngine.setFontColor(cellReference, colorHex);
+                //sheetEngine.setFontColor(cellReference, colorHex);
             }
         }
 
-        updateSheet(sheetEngine.getCurrentSheetDTO());
+        updateSheet();
     }
 
 
@@ -1585,7 +1587,7 @@ public class SheetControllerImpl implements SheetController {
 
         if(!isReadOnly)
         {
-            CellDto cell = sheetEngine.getCellDTO(coordinateToString(getSelectedCoordinate()));
+            CellDto cell = DisplayedSheet.getCell(getSelectedCoordinate());
             if (cell != null) {
                 List<Coordinate> dep = cell.getDependsOn();
                 List<Coordinate> inf = cell.getInfluencingOn();
@@ -1603,7 +1605,7 @@ public class SheetControllerImpl implements SheetController {
 
 
 
-    public void ChangeAlignment(String Ali)
+    public void ChangeAlignment(String Ali) // move to viewfinder!!!!!!!!!!
     {
         // קבלת העמודות והשורות שנבחרו
         List<String> selectedColumns = getSelectedColumns();
@@ -1615,15 +1617,15 @@ public class SheetControllerImpl implements SheetController {
                 // יצירת מחרוזת המייצגת את התא, לדוגמה: "A1"
                 String cellReference = column + row;
 
-                sheetEngine.setAlignment(cellReference, Ali);
+                //sheetEngine.setAlignment(cellReference, Ali);
             }
         }
 
-        updateSheet(sheetEngine.getCurrentSheetDTO());
+        updateSheet();
     }
 
 
-    public void resetStyle()
+    public void resetStyle() //Move to viewfinder!!!!
     {
         // קבלת העמודות והשורות שנבחרו
         List<String> selectedColumns = getSelectedColumns();
@@ -1635,11 +1637,11 @@ public class SheetControllerImpl implements SheetController {
                 // יצירת מחרוזת המייצגת את התא, לדוגמה: "A1"
                 String cellReference = column + row;
 
-                sheetEngine.resetStyle(cellReference);
+                //sheetEngine.resetStyle(cellReference);
             }
         }
 
-        updateSheet(sheetEngine.getCurrentSheetDTO());
+        updateSheet();
     }
 
 
@@ -1682,6 +1684,15 @@ public class SheetControllerImpl implements SheetController {
         }
 
     };
+
+
+
+    //sets the dto of sheet to be displayed
+    public void setPresentedSheet(SheetDto sheetDto)
+    {
+        DisplayedSheet = sheetDto;
+        updateSheet();
+    }
 
 
 }

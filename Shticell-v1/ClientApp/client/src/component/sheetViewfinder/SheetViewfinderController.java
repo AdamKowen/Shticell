@@ -1,6 +1,9 @@
 package component.sheetViewfinder;
+import com.google.gson.Gson;
 import component.main.AppMainController;
 import component.sheet.SheetController;
+import dto.SheetDto;
+import dto.SheetDtoImpl;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,15 +21,30 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import okhttp3.*;
 import sheet.coordinate.api.Coordinate;
 import sheet.coordinate.impl.CoordinateCache;
 import component.cellrange.CellRange;
+import util.Constants;
+import util.http.HttpClientUtil;
+import utils.JSONUtils;
 
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+
+import static util.Constants.SET_SHEET_URL;
 
 public class SheetViewfinderController {
 
@@ -211,8 +229,6 @@ public class SheetViewfinderController {
 
 
 
-
-
         // הוספת Listener לטווח תאים
         sheetComponentController.selectedRangeProperty().addListener((observable, oldRange, newRange) -> {
             if (newRange != null) {
@@ -267,7 +283,7 @@ public class SheetViewfinderController {
 
                     versionComboBox.getItems().clear();
                     // קבלת רשימת הגרסאות
-                    List<Integer> versions = sheetComponentController.getVersionList();
+                    List<Integer> versions = new ArrayList<>(Arrays.asList(1));
                     // עבור על הרשימה ובנה מחרוזות עם מספרי גרסאות ומספרי שינויים
                     for (int i = 0; i < versions.size(); i++) {
                         int versionNumber = i + 1; // מספר הגרסה מתחיל מ-1
@@ -282,36 +298,6 @@ public class SheetViewfinderController {
         });
 
 
-        // Listener ללחיצה על כפתור ה-sort
-        sort.setOnAction(event -> {
-            // מקבל את הקואורדינטות מתיבות הטקסט
-            Coordinate topLeft = CoordinateCache.createCoordinateFromString(topLeftBox.getText());
-            Coordinate bottomRight = CoordinateCache.createCoordinateFromString(bottomRightBox.getText());
-
-            if (topLeft != null && bottomRight != null) {
-// קבלת רשימת ה-String מה-ListView
-                ObservableList<String> columnStrings = colList.getItems();
-
-// המרת הרשימה לרשימת Character
-                List<Character> columnChars = columnStrings.stream()
-                        .map(s -> s.charAt(0))  // קבלת התו הראשון של כל מחרוזת
-                        .collect(Collectors.toList());
-
-// קריאה לפונקציית המיון שלך במנוע הגיליון
-                sheetComponentController.sortRowsInRange(topLeft, bottomRight, columnChars);
-                // רענון התצוגה כדי להציג את הלוח אחרי המיון
-                refreshSheetDisplay();
-            } else {
-                System.out.println("Invalid coordinates entered.");
-            }
-        });
-
-        // Listener ללחיצה על כפתור ה-reset (ביטול המיון)
-        resetsort.setOnAction(event -> {
-            sheetComponentController.resetSorting();
-            refreshSheetDisplay();
-        });
-
 
 
         // הוסף מאזין לבחירה ב-ComboBox
@@ -321,13 +307,12 @@ public class SheetViewfinderController {
 
             if (selectedIndex != -1) { // ודא שמשהו נבחר
                 // טען את הגרסה שנבחרה לפי האינדקס
-                sheetVersionController.updateSheet(sheetComponentController.getVersionDto(selectedIndex+1)); // לדוגמה, טען את הגרסה שנבחרה
+                //sheetVersionController.updateSheet(sheetComponentController.getVersionDto(selectedIndex+1)); // לדוגמה, טען את הגרסה שנבחרה
 
 
                 // החלף אוטומטית לטאב של הגרסה הקודמת
                 mainTabPane.getSelectionModel().select(prevSheetTab);
             }
-
 
         });
 
@@ -336,12 +321,15 @@ public class SheetViewfinderController {
         //addDragEvents(emptyList); // לרשימת מיון
 
 
+        /*
         mainTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if (newTab == currentSheetTab) {
                 onCurrentSheetTabSelected();
             }
             // ניתן להוסיף תנאים נוספים אם צריך
         });
+
+         */
 
 
         listOfRanges.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -430,7 +418,7 @@ public class SheetViewfinderController {
 
 
 
-        setControlsDisabledAppStart(true);
+        //setControlsDisabledAppStart(true);
 
     }
 
@@ -455,7 +443,7 @@ public class SheetViewfinderController {
                 cellUpdateError.setText("");
 
                 // קבלת רשימת הגרסאות
-                List<Integer> versions = sheetComponentController.getVersionList();
+                List<Integer> versions = new ArrayList<>(Arrays.asList(1));
 
                 // בניית מחרוזות הגרסאות והוספתן ל-ComboBox
                 for (int i = 0; i < versions.size(); i++) {
@@ -480,9 +468,11 @@ public class SheetViewfinderController {
     }
 
 
-
+/*
     private void onCurrentSheetTabSelected() {
     }
+
+ */
 
 
 
@@ -496,7 +486,7 @@ public class SheetViewfinderController {
     }
 
 
-        @FXML
+    @FXML
     private void handleAddOrDeleteRange() {
         String buttonText = addOrDeleteRange.getText();
         String rangeName = rangeNameTextBox.getText().trim();
@@ -529,6 +519,50 @@ public class SheetViewfinderController {
     }
 
 
+
+    // Sorting actions:
+    @FXML
+    private void handleSortButton() {
+        {
+            // מקבל את הקואורדינטות מתיבות הטקסט
+            Coordinate topLeft = CoordinateCache.createCoordinateFromString(topLeftBox.getText());
+            Coordinate bottomRight = CoordinateCache.createCoordinateFromString(bottomRightBox.getText());
+
+            if (topLeft != null && bottomRight != null) {
+// קבלת רשימת ה-String מה-ListView
+                ObservableList<String> columnStrings = colList.getItems();
+
+// המרת הרשימה לרשימת Character
+                List<Character> columnChars = columnStrings.stream()
+                        .map(s -> s.charAt(0))  // קבלת התו הראשון של כל מחרוזת
+                        .collect(Collectors.toList());
+
+// קריאה לפונקציית המיון שלך במנוע הגיליון
+                sheetComponentController.sortRowsInRange(topLeft, bottomRight, columnChars);
+                // רענון התצוגה כדי להציג את הלוח אחרי המיון
+                refreshSheetDisplay();
+            } else {
+                System.out.println("Invalid coordinates entered.");
+            }
+        }
+    }
+
+    @FXML
+    private void handleResetSortButton() {
+        sheetComponentController.resetSorting();
+        refreshSheetDisplay();
+    }
+
+    public void updateColumnList(List<String> columns) {
+        colList.getItems().setAll(columns);
+    }
+
+
+
+
+
+
+    // Cell style actions:
     @FXML
     private void changeBackgroundColor() {
 
@@ -543,7 +577,6 @@ public class SheetViewfinderController {
         String colorHex = toHexString(color); // המרת הצבע למחרוזת Hex
         sheetComponentController.ChangeTextColor(colorHex);
     }
-
 
     @FXML
     private void onAlignmentChange() {
@@ -561,7 +594,25 @@ public class SheetViewfinderController {
         }
     }
 
+    @FXML
+    private void resetStyle() {
+        sheetComponentController.resetStyle();
+    }
 
+    private String toHexString(Color color) {
+        int red = (int) (color.getRed() * 255);
+        int green = (int) (color.getGreen() * 255);
+        int blue = (int) (color.getBlue() * 255);
+        return String.format("#%02X%02X%02X", red, green, blue);
+    }
+
+
+
+
+
+
+
+    // Filter actions:
     @FXML
     private void handleResetFilters() {
         // מעבר על כל הטאבים במערכת הסינון
@@ -590,24 +641,54 @@ public class SheetViewfinderController {
 
     }
 
+    // אתחול הטאבים לפי העמודות שנבחרו והכנסת הערכים
+    public void initializeTabsForSelectedColumns(Map<String, List<String>> columnData, Coordinate topLeft, Coordinate bottomRight) {
+        columnTabPane.getTabs().clear(); // ניקוי הטאבים הקיימים
 
-    @FXML
-    private void resetStyle() {
-        sheetComponentController.resetStyle();
+        for (String columnName : columnData.keySet()) {
+            // יצירת טאב חדש לעמודה
+            Tab tab = new Tab(columnName);
+
+            // יצירת VBox להחזיק את ה-CheckBoxes עבור כל הערכים בעמודה זו
+            VBox vbox = new VBox();
+
+            // מעבר על הערכים הייחודיים של העמודה והוספתם ל-VBox עם CheckBox מסומן
+            List<String> uniqueValues = columnData.get(columnName);
+            for (String value : uniqueValues) {
+                CheckBox checkBox = new CheckBox(value);
+                checkBox.setSelected(true); // ברירת מחדל: כל הערכים מסומנים
+
+                checkBox.setOnAction(event -> {
+                    if (checkBox.isSelected()) {
+                        // כאשר המשתמש מסמן מחדש את הערך, נחזיר את השורות המתאימות
+                        sheetComponentController.addRowsForValue(columnName, value, topLeft, bottomRight);
+                    } else {
+                        sheetComponentController.removeRowsForValue(columnName, value, topLeft, bottomRight);
+                    }
+                });
+
+                // הוספת CheckBox ל-VBox
+                vbox.getChildren().add(checkBox);
+            }
+
+            // הוספת VBox ל-ScrollPane כדי לאפשר גלילה
+            ScrollPane scrollPane = new ScrollPane(vbox);
+            scrollPane.setFitToWidth(true); // מוודא שה-ScrollPane יתאים לרוחב
+
+            // הוספת ה-ScrollPane לטאב
+            tab.setContent(scrollPane);
+
+            // הוספת הטאב ל-TabPane
+            columnTabPane.getTabs().add(tab);
+        }
     }
 
 
-    private String toHexString(Color color) {
-        int red = (int) (color.getRed() * 255);
-        int green = (int) (color.getGreen() * 255);
-        int blue = (int) (color.getBlue() * 255);
-        return String.format("#%02X%02X%02X", red, green, blue);
-    }
 
 
 
 
-    // פונקציה שמופעלת כאשר ה-Slider משתנה
+    // Rows and Cols actions:
     @FXML
     private void updateColWidth() {
         double newWidth = colWidthSlider.getValue(); // השגת הערך מה-Slider
@@ -617,7 +698,6 @@ public class SheetViewfinderController {
 
     }
 
-
     @FXML
     private void updateRowHeight() {
         double newHeight = rowHeightSlider.getValue(); // השגת הערך מה-Slider
@@ -625,6 +705,13 @@ public class SheetViewfinderController {
         sheetComponentController.updateRowHeight(newHeight);
 
     }
+
+
+
+
+
+
+
 
 
 
@@ -678,55 +765,11 @@ public class SheetViewfinderController {
 
 
 
-    // אתחול הטאבים לפי העמודות שנבחרו והכנסת הערכים
-    public void initializeTabsForSelectedColumns(Map<String, List<String>> columnData, Coordinate topLeft, Coordinate bottomRight) {
-        columnTabPane.getTabs().clear(); // ניקוי הטאבים הקיימים
-
-        for (String columnName : columnData.keySet()) {
-            // יצירת טאב חדש לעמודה
-            Tab tab = new Tab(columnName);
-
-            // יצירת VBox להחזיק את ה-CheckBoxes עבור כל הערכים בעמודה זו
-            VBox vbox = new VBox();
-
-            // מעבר על הערכים הייחודיים של העמודה והוספתם ל-VBox עם CheckBox מסומן
-            List<String> uniqueValues = columnData.get(columnName);
-            for (String value : uniqueValues) {
-                CheckBox checkBox = new CheckBox(value);
-                checkBox.setSelected(true); // ברירת מחדל: כל הערכים מסומנים
-
-                checkBox.setOnAction(event -> {
-                    if (checkBox.isSelected()) {
-                        // כאשר המשתמש מסמן מחדש את הערך, נחזיר את השורות המתאימות
-                        sheetComponentController.addRowsForValue(columnName, value, topLeft, bottomRight);
-                    } else {
-                        sheetComponentController.removeRowsForValue(columnName, value, topLeft, bottomRight);
-                    }
-                });
-
-                // הוספת CheckBox ל-VBox
-                vbox.getChildren().add(checkBox);
-            }
-
-            // הוספת VBox ל-ScrollPane כדי לאפשר גלילה
-            ScrollPane scrollPane = new ScrollPane(vbox);
-            scrollPane.setFitToWidth(true); // מוודא שה-ScrollPane יתאים לרוחב
-
-            // הוספת ה-ScrollPane לטאב
-            tab.setContent(scrollPane);
-
-            // הוספת הטאב ל-TabPane
-            columnTabPane.getTabs().add(tab);
-        }
-    }
 
 
 
 
 
-    public void updateColumnList(List<String> columns) {
-        colList.getItems().setAll(columns);
-    }
 
 
 
@@ -737,9 +780,6 @@ public class SheetViewfinderController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
-
-
 
 
 
@@ -852,7 +892,6 @@ public class SheetViewfinderController {
 
 
 
-
     // פונקציה לרענון התצוגה של הגיליון אחרי המיון
     private void refreshSheetDisplay() {
         sheetComponentController.loadSheetCurrent();
@@ -864,8 +903,31 @@ public class SheetViewfinderController {
     }
 
 
-    public void setSheetName(String sheetName) {
+    public void setSheet(String sheetName) {
         System.out.println("Displaying sheet: " + sheetName);  // רק להדגמה
+
+
+        try {
+            setCurrentSheet(sheetName, log -> System.out.println(log));  // שליחת הבקשה לעדכון
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        SheetDto sheetDto;
+
+        try {
+            sheetDto = getCurrentSheet();
+
+            // בדיקה של ה-DTO ב-debugger
+            if (sheetDto != null) {
+                System.out.println("Sheet is here maybe ");  // דוגמה להדפסת שם הגיליון
+            }
+            sheetComponentController.setPresentedSheet(sheetDto);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -874,6 +936,75 @@ public class SheetViewfinderController {
     }
 
 
+    // הפונקציה שמבצעת את בקשת ה-POST לשרת
+    public static void setCurrentSheet(String sheetName, Consumer<String> httpRequestLogger) throws IOException {
+        // יצירת הבקשה
+        RequestBody formBody = new FormBody.Builder()
+                .add("sheetName", sheetName)  // הוספת הפרמטר SheetName
+                .build();
+
+        Request request = new Request.Builder()
+                .url(SET_SHEET_URL)
+                .post(formBody)
+                .build();
+
+        // שליחת הבקשה באופן אסינכרוני (לא חוסם את ה-UI)
+        HttpClientUtil.runAsync(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                httpRequestLogger.accept("Error setting current sheet: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try (response) {  // שימוש ב-try-with-resources כדי לוודא שהתגובה תיסגר אוטומטית
+                    if (response.isSuccessful()) {
+                        httpRequestLogger.accept("Successfully set current sheet to: " + sheetName);
+                    } else {
+                        httpRequestLogger.accept("Failed to set current sheet. Response code: " + response.code());
+                    }
+                }
+            }
+        });
+    }
+
+
+    // פונקציה שמבצעת בקשת GET סינכרונית ומחזירה את ה-SheetDto
+    public SheetDto getCurrentSheet() throws IOException {
+        String finalUrl = HttpUrl
+                .parse(String.valueOf(URI.create(Constants.SHEET_URL)))
+                .toString();
+
+        // יצירת בקשת GET
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
+        // שליחת הבקשה (סינכרונית) וקבלת התשובה
+        try (Response response = HttpClientUtil.HTTP_CLIENT.newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                // בדוק אם גוף התגובה אינו null
+                if (response.body() != null) {
+                    // המרת התגובה ל-SheetDto באמצעות JSONUtils
+                    String responseBody = response.body().string();
+                    return JSONUtils.fromJson(responseBody, SheetDtoImpl.class);
+                } else {
+                    throw new IOException("Response body is null");
+                }
+            } else {
+                throw new IOException("Failed to fetch current sheet. Response code: " + response.code());
+            }
+        }
+    }
+
+
+
+
+
+
+
+    // keep until loading is complete! so we can use the loading progress
+    /*
     @FXML
     void loadButtonActionListener(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -984,6 +1115,7 @@ public class SheetViewfinderController {
             fileNameLabel.setText("No file selected or an error occurred.");
         }
     }
+     */
 
 
 }

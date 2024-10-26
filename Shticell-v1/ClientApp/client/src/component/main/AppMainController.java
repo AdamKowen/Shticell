@@ -169,7 +169,7 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
 
 
     public void switchToViewfinder(String sheetName) {
-        viewfinderController.setSheetName(sheetName);  // מעביר את השם של הגיליון הנבחר
+        viewfinderController.setSheet(sheetName);  // מעביר את השם של הגיליון הנבחר
         mainBorderPane.setCenter(viewfinderComponent);  // החלפה של התצוגה הראשית
     }
 

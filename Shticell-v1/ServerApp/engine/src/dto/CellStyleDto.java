@@ -17,6 +17,14 @@ public class CellStyleDto {
         this.isWrapped = cellStyle.isWrapped();
     }
 
+    public CellStyleDto(String backgroundColor, String textColor, String alignment, boolean isWrapped) {
+        this.backgroundColor = backgroundColor;
+        this.textColor = textColor;
+        this.alignment = alignment;
+        this.isWrapped = isWrapped;
+    }
+
+
     // Getter and Setter עבור backgroundColor
     public String getBackgroundColor() {
         return backgroundColor;

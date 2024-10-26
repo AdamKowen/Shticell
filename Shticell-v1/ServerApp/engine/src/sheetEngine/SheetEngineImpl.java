@@ -84,6 +84,35 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         currentSheet.saveVersion();
     }
 
+
+
+    @Override
+    public void updateCellValue(String cell, String newValue) throws Exception {
+        Coordinate coordinate = CoordinateCache.createCoordinateFromString(cell);
+
+        Cell currCell = currentSheet.getSheet().get(coordinate);
+
+        if (currCell != null) {
+            String oldValue = currCell.getOriginalValue();
+            if (!oldValue.equals(newValue)) { // Recalculate only if the value changed
+                currCell.setCellOriginalValue(newValue, currentSheet.getVersion() + 1);
+                recalculateSheet();
+            }
+        } else {
+            // If the cell doesn't exist, try to create a new one
+            try {
+                currCell = new CellImpl(coordinate.getRow(), coordinate.getColumn(), newValue, currentSheet.getVersion() + 1);
+                currentSheet.setCell(coordinate, currCell);
+                recalculateSheet();
+            } catch (Exception e) {
+                // אם יצירת התא או הוספתו נכשלת, נזרוק שגיאה למעלה
+                throw new Exception("Failed to update or create cell at coordinate: " + cell, e);
+            }
+        }
+    }
+
+
+    /*
     @Override
     public void updateCellValue(String cell, String newValue)
     {
@@ -106,6 +135,8 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
             recalculateSheet();
         }
     }
+
+     */
 
     @Override
     public List<Integer> getNumChangedCellsInAllVersions()
@@ -253,6 +284,33 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
     }
     public void setWriterFiles(HashMap<String, Sheet> writerFiles) {
         this.writerFiles = writerFiles;
+    }
+
+
+    public boolean setCurrentSheet(String sheetName) {
+        Sheet selectedSheet = null;
+
+        // חיפוש בגיליונות שלך
+        if (MyFiles.containsKey(sheetName)) {
+            selectedSheet = MyFiles.get(sheetName);
+        }
+        // חיפוש בגיליונות שאתה רק קורא
+        else if (readerFiles.containsKey(sheetName)) {
+            selectedSheet = readerFiles.get(sheetName);
+        }
+        // חיפוש בגיליונות שאתה יכול לערוך
+        else if (writerFiles.containsKey(sheetName)) {
+            selectedSheet = writerFiles.get(sheetName);
+        }
+
+        // אם לא נמצא הגיליון - החזר false
+        if (selectedSheet == null) {
+            return false;
+        }
+
+        // הגדרת הגיליון הנוכחי
+        this.currentSheet = selectedSheet;
+        return true;
     }
 
 }

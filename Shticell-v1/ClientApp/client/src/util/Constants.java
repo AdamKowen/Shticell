@@ -28,6 +28,8 @@ public class Constants {
     public final static String SEND_CHAT_LINE = FULL_SERVER_PATH + "/pages/chatroom/sendChat";
     public final static String CHAT_LINES_LIST = FULL_SERVER_PATH + "/chat";
     public final static String SHEET_LIST = FULL_SERVER_PATH + "/getSheets";
+    public final static String SHEET_URL = FULL_SERVER_PATH + "/getCurrentSheet";
+    public final static String SET_SHEET_URL = FULL_SERVER_PATH + "/setCurrentSheet";
 
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();

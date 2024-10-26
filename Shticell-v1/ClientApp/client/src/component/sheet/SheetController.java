@@ -42,7 +42,7 @@ public interface SheetController {
     // שינוי גובה של שורה מסוימת
     void changeSecondRowWidth(double width);
 
-    void updateSheet(SheetDto sheetDto);
+    void updateSheet();
 
     int getLastUpdatedVersion();
 
@@ -60,9 +60,6 @@ public interface SheetController {
 
 
     void loadSheetFromFile(String filename) throws ParserConfigurationException, IOException, SheetLoadingException, SAXException;
-
-
-    List<Integer> getVersionList();
 
     void loadSheetVersion(int version);
 
@@ -128,6 +125,10 @@ public interface SheetController {
     Coordinate actualCellPlacedOnGrid(Coordinate placeOnGrid);
 
     void reSelect(String Topleft, String Bottomright)throws Exception;
+
+
+    //sets the dto of sheet to be displayed
+    void setPresentedSheet(SheetDto sheetDto);
 }
 
 
