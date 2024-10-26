@@ -210,7 +210,7 @@ public class SheetViewfinderController {
 
 
 
-
+//
                 listOfRanges.getSelectionModel().clearSelection();
                 rangeNameTextBox.clear();
                 addOrDeleteRange.setText("Add Selected");
