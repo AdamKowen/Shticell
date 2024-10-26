@@ -210,7 +210,7 @@ public class SheetViewfinderController {
 
 
 
-//
+
                 listOfRanges.getSelectionModel().clearSelection();
                 rangeNameTextBox.clear();
                 addOrDeleteRange.setText("Add Selected");
@@ -230,7 +230,6 @@ public class SheetViewfinderController {
                 selectedCellLabel.setText("Selected cell: none");
             }
         });
-
 
 
         // הוספת Listener לטווח תאים
@@ -267,8 +266,6 @@ public class SheetViewfinderController {
                 selectedCellLabel.setText("No range selected");
             }
         });
-
-
 
 
 
