@@ -37,6 +37,8 @@ public interface SheetDto {
 
     Map<String, RangeDto>  getRanges();
 
-    public Map<String, List<String>> getUniqueValuesInRange(List<Integer> rows, List<String> columns);
+    Map<String, List<String>> getUniqueValuesInRange(List<Integer> rows, List<String> columns);
+
+    public List<Integer> getNumCellChangedHistory();
 
 }

@@ -24,7 +24,11 @@ public interface SheetEngine {
 
     void updateCellValue(String cell, String newValue) throws Exception;
 
+
+    /*
     List<Integer> getNumChangedCellsInAllVersions();
+
+     */
 
     SheetDto getVersionDto(int version);
 

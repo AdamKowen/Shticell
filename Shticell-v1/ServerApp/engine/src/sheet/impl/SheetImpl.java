@@ -23,10 +23,10 @@ public class SheetImpl implements Sheet {
     private String name;
     private Integer columnUnits;
     private Integer rowUnits;
-    private Map<Coordinate, Cell> cellsInSheet;
-    private Map<Integer, SheetDto> versionHistory;
-    private List<Integer> numCellChangedHistory;
-    private Map<String, Range> ranges ;
+    private Map<Coordinate, Cell> cellsInSheet = null;
+    private Map<Integer, SheetDto> versionHistory = null;
+    private List<Integer> numCellChangedHistory = null;
+    private Map<String, Range> ranges = null;
 
 
     // Constructor
@@ -43,6 +43,7 @@ public class SheetImpl implements Sheet {
         this.numCellChangedHistory = new ArrayList<>();
         this.ranges = rangesInSheet;
     }
+
     public SheetImpl(){
         this.numOfColumns = 0;
         this.numOfRows = 0;
@@ -172,14 +173,61 @@ public class SheetImpl implements Sheet {
         return ranges;
     }
 
-
+    /*
     @Override
     public void saveVersion() {
         updateVersion();
         versionHistory.put(version, new SheetDtoImpl(this));
+
+        // recalculate!!!!
+    }
+
+     */
+
+    @Override
+    public void saveVersion() {
+        updateVersion(); // עדכון מספר הגרסה
+        SheetDto newVersionSheet = new SheetDtoImpl(this); // יצירת ה-SheetDto של הגרסה הנוכחית
+        versionHistory.put(version, newVersionSheet); // שמירת הגרסה הנוכחית בגרסת ההיסטוריה
+
+        // חישוב והוספת מספר השינויים בין הגרסה החדשה לבין הקודמת (אם זו לא הגרסה הראשונה)
+        if (version == 1) {
+            // אם זו הגרסה הראשונה, כל התאים נחשבים כמשתנים
+            numCellChangedHistory.add(newVersionSheet.getSheet().size());
+        } else {
+            // השוואה מול הגרסה הקודמת (version - 1)
+            SheetDto previousVersionSheet = versionHistory.get(version - 1);
+            int changedCellsCount = countChangedCells(previousVersionSheet, newVersionSheet);
+            numCellChangedHistory.add(changedCellsCount);
+        }
+
+
     }
 
 
+
+    private int countChangedCells(SheetDto previousVersion, SheetDto currentVersion) {
+        Map<Coordinate, CellDto> previousCells = previousVersion.getSheet();
+        Map<Coordinate, CellDto> currentCells = currentVersion.getSheet();
+
+        int changedCellsCount = 0;
+
+        for (Map.Entry<Coordinate, CellDto> entry : currentCells.entrySet()) {
+            Coordinate coord = entry.getKey();
+            CellDto currentCell = entry.getValue();
+            CellDto previousCell = previousCells.get(coord);
+
+            // בדיקה אם הערך האפקטיבי השתנה או שהתא לא היה קיים קודם
+            if (previousCell == null || !currentCell.getValue().equals(previousCell.getValue()) || !currentCell.getOriginalValue().equals(previousCell.getOriginalValue())) {
+                changedCellsCount++;
+            }
+        }
+
+        return changedCellsCount;
+    }
+
+
+/*
     @Override
     public List<Integer> countChangedCellsInAllVersions() {
         List<Integer> changesPerVersion = new ArrayList<>();
@@ -215,6 +263,8 @@ public class SheetImpl implements Sheet {
 
         return changesPerVersion;
     }
+
+ */
 
 
     @Override
@@ -335,6 +385,12 @@ public class SheetImpl implements Sheet {
             columnNumber = columnNumber * 26 + (c - 'A' + 1);
         }
         return columnNumber;
+    }
+
+
+    public List<Integer> getNumCellChangedHistory() {
+        // מחזיר עותק של הרשימה כדי למנוע שינוי של הרשימה המקורית מחוץ למחלקה
+        return new ArrayList<>(numCellChangedHistory);
     }
 
 

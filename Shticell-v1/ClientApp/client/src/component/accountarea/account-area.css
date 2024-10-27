@@ -58,7 +58,7 @@
 /* עיצוב השורות בטבלה */
 .table-row-cell {
     -fx-background-color: rgba(255, 255, 255, 0.2); /* צבע רקע עם שקיפות */
-    -fx-background-radius: 8; /* פינות מעוגלות */
+    -fx-background-radius: 10; /* פינות מעוגלות */
     -fx-border-color: transparent; /* הסרת גבולות חיצוניים */
     -fx-transition: background-color 0.3s ease, -fx-effect 0.3s ease; /* מעבר חלק */
 }

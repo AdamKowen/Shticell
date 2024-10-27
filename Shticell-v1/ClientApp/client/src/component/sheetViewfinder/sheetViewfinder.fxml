@@ -294,6 +294,8 @@
                               </GridPane>
                            </content>
                         </TitledPane>
+                        <TitledPane prefHeight="200.0" prefWidth="200.0" text="Dynamic Analysis" />
+                        <TitledPane prefHeight="200.0" prefWidth="200.0" text="Graph" />
                       <TitledPane maxHeight="1.7976931348623157E308" prefWidth="150.0" text="Ranges">
                            <content>
                               <GridPane fx:id="hiddenItems" prefHeight="248.0" prefWidth="150.0">

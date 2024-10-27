@@ -242,6 +242,7 @@ public class SheetViewfinderController {
                 bottomRightBox.setText(sheetComponentController.actualCellPlacedOnGrid(bottomRight).toString());
 
                 updateColumnList(sheetComponentController.getSelectedColumns());
+
                 initializeTabsForSelectedColumns(sheetComponentController.getUniqueValuesInRange(topLeft, bottomRight), topLeft, bottomRight);
 
                 // **עדכון הסליידרים עם ממוצע רוחב וגובה התאים בטווח הנבחר**
@@ -289,6 +290,13 @@ public class SheetViewfinderController {
             if (selectedIndex != -1) { // ודא שמשהו נבחר
                 // טען את הגרסה שנבחרה לפי האינדקס
                 //sheetVersionController.updateSheet(sheetComponentController.getVersionDto(selectedIndex+1)); // לדוגמה, טען את הגרסה שנבחרה
+                getSheetVersion(selectedIndex+1, sheetDto -> {
+                    // טיפול בגרסת הגיליון שהתקבלה, למשל: הצגת הגרסה ב-UI
+                    sheetVersionController.setPresentedSheet(sheetDto);
+                }, errorMessage -> {
+                    // טיפול בשגיאה, הצגת הודעה למשתמש או לוג
+                    System.out.println("Error: " + errorMessage);
+                });
 
 
                 // החלף אוטומטית לטאב של הגרסה הקודמת
@@ -296,6 +304,9 @@ public class SheetViewfinderController {
             }
 
         });
+
+
+
 
         ObservableList<String> emptyList = FXCollections.observableArrayList();
         colList.setItems(emptyList);  // אתחול ה-ListView עם רשימה ריקה
@@ -478,12 +489,11 @@ public class SheetViewfinderController {
 
 
 
-
     // Version functions:
     // פונקציה לרענון ה-ComboBox של הגרסאות
     private void refreshVersionComboBox() {
         versionComboBox.getItems().clear();
-        List<Integer> versions = new ArrayList<>(Arrays.asList(1));
+        List<Integer> versions = sheetComponentController.getVersionList();
 
         for (int i = 0; i < versions.size(); i++) {
             int versionNumber = i + 1; // מספר הגרסה מתחיל מ-1
@@ -495,9 +505,6 @@ public class SheetViewfinderController {
         versionComboBox.getSelectionModel().clearSelection();
         versionComboBox.setValue(null);
     }
-
-
-
 
 
 
@@ -564,7 +571,13 @@ public class SheetViewfinderController {
         }
     }
 
+    public void updateListOfRanges() {
+        // מוחק את כל האיברים הקיימים ברשימה
+        listOfRanges.getItems().clear();
 
+        // מוסיף את האיברים החדשים לרשימה
+        listOfRanges.getItems().addAll(sheetComponentController.getRanges().keySet());
+    }
 
 
 
@@ -788,7 +801,7 @@ public class SheetViewfinderController {
     }
 
 
-
+/*
     private void setControlsDisabledAppStart(boolean disabled) {
         cellInputContentTextField.setDisable(disabled);
         alignmentBox.setDisable(disabled);
@@ -811,6 +824,8 @@ public class SheetViewfinderController {
         mainTabPane.setDisable(disabled);
         versionComboBox.setDisable(disabled);
     }
+
+ */
 
 
 
@@ -969,6 +984,9 @@ public class SheetViewfinderController {
             if (sheetDto != null) {
                 System.out.println("Sheet is here maybe");  // דוגמה להדפסת שם הגיליון
                 sheetComponentController.setPresentedSheet(sheetDto);  // עדכון תצוגת הגיליון ב-UI
+                updateListOfRanges();
+                //listOfRanges.getItems().addAll(sheetComponentController.getRanges().keySet());
+                refreshVersionComboBox();
             }
         }, errorMessage -> {
             // טיפול בשגיאה (הודעה ל-UI או ללוג)
@@ -1057,12 +1075,56 @@ public class SheetViewfinderController {
         // בקשת ה-sheetDTO מהשרת
         getCurrentSheet(sheetDto -> {
             sheetComponentController.setPresentedSheet(sheetDto);
+            //listOfRanges.getItems().addAll(sheetComponentController.getRanges().keySet());
+            updateListOfRanges();
+            refreshVersionComboBox();
             System.out.println("Updated sheet to version: " + sheetDto.getVersion());
 
         }, errorMessage -> {
             System.out.println("Error refreshing sheet: " + errorMessage);
         });
     }
+
+
+
+    public void getSheetVersion(int version, Consumer<SheetDto> onSuccess, Consumer<String> onError) {
+        String finalUrl = HttpUrl
+                .parse(String.valueOf(URI.create(Constants.GET_SHEET_VERSION_URL)))
+                .newBuilder()
+                .addQueryParameter("version", String.valueOf(version)) // הוספת מספר הגרסה כפרמטר
+                .toString();
+
+        // יצירת בקשת GET
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
+        // שליחת הבקשה באופן אסינכרוני
+        HttpClientUtil.runAsync(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // במקרה של כשל - קרא לפונקציית השגיאה
+                Platform.runLater(() -> onError.accept("Error fetching sheet version: " + e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful() && response.body() != null) {
+                    // המרת התגובה ל-SheetDto באמצעות JSONUtils
+                    String responseBody = response.body().string();
+                    SheetDto sheetDto = JSONUtils.fromJson(responseBody, SheetDtoImpl.class);
+
+                    // קריאה לפונקציית ההצלחה ב-UI Thread
+                    Platform.runLater(() -> onSuccess.accept(sheetDto));
+                } else {
+                    // קריאה לפונקציית השגיאה אם הבקשה נכשלה
+                    String errorMessage = "Failed to fetch sheet version. Response code: " + response.code();
+                    Platform.runLater(() -> onError.accept(errorMessage));
+                }
+            }
+        });
+    }
+
 
     // keep until loading is complete! so we can use the loading progress
     /*

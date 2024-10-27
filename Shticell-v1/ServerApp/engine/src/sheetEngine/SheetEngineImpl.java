@@ -111,38 +111,14 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         }
     }
 
-
-    /*
-    @Override
-    public void updateCellValue(String cell, String newValue)
-    {
-        Coordinate coordinate =  CoordinateCache.createCoordinateFromString(cell);
-
-        Cell currCell = currentSheet.getSheet().get(coordinate);
-
-        if(currCell != null)
-        {
-            String oldValue = currCell.getOriginalValue();
-            if (!oldValue.equals(newValue)) //will recalculate only if anything changed
-            {
-                currCell.setCellOriginalValue(newValue, currentSheet.getVersion()+1);
-                recalculateSheet();
-            }
-        }
-        else {
-            currCell = new CellImpl(coordinate.getRow(), coordinate.getColumn(), newValue, currentSheet.getVersion()+1);
-            currentSheet.setCell(coordinate, currCell);
-            recalculateSheet();
-        }
-    }
-
-     */
-
+/*
     @Override
     public List<Integer> getNumChangedCellsInAllVersions()
     {
         return currentSheet.countChangedCellsInAllVersions();
     }
+
+*/
 
 
     @Override
@@ -174,7 +150,6 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         return (currentSheet.isCellEmpty(coordinate));
     }
 
-
     @Override
     public void deleteRange(String str) throws Exception {
         try {
@@ -184,7 +159,6 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
             throw e;
         }
     }
-
 
     @Override
     public void addRange(String str, String from, String to) throws Exception {

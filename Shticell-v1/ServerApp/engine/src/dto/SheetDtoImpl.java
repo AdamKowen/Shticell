@@ -17,6 +17,7 @@ public class SheetDtoImpl implements SheetDto{
     private Integer columnUnits;
     private Integer rowUnits;
     private Map<Coordinate, CellDto> cellsInSheet;
+    private List<Integer> numCellChangedHistory;
     private Map<String, RangeDto> ranges ;
 
     public SheetDtoImpl(Sheet sheet){
@@ -61,15 +62,18 @@ public class SheetDtoImpl implements SheetDto{
 
         this.ranges = currRangesToDto;
 
-    }
 
+        this.numCellChangedHistory = sheet.getNumCellChangedHistory() != null
+                ? new ArrayList<>(sheet.getNumCellChangedHistory())
+                : new ArrayList<>();
+
+    }
 
 
     @Override
     public CellDto getCell(int row, int column) {
         return cellsInSheet.get(CoordinateCache.createCoordinate(row, column));
     }
-
 
     @Override
     // Getters and Setters
@@ -290,7 +294,10 @@ public class SheetDtoImpl implements SheetDto{
     }
 
 
-
+    public List<Integer> getNumCellChangedHistory() {
+        // מחזיר עותק של הרשימה כדי למנוע שינוי של הרשימה המקורית מחוץ למחלקה
+        return numCellChangedHistory;
+    }
 
 
 
@@ -304,6 +311,7 @@ public class SheetDtoImpl implements SheetDto{
         }
         return columnName.toString();
     }
+
 
 
 }

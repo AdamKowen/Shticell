@@ -1058,6 +1058,12 @@ public class SheetControllerImpl implements SheetController {
         return DisplayedSheet;
     }
 
+    public List<Integer> getVersionList()
+    {
+        //DisplayedSheet.
+        //return sheetEngine.getNumChangedCellsInAllVersions();
+        return DisplayedSheet.getNumCellChangedHistory();
+    }
 
 
     public void sortRowsInRange(Coordinate topLeft, Coordinate bottomRight, List<Character> colList) {
@@ -1103,7 +1109,7 @@ public class SheetControllerImpl implements SheetController {
     public Map<String, RangeDto> getRanges()
     {
         return DisplayedSheet.getRanges();
-    } // delete after usage changed to the viewfinder????? yes keep track of range versions as well! because changed range affects sheet as well!
+    } // keep track of range versions as well! because changed range effects sheet as well!
 
 
     //keep here
@@ -1187,15 +1193,13 @@ public class SheetControllerImpl implements SheetController {
 
 
 
-    // move code to dto!!!!!! but keep here the function
+
     public Map<String, List<String>> getUniqueValuesInRange(Coordinate topLeft, Coordinate bottomRight)
     {
 
         List<Integer> rows = getRowsFromCoordinates(topLeft, bottomRight);
 
-
-        //return sheetEngine.getUniqueValuesInRange(rows,getSelectedColumns());
-        return null;
+        return DisplayedSheet.getUniqueValuesInRange(rows,getSelectedColumns());
     }
 
 

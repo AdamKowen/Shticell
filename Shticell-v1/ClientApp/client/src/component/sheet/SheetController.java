@@ -132,6 +132,8 @@ public interface SheetController {
 
 
     int getCurrentSheetVersion();
+
+    List<Integer> getVersionList();
 }
 
 
