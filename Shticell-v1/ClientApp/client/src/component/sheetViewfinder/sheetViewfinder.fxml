@@ -156,7 +156,7 @@
       </TabPane>
    </center>
    <left>
-      <VBox fx:id="leftPane" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" minHeight="0.0" BorderPane.alignment="CENTER">
+      <VBox fx:id="leftPane" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" minHeight="0.0" prefHeight="480.0" prefWidth="175.0" BorderPane.alignment="CENTER">
          <children>
             <GridPane maxHeight="1.7976931348623157E308" prefWidth="133.0" VBox.vgrow="ALWAYS">
               <columnConstraints>
