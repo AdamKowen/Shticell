@@ -625,6 +625,125 @@ public class SheetViewfinderController {
 
 
     // Cell style actions:
+
+    @FXML
+    public void ChangeBackground(String colorHex) {
+        List<String> selectedColumns = sheetComponentController.getSelectedColumns();
+        List<Integer> selectedRows = sheetComponentController.getSelectedRows();
+
+        // קריאה לפונקציה ב-sheetViewfinder עם סוג הסטייל המתאים
+        sendUpdateCellsStyleRequest(selectedColumns, selectedRows, "backgroundColor", colorHex);
+    }
+
+    @FXML
+    public void ChangeTextColor(String colorHex) {
+        List<String> selectedColumns = sheetComponentController.getSelectedColumns();
+        List<Integer> selectedRows = sheetComponentController.getSelectedRows();
+
+        sendUpdateCellsStyleRequest(selectedColumns, selectedRows, "textColor", colorHex);
+    }
+
+    @FXML
+    public void ChangeAlignment(String alignment) {
+        List<String> selectedColumns = sheetComponentController.getSelectedColumns();
+        List<Integer> selectedRows = sheetComponentController.getSelectedRows();
+
+        sendUpdateCellsStyleRequest(selectedColumns, selectedRows, "alignment", alignment);
+    }
+
+    @FXML
+    public void resetStyle() {
+        List<String> selectedColumns = sheetComponentController.getSelectedColumns();
+        List<Integer> selectedRows = sheetComponentController.getSelectedRows();
+
+        sendUpdateCellsStyleRequest(selectedColumns, selectedRows, "reset", "");
+    }
+
+    private String toHexString(Color color) {
+        int red = (int) (color.getRed() * 255);
+        int green = (int) (color.getGreen() * 255);
+        int blue = (int) (color.getBlue() * 255);
+        return String.format("#%02X%02X%02X", red, green, blue);
+    }
+    public void sendUpdateCellsStyleRequest(List<String> columns, List<Integer> rows, String styleType, String styleValue) {
+        String url = Constants.UPDATE_CELLS_STYLE_URL;
+
+        // המרת הרשימות ל-JSON כדי לשלוח כפרמטרים
+        Gson gson = new Gson();
+        String columnsJson = gson.toJson(columns);
+        String rowsJson = gson.toJson(rows);
+
+        RequestBody formBody = new FormBody.Builder()
+                .add("styleType", styleType)
+                .add("styleValue", styleValue)
+                .add("columns", columnsJson)
+                .add("rows", rowsJson)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        HttpClientUtil.runAsync(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Platform.runLater(() -> System.out.println("Error: " + e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Platform.runLater(() -> {
+                            System.out.println("Style updated successfully.");
+                            refreshSheet();
+                            refreshVersionComboBox();
+                        });
+                    } else {
+                        Platform.runLater(() -> System.out.println("Failed to update style. Response code: " + response.code()));
+                    }
+                } finally {
+                    response.close();  // סגירת ה-Response כדי למנוע דליפה
+                }
+            }
+        });
+    }
+
+
+    @FXML
+    private void changeBackgroundColor() {
+
+        Color color = backgroundPicker.getValue(); // קבלת הצבע שנבחר
+        String colorHex = toHexString(color); // המרת הצבע למחרוזת Hex
+        ChangeBackground(colorHex);
+    }
+
+    @FXML
+    private void changeTextColor() {
+        Color color = fontPicker.getValue(); // קבלת הצבע שנבחר
+        String colorHex = toHexString(color); // המרת הצבע למחרוזת Hex
+        ChangeTextColor(colorHex);
+    }
+
+    @FXML
+    private void onAlignmentChange() {
+        String selectedAlignment = (String)alignmentBox.getValue();
+        switch (selectedAlignment) {
+            case "Left":
+                ChangeAlignment("LEFT");
+                break;
+            case "Center":
+                ChangeAlignment("CENTER");
+                break;
+            case "Right":
+                ChangeAlignment("RIGHT");
+                break;
+        }
+    }
+
+
+/*
     @FXML
     private void changeBackgroundColor() {
 
@@ -661,15 +780,7 @@ public class SheetViewfinderController {
         sheetComponentController.resetStyle();
     }
 
-    private String toHexString(Color color) {
-        int red = (int) (color.getRed() * 255);
-        int green = (int) (color.getGreen() * 255);
-        int blue = (int) (color.getBlue() * 255);
-        return String.format("#%02X%02X%02X", red, green, blue);
-    }
-
-
-
+ */
 
 
 
@@ -1124,6 +1235,17 @@ public class SheetViewfinderController {
             }
         });
     }
+
+
+
+
+
+
+
+
+
+
+
 
 
     // keep until loading is complete! so we can use the loading progress

@@ -1026,7 +1026,6 @@ public class SheetControllerImpl implements SheetController {
 
         sortedRowOrder = DisplayedSheet.resetSoretedOrder();
 
-
     }
 
 
@@ -1151,6 +1150,11 @@ public class SheetControllerImpl implements SheetController {
 
 
 
+
+
+
+
+
     public List<String> getSelectedColumns() {
         // בדיקה אם startCoordinate ו-endCoordinate מאותחלים
         if (startCoordinate == null || endCoordinate == null) {
@@ -1178,6 +1182,15 @@ public class SheetControllerImpl implements SheetController {
 
         return selectedColumns;
     }
+
+    public List<Integer> getSelectedRows() {
+        return getRowsInRange(startCoordinate, endCoordinate);
+    }
+
+
+
+
+
 
 
     // פונקציה המסייעת להמרת מספר עמודה למחרוזת (למשל: 1 -> "A", 2 -> "B")

@@ -236,6 +236,7 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
             currentSheet.getCell(coordinate).getStyle().setToDefault();
         }
     }
+
     public boolean isEmptyCell(Cell cell){
         return cell == null || cell.getOriginalValue().isBlank();
     }
@@ -294,4 +295,44 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
     {
         return currentSheet.getVersion();
     }
+
+
+
+    public void updateCellsStyle(List<String> columns, List<Integer> rows, String styleType, String styleValue) {
+
+        int newVersion = currentSheet.getVersion() + 1; // מוודא שהעדכון נחשב כגרסה אחת
+
+        for (int row : rows) {
+            for (String column : columns) {
+                String cellReference = column + row;
+                Coordinate coordinate = CoordinateCache.createCoordinateFromString(cellReference);
+                Cell currentCell = currentSheet.getCell(coordinate);
+
+                if (currentCell != null) {
+                    switch (styleType) {
+                        case "backgroundColor":
+                            currentCell.getStyle().setBackgroundColor(styleValue);
+                            break;
+                        case "textColor":
+                            currentCell.getStyle().setTextColor(styleValue);
+                            break;
+                        case "alignment":
+                            currentCell.getStyle().setAlignment(styleValue);
+                            break;
+                        case "reset":
+                            currentCell.getStyle().setToDefault();
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Unsupported style type: " + styleType);
+                    }
+
+                    currentCell.setVersion(newVersion);
+                }
+            }
+        }
+
+        currentSheet.saveVersion(); // שמירת הגרסה החדשה
+    }
+
+
 }

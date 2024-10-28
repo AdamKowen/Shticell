@@ -27,4 +27,6 @@ public interface Cell {
     CellStyle getStyle();
 
     String getLastUserUpdated();
+
+    void setVersion(int newVersion);
 }

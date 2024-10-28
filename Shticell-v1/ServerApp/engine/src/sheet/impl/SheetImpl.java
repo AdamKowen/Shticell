@@ -205,7 +205,6 @@ public class SheetImpl implements Sheet {
     }
 
 
-
     private int countChangedCells(SheetDto previousVersion, SheetDto currentVersion) {
         Map<Coordinate, CellDto> previousCells = previousVersion.getSheet();
         Map<Coordinate, CellDto> currentCells = currentVersion.getSheet();
@@ -218,13 +217,26 @@ public class SheetImpl implements Sheet {
             CellDto previousCell = previousCells.get(coord);
 
             // בדיקה אם הערך האפקטיבי השתנה או שהתא לא היה קיים קודם
-            if (previousCell == null || !currentCell.getValue().equals(previousCell.getValue()) || !currentCell.getOriginalValue().equals(previousCell.getOriginalValue())) {
+            boolean valueChanged = previousCell == null ||
+                    !currentCell.getValue().equals(previousCell.getValue()) ||
+                    !currentCell.getOriginalValue().equals(previousCell.getOriginalValue());
+
+            // בדיקה אם יש שינוי במאפייני ה-style
+            boolean styleChanged = previousCell == null ||
+                    (currentCell.getStyle() != null && previousCell.getStyle() != null &&
+                            (!currentCell.getStyle().getAlignment().equals(previousCell.getStyle().getAlignment()) ||
+                                    !currentCell.getStyle().getBackgroundColor().equals(previousCell.getStyle().getBackgroundColor()) ||
+                                    !currentCell.getStyle().getTextColor().equals(previousCell.getStyle().getTextColor())));
+
+            // אם יש שינוי בערך או ב-style, נגדיל את המונה
+            if (valueChanged || styleChanged) {
                 changedCellsCount++;
             }
         }
 
         return changedCellsCount;
     }
+
 
 
 /*

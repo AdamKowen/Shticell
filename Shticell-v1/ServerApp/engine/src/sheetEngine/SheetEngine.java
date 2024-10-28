@@ -62,4 +62,6 @@ public interface SheetEngine {
 
     int getCurrentSheetVersion();
 
+    void updateCellsStyle(List<String> columns, List<Integer> rows, String styleType, String styleValue);
+
 }

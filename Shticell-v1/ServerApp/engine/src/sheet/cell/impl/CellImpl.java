@@ -150,6 +150,11 @@ public class CellImpl implements Cell {
         return style;
     }
 
+    @Override
+    public void setVersion(int newVersion) {
+        this.version = newVersion;
+    }
+
     public boolean isEmptyCell(){
         return  this.getOriginalValue().isBlank();
     }

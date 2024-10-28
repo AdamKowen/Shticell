@@ -134,6 +134,8 @@ public interface SheetController {
     int getCurrentSheetVersion();
 
     List<Integer> getVersionList();
+
+    List<Integer> getSelectedRows();
 }
 
 
