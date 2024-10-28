@@ -145,7 +145,7 @@
         <tabs>
           <Tab fx:id="currentSheetTab" text="Current Sheet">
                <content>
-                    <fx:include fx:id="sheetComponent" maxHeight="Infinity" maxWidth="Infinity" source="../sheet/sheet.fxml" />
+                    <fx:include fx:id="sheetComponent"  source="../sheet/sheet.fxml" />
                </content>
             </Tab>
           <Tab fx:id="prevSheetTab" text="Previous Version Sheet">
