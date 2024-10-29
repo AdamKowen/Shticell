@@ -34,6 +34,10 @@ public class Constants {
     public final static String GET_SHEET_VERSION_URL = FULL_SERVER_PATH + "/getSheetVersion";
     public final static String UPDATE_CELLS_STYLE_URL = FULL_SERVER_PATH + "/updateCellsStyle";
 
+
+    public final static String DELETE_RANGE_URL = FULL_SERVER_PATH + "/deleteRange";
+    public final static String ADD_RANGE_URL = FULL_SERVER_PATH + "/addRange";
+
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();
 }

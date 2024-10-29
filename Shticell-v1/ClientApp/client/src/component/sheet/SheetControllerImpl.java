@@ -1122,31 +1122,45 @@ public class SheetControllerImpl implements SheetController {
     }
 
 
-    //Delete after move!!!!
+
+
+/*
     public void deleteRange(String rangeName) throws Exception {
         try {
-            /*
+
             sheetEngine.deleteRange(rangeName);
 
-             */
+
         } catch (Exception e) {
             // Rethrow the exception to allow it to propagate
             throw e;
         }
     }
 
-    //Delete after move!!!!
+
     public void addRange(String rangeName) throws Exception{
         try {
-            /*
+
             sheetEngine.addRange(rangeName ,coordinateToString(selectedRange.get().getTopLeft()), coordinateToString(selectedRange.get().getBottomRight()));
-             */
+
         } catch (Exception e) {
-            // Rethrow the exception to allow it to propagate
+
+
             throw e;
         }
 
     }
+*/
+
+
+    public String getTopLeft(){
+        return coordinateToString(selectedRange.get().getTopLeft());
+    }
+
+    public String getBottomRight(){
+        return coordinateToString(selectedRange.get().getBottomRight());
+    }
+
 
 
 

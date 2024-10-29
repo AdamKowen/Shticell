@@ -44,8 +44,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-
-import static util.Constants.SET_SHEET_URL;
+import static util.Constants.*;
 
 public class SheetViewfinderController {
 
@@ -463,6 +462,7 @@ public class SheetViewfinderController {
             @Override
             public void onFailure(Call call, IOException e) {
                 Platform.runLater(() -> cellUpdateError.setText("Failed to update cell: " + e.getMessage()));
+
             }
 
             @Override
@@ -553,16 +553,21 @@ public class SheetViewfinderController {
         try {
             if (buttonText.equals("Delete Range")) {
                 // Call the delete range function
-                sheetComponentController.deleteRange(rangeName);
+                deleteRange(rangeName);
                 ObservableList<String> rangesList = listOfRanges.getItems();
                 rangesList.clear();
                 listOfRanges.getItems().addAll(sheetComponentController.getRanges().keySet());
-                rangeErrorMassage.setText("Range '" + rangeName + "' deleted");
+                //rangeErrorMassage.setText("Range '" + rangeName + "' deleted");
+                refreshSheet();
+                updateListOfRanges();
+
             } else if (buttonText.equals("Add Selected")) {
                 // Call the add range function with the selected coordinates
-                sheetComponentController.addRange(rangeName);
-                rangeErrorMassage.setText("Range '" + rangeName + "' added successfully.");
+                addRange(rangeName, sheetComponentController.getTopLeft() , sheetComponentController.getBottomRight());
+                //rangeErrorMassage.setText("Range '" + rangeName + "' added successfully.");
                 listOfRanges.getItems().addAll(rangeName);
+                refreshSheet();
+                updateListOfRanges();
 
             }
         } catch (Exception e) {
@@ -578,6 +583,94 @@ public class SheetViewfinderController {
         // מוסיף את האיברים החדשים לרשימה
         listOfRanges.getItems().addAll(sheetComponentController.getRanges().keySet());
     }
+
+    // פונקציה למחיקת טווח (Range) לפי שם
+    public void deleteRange(String rangeName) {
+        // יצירת גוף הבקשה עם שם הטווח
+        RequestBody body = new FormBody.Builder()
+                .add("rangeName", rangeName)
+                .build();
+
+        // יצירת בקשת HTTP לשרת
+        Request request = new Request.Builder()
+                .url(DELETE_RANGE_URL)
+                .post(body)
+                .build();
+
+        // שליחת הבקשה לשרת בצורה אסינכרונית
+        HttpClientUtil.runAsync(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // במקרה של כשל בבקשה - נעדכן את ממשק המשתמש
+                Platform.runLater(() -> {
+                    // הצגת הודעת שגיאה
+                    rangeErrorMassage.setText("Failed to delete range: " + e.getMessage());
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                // במקרה של הצלחה או כשל, נבדוק את תגובת השרת
+                String message;
+                if (response.isSuccessful()) {
+                    message = "Range '" + rangeName + "' deleted successfully.";
+                } else {
+                    message = response.body().string();
+                }
+
+                Platform.runLater(() -> {
+                    // עדכון תווית rangeErrorMassage עם ההודעה המתאימה
+                    rangeErrorMassage.setText(message);
+                });
+            }
+        });
+    }
+
+    // פונקציה להוספת טווח (Range) חדש לפי שם וקואורדינטות
+    public void addRange(String rangeName, String topLeft, String bottomRight) {
+        // יצירת גוף הבקשה עם שם הטווח והקואורדינטות
+        RequestBody body = new FormBody.Builder()
+                .add("rangeName", rangeName)
+                .add("topLeft", topLeft)
+                .add("bottomRight", bottomRight)
+                .build();
+
+        // יצירת בקשת HTTP לשרת
+        Request request = new Request.Builder()
+                .url(ADD_RANGE_URL)
+                .post(body)
+                .build();
+
+        // שליחת הבקשה לשרת בצורה אסינכרונית
+        HttpClientUtil.runAsync(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // במקרה של כשל בבקשה - נעדכן את ממשק המשתמש
+                Platform.runLater(() -> {
+                    // הצגת הודעת שגיאה
+                    rangeErrorMassage.setText("Failed to add range: " + e.getMessage());
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                // במקרה של הצלחה או כשל, נבדוק את תגובת השרת
+                String message;
+                if (response.isSuccessful()) {
+                    message = "Range '" + rangeName + "' added successfully.";
+                } else {
+                    message = response.body().string();
+                }
+
+                Platform.runLater(() -> {
+                    // עדכון תווית rangeErrorMassage עם ההודעה המתאימה
+                    rangeErrorMassage.setText(message);
+                });
+            }
+        });
+    }
+
+
 
 
 

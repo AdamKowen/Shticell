@@ -33,8 +33,7 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
     private HashMap<String, Sheet> readerFiles;
     private HashMap<String, Sheet> writerFiles;
 
-
-    // change current sheet
+    private String nameOfOwner = null;
 
 
 
@@ -43,6 +42,7 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         this.MyFiles = new HashMap<>();
         this.readerFiles = new HashMap<>();
         this.writerFiles = new HashMap<>();
+        // this.nameofowner = name;
     }
 
 
