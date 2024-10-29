@@ -426,7 +426,7 @@ public class SheetViewfinderController {
         String newValue = cellInputContentTextField.getText().trim();
 
         // בדיקה אם יש תא נבחר וטקסט לא ריק
-        if (selectedCoordinate != null && !newValue.isEmpty()) {
+        if (selectedCoordinate != null) {
             try {
                 // הגדרת פרמטרים לבקשת העדכון
                 String coordinate = coordinateToString(selectedCoordinate); // המרה למחרוזת של הקואורדינטה (לדוגמה: "A1")
@@ -440,7 +440,7 @@ public class SheetViewfinderController {
             }
         } else {
             // אין מה לעדכן - אפשר לבחור להציג הודעה או פשוט לעשות כלום
-            cellUpdateError.setText("לא נבחר תא או אין טקסט לעדכון.");
+            cellUpdateError.setText("No cell selected");
         }
     }
 
