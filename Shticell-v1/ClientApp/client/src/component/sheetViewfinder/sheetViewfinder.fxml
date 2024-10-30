@@ -12,6 +12,8 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleButton?>
@@ -145,7 +147,7 @@
         <tabs>
           <Tab fx:id="currentSheetTab" text="Current Sheet">
                <content>
-                    <fx:include fx:id="sheetComponent"  source="../sheet/sheet.fxml" />
+                    <fx:include fx:id="sheetComponent" source="../sheet/sheet.fxml" />
                </content>
             </Tab>
           <Tab fx:id="prevSheetTab" text="Previous Version Sheet">
@@ -294,7 +296,61 @@
                               </GridPane>
                            </content>
                         </TitledPane>
-                        <TitledPane prefHeight="200.0" prefWidth="200.0" text="Dynamic Analysis" />
+                        <TitledPane prefHeight="200.0" prefWidth="200.0" text="Dynamic Analysis">
+                           <content>
+                              <ScrollPane fitToHeight="true" fitToWidth="true">
+                                 <content>
+                                    <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <TableView fx:id="sliderTable" maxHeight="1.7976931348623157E308" minHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                            <columns>
+                                              <TableColumn fx:id="cellNameCol" prefWidth="39.1452751159668" text="Cell" />
+                                              <TableColumn fx:id="sliderCol" prefWidth="88.35469818115234" resizable="false" text="Slider" />
+                                            </columns>
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </VBox.margin>
+                                             <columnResizePolicy>
+                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                             </columnResizePolicy>
+                                          </TableView>
+                                          <GridPane minHeight="60.0" minWidth="100.0" VBox.vgrow="NEVER">
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <children>
+                                                <Label text="From Value:" />
+                                                <Label text="To Value:" GridPane.rowIndex="1" />
+                                                <TextField fx:id="sliderToTextfield" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <TextField fx:id="sliderFromTextfield" GridPane.columnIndex="1" />
+                                             </children>
+                                          </GridPane>
+                                          <GridPane minHeight="30.0" VBox.vgrow="NEVER">
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="82.6296157836914" minWidth="10.0" prefWidth="70.04843139648438" />
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="68.95156860351562" minWidth="10.0" prefWidth="68.95156860351562" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <children>
+                                                <ComboBox fx:id="stepSizeChoice" prefWidth="150.0" promptText="Size" GridPane.columnIndex="1" />
+                                                <Label text="Step Size:" />
+                                             </children>
+                                          </GridPane>
+                                          <Button fx:id="addSliderButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#addSliderForCell" prefHeight="28.0" prefWidth="80.0" text="Add Slider" VBox.vgrow="NEVER" />
+                                          <Button fx:id="emptySheetAndResetButton" mnemonicParsing="false" text="Empty List and Reset" />
+                                          <Label fx:id="dynamicAnalysisErrorMassage" />
+                                       </children>
+                                    </VBox>
+                                 </content>
+                              </ScrollPane>
+                           </content></TitledPane>
                         <TitledPane prefHeight="200.0" prefWidth="200.0" text="Graph" />
                       <TitledPane maxHeight="1.7976931348623157E308" prefWidth="150.0" text="Ranges">
                            <content>
@@ -351,19 +407,19 @@
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
-                      <RowConstraints maxHeight="92.62725830078125" minHeight="10.0" prefHeight="70.0" vgrow="NEVER" />
-                      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="28.5" prefHeight="37.5" vgrow="ALWAYS" />
-                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="6.5" prefHeight="17.5" vgrow="ALWAYS" />
+                      <RowConstraints maxHeight="92.62725830078125" minHeight="10.0" prefHeight="71.0484619140625" vgrow="NEVER" />
+                      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="28.5" prefHeight="38.95159912109375" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="6.5" prefHeight="15.54840087890625" vgrow="ALWAYS" />
                     </rowConstraints>
                      <children>
-                        <Button fx:id="reSelect" mnemonicParsing="false" onAction="#reSelectAction" prefHeight="29.0" prefWidth="100.0" text="re-select" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                        <Button fx:id="reSelect" mnemonicParsing="false" onAction="#reSelectAction" prefHeight="43.0" prefWidth="104.0" text="re-select" GridPane.rowIndex="1" GridPane.valignment="TOP">
                            <GridPane.margin>
-                              <Insets left="15.0" top="4.0" />
+                              <Insets left="30.0" top="4.0" />
                            </GridPane.margin></Button>
                         <GridPane prefHeight="71.0" prefWidth="132.0" GridPane.vgrow="NEVER">
                           <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.13446044921875" minWidth="10.0" prefWidth="62.16183090209961" />
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.97262191772461" minWidth="10.0" prefWidth="70.83816909790039" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.13446044921875" minWidth="10.0" prefWidth="76.40313720703125" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="93.29058837890625" minWidth="10.0" prefWidth="89.09686279296875" />
                           </columnConstraints>
                           <rowConstraints>
                               <RowConstraints maxHeight="47.507232666015625" minHeight="8.68316650390625" prefHeight="9.472747802734375" vgrow="SOMETIMES" />
@@ -373,22 +429,22 @@
                            <children>
                               <Label fx:id="bottonRight" alignment="BOTTOM_CENTER" text="From:" GridPane.rowIndex="1">
                                  <GridPane.margin>
-                                    <Insets left="20.0" />
+                                    <Insets left="35.0" />
                                  </GridPane.margin>
                               </Label>
                               <Label text="To:" textAlignment="CENTER" GridPane.rowIndex="2">
                                  <GridPane.margin>
-                                    <Insets left="20.0" />
+                                    <Insets left="35.0" />
                                  </GridPane.margin>
                               </Label>
                               <TextField fx:id="bottomRightBox" prefHeight="9.0" prefWidth="6.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <GridPane.margin>
-                                    <Insets right="20.0" />
+                                    <Insets left="10.0" right="30.0" />
                                  </GridPane.margin>
                               </TextField>
-                              <TextField fx:id="topLeftBox" alignment="BOTTOM_LEFT" prefHeight="26.0" prefWidth="63.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <TextField fx:id="topLeftBox" alignment="BOTTOM_LEFT" prefHeight="26.0" prefWidth="45.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <GridPane.margin>
-                                    <Insets right="20.0" />
+                                    <Insets left="10.0" right="30.0" />
                                  </GridPane.margin>
                               </TextField>
                            </children>

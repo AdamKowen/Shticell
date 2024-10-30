@@ -5,6 +5,8 @@ import dto.SheetDto;
 import loader.SheetLoadingException;
 import org.xml.sax.SAXException;
 import sheet.api.Sheet;
+import sheet.api.SheetCalculator;
+import sheetCalculator.SheetCalculatorImpl;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
@@ -64,4 +66,12 @@ public interface SheetEngine {
 
     void updateCellsStyle(List<String> columns, List<Integer> rows, String styleType, String styleValue);
 
+    public void updateCellBasedOnSlider(String cellID, String value) throws Exception;
+
+    SheetDto getTemporarySheetDTO();
+
+
+    void recalculateTempSheet();
+
+    void updateCellValueTempSheet(String cell, String newValue) throws Exception;
 }

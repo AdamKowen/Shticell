@@ -2,10 +2,13 @@ package component.sheetViewfinder;
 import com.google.gson.Gson;
 import component.main.AppMainController;
 import component.sheet.SheetController;
+import dto.CellDto;
 import dto.SheetDto;
 import dto.SheetDtoImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -37,10 +40,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -181,6 +181,45 @@ public class SheetViewfinderController {
 
     @FXML
     private VBox topPane;
+
+
+
+
+
+
+
+
+    //Dynamic Analysis:
+
+    @FXML
+    private TableView<Map.Entry<String, Slider>> sliderTable;
+
+    @FXML
+    private TableColumn<Map.Entry<String, Slider>, String> cellNameCol;
+
+    @FXML
+    private TableColumn<Map.Entry<String, Slider>, Slider> sliderCol;
+
+
+    @FXML
+    private TextField sliderFromTextfield;
+
+    @FXML
+    private TextField sliderToTextfield;
+
+    @FXML
+    private ComboBox<Double> stepSizeChoice;
+
+    @FXML
+    private Button addSliderButton;
+
+    @FXML
+    private Button emptySheetAndResetButton;
+
+    @FXML
+    private Label dynamicAnalysisErrorMassage;
+
+    private ObservableList<Map.Entry<String, Slider>> sliderData = FXCollections.observableArrayList();
 
 
     @FXML
@@ -408,6 +447,8 @@ public class SheetViewfinderController {
         });
 
 
+        initializeTableColumns();
+        initializeStepSizeBox();
 
         //setControlsDisabledAppStart(true);
 
@@ -971,6 +1012,195 @@ public class SheetViewfinderController {
         sheetComponentController.updateRowHeight(newHeight);
 
     }
+
+
+
+
+
+
+
+
+    // Dynamic Analysis
+
+    private void initializeTableColumns() {
+        // הגדרת עמודת שם התא
+        cellNameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKey()));
+
+        // הגדרת עמודת ה-Slider
+        sliderCol.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getValue()));
+
+        // הגדרת מקור הנתונים של הטבלה
+        sliderTable.setItems(sliderData);
+    }
+
+
+    @FXML
+    private void addSliderForCell() {
+        // קריאת ערכים מה-TextField
+        String fromText = sliderFromTextfield.getText();
+        String toText = sliderToTextfield.getText();
+
+        // בדיקת תקינות הערכים
+        if (!isNumeric(fromText) || !isNumeric(toText)) {
+            dynamicAnalysisErrorMassage.setText("Please enter numeric values only.");
+            return;
+        }
+
+        double fromValue = Double.parseDouble(fromText);
+        double toValue = Double.parseDouble(toText);
+        double stepSize = stepSizeChoice.getSelectionModel().getSelectedItem();
+
+        // בדיקת טווח ו-step size
+        if (!isValidRange(fromValue, toValue, stepSize)) {
+            dynamicAnalysisErrorMassage.setText("Range is not large enough for the selected step size.");
+            return;
+        }
+
+        // הסרת הודעת השגיאה
+        dynamicAnalysisErrorMassage.setText("");
+
+        // יצירת סליידר חדש
+        Slider newSlider = new Slider(fromValue, toValue, (fromValue + toValue) / 2);
+        newSlider.setBlockIncrement(stepSize);
+
+        // משתנה דגל פנימי עבור הסליידר המסוים בלבד
+        final boolean[] isUserAction = {false};
+
+        // מאזינים להתחלת ונעילת אינטראקציה על הסליידר
+        newSlider.setOnMousePressed(event -> isUserAction[0] = true);
+        newSlider.setOnMouseReleased(event -> isUserAction[0] = false);
+
+        // מאזין לשינוי ערך הסליידר כאשר המשתמש גורר אותו
+        newSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (isUserAction[0]) { // נוודא שרק בלחיצה ישירה על הסליידר הבקשה תישלח
+                String newValueStr = Double.toString(newVal.doubleValue());
+
+                updateCellInTemporarySheet(coordinateToString(selectedCoordinate), newValueStr, sheetDto -> {
+                    // עדכון הממשק עם ה-SheetDto המעודכן
+                    sheetComponentController.setPresentedSheet(sheetDto);
+                    System.out.println("Updated sheet DTO to version: " + sheetDto.getVersion());
+
+                    // עדכון רשימות נוספות בממשק
+                    updateListOfRanges();
+                    refreshVersionComboBox();
+                }, errorMessage -> {
+                    // טיפול בשגיאה
+                    System.out.println("Error updating cell: " + errorMessage);
+                });
+            }
+        });
+
+
+        // קביעת ערך התחלתי של הסליידר לפי ערך התא
+        String value = sheetComponentController.getCellValue(coordinateToString(selectedCoordinate));
+
+        if (isNumeric(value)) {
+            // אם הערך מספרי, ממירים אותו ל-double
+            double cellValue = Double.parseDouble(value);
+
+            // אם הערך בתוך הטווח, ממקמים את הסליידר בהתאם
+            if (cellValue >= fromValue && cellValue <= toValue) {
+                newSlider.setValue(cellValue);
+            } else if (cellValue < fromValue) {
+                // אם הערך קטן מהטווח, ממקמים בקצה השמאלי
+                newSlider.setValue(fromValue);
+            } else {
+                // אם הערך גדול מהטווח, ממקמים בקצה הימני
+                newSlider.setValue(toValue);
+            }
+        } else {
+            // אם הערך אינו מספרי, ממקמים את הסליידר באמצע הטווח
+            newSlider.setValue((fromValue + toValue) / 2);
+        }
+
+        // הוספת שם התא והסליידר לטבלה
+        sliderData.add(new AbstractMap.SimpleEntry<>(coordinateToString(selectedCoordinate), newSlider));
+    }
+
+    private boolean isValidRange(double fromValue, double toValue, double stepSize) {
+        return (fromValue < toValue) && ((toValue - fromValue) >= (5 * stepSize));
+    }
+
+    private boolean isNumeric(String value) {
+        try {
+            Double.parseDouble(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+
+    private void clearErrorOnInteraction() {
+        sliderFromTextfield.setOnKeyTyped(e -> dynamicAnalysisErrorMassage.setText(""));
+        sliderToTextfield.setOnKeyTyped(e -> dynamicAnalysisErrorMassage.setText(""));
+        stepSizeChoice.setOnAction(e -> dynamicAnalysisErrorMassage.setText(""));
+    }
+
+    private void initializeStepSizeBox() {
+        // אתחול ComboBox עם ערכים קבועים
+        stepSizeChoice.getItems().addAll(100.0, 10.0, 1.0, 0.1, 0.01, 0.001, 0.5, 0.05, 0.005);
+
+        // אפשר להגדיר ערך ברירת מחדל, אם רוצים
+        stepSizeChoice.setValue(1.0); // ערך ברירת מחדל של 1
+    }
+
+
+    // פונקציה אסינכרונית שמבצעת בקשת POST לעדכון תא ומחזירה את ה-SheetDto המעודכן
+    private void updateCellInTemporarySheet(String cellId, String newValue, Consumer<SheetDto> onSuccess, Consumer<String> onError) {
+        // יצירת URL לבקשה
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(UPDATE_TEMP_SHEET_URL).newBuilder();
+        String finalUrl = urlBuilder.build().toString();
+
+        // יצירת גוף הבקשה עם הפרמטרים cellId ו-newValue
+        RequestBody formBody = new FormBody.Builder()
+                .add("cellId", cellId)
+                .add("newValue", newValue)
+                .build();
+
+        // יצירת בקשת POST עם URL וגוף הבקשה
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .post(formBody)
+                .build();
+
+        // שליחת הבקשה באופן אסינכרוני
+        HttpClientUtil.runAsync(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // במקרה של כשל - קרא לפונקציית השגיאה
+                Platform.runLater(() -> onError.accept("Error updating cell: " + e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful() && response.body() != null) {
+                    // המרת התגובה ל-SheetDto באמצעות JSONUtils
+                    String responseBody = response.body().string();
+                    SheetDto sheetDto = JSONUtils.fromJson(responseBody, SheetDtoImpl.class);
+
+                    // קריאה לפונקציית ההצלחה ב-UI Thread
+                    Platform.runLater(() ->
+                    {
+                        onSuccess.accept(sheetDto);
+                        sheetComponentController.setPresentedSheet(sheetDto);
+                    });
+                } else {
+                    // קריאה לפונקציית השגיאה אם הבקשה נכשלה
+                    String errorMessage = "Failed to update cell. Response code: " + response.code();
+                    Platform.runLater(() -> onError.accept(errorMessage));
+                }
+            }
+        });
+    }
+
+
+
+
+
+
+
+
 
 
 
