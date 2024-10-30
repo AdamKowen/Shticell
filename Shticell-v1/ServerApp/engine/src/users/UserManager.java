@@ -46,6 +46,9 @@ public class UserManager {
         return usersSet.containsKey(username);
     }
 
+    public PermissionManager getPermissionManager() {
+        return permissionManager;
+    }
 
     // המתודה מחזירה רשימה של SheetInfoDto לכל הגיליונות של המשתמשים
     public List<SheetInfoDto> getAllSheetsInfo() {

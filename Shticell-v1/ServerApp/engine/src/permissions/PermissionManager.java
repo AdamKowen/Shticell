@@ -43,6 +43,7 @@ public class PermissionManager {
         return PermissionType.NONE;
     }
 
+
     public boolean hasEditPermission(String sheetName, String username) {
         PermissionType type = getPermissionType(sheetName, username);
         return type == PermissionType.OWNER || type == PermissionType.WRITER;
@@ -51,6 +52,10 @@ public class PermissionManager {
     public boolean hasViewPermission(String sheetName, String username) {
         PermissionType type = getPermissionType(sheetName, username);
         return type != PermissionType.NONE;
+    }
+
+    public List<SheetPermission> getPermissionsForSheet(String sheetName) {
+        return this.permissions.get(sheetName);
     }
 }
 
