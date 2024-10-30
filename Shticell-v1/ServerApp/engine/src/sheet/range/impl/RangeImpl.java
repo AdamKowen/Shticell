@@ -5,10 +5,11 @@ import sheet.cell.api.Cell;
 import sheet.coordinate.api.Coordinate;
 import sheet.range.boundaries.Boundaries;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RangeImpl implements sheet.range.api.Range {
+public class RangeImpl implements sheet.range.api.Range, Serializable {
     private Boundaries boundaries;
     private String name;
 

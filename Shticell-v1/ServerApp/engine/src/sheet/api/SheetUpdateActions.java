@@ -37,4 +37,6 @@ public interface SheetUpdateActions {
 
     void addRange(String name, Range range);
 
+    void initializaEmptyLists();
+
 }

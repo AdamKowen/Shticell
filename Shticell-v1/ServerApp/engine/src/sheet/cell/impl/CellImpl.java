@@ -5,6 +5,7 @@ import expression.parser.FunctionParser;
 import sheet.api.SheetReadActions;
 import sheet.cell.api.Cell;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import sheet.coordinate.api.*;
 import sheet.coordinate.impl.CoordinateImpl;
 
 
-public class CellImpl implements Cell {
+public class CellImpl implements Cell , Serializable {
 
     private final Coordinate coordinate;
     private String originalValue;

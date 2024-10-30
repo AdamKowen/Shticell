@@ -4,7 +4,9 @@ import expression.api.Expression;
 import sheet.cell.api.CellType;
 import sheet.cell.api.EffectiveValue;
 
-public class EffectiveValueImpl implements EffectiveValue {
+import java.io.Serializable;
+
+public class EffectiveValueImpl implements EffectiveValue, Serializable {
 
     private CellType cellType;
     private Object value;

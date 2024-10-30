@@ -375,6 +375,7 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         if (temporarySheet == null) {
             return getCurrentSheetDTO(); // במקרה שאין גיליון זמני, מחזיר את הגיליון האמיתי
         }
+        temporarySheet.initializaEmptyLists();
         return new SheetDtoImpl(temporarySheet); // יצירת SheetDto עבור הגיליון הזמני
     }
 
@@ -382,7 +383,7 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
     @Override
     public void recalculateTempSheet() {
         SheetCalculator evaluator = new SheetCalculatorImpl(temporarySheet);
-        temporarySheet.saveVersion();
+        //temporarySheet.saveVersion();
     }
 
 
@@ -397,14 +398,14 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
             String oldValue = currCell.getOriginalValue();
             if (!oldValue.equals(newValue)) { // Recalculate only if the value changed
                 currCell.setCellOriginalValue(newValue, temporarySheet.getVersion() + 1);
-                recalculateSheet();
+                recalculateTempSheet();
             }
         } else {
             // If the cell doesn't exist, try to create a new one
             try {
                 currCell = new CellImpl(coordinate.getRow(), coordinate.getColumn(), newValue, temporarySheet.getVersion() + 1);
                 temporarySheet.setCell(coordinate, currCell);
-                recalculateSheet();
+                recalculateTempSheet();
             } catch (Exception e) {
                 // אם יצירת התא או הוספתו נכשלת, נזרוק שגיאה למעלה
                 throw new Exception("Failed to update or create cell at coordinate: " + cell, e);
