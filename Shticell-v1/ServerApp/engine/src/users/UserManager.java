@@ -1,6 +1,9 @@
 package users;
 
 import dto.SheetInfoDto;
+import permissions.PermissionManager;
+import permissions.PermissionType;
+import permissions.SheetPermission;
 import sheet.api.Sheet;
 import sheet.impl.SheetImpl;
 import sheetEngine.SheetEngine;
@@ -15,9 +18,12 @@ of the user of this class to handle the synchronization of isUserExists with oth
 public class UserManager {
 
     private final HashMap<String, User> usersSet;
+    private PermissionManager permissionManager;
+
 
     public UserManager() {
         usersSet = new HashMap<>();
+        permissionManager = new PermissionManager();
     }
 
     public synchronized void addUser(String username) {
@@ -63,6 +69,27 @@ public class UserManager {
         }
 
         return sheetList;
+    }
+
+    // הוספת הרשאה למשתמש עבור גיליון
+    public void addPermission(String sheetName, String username, PermissionType type) {
+        SheetPermission permission = new SheetPermission(username, type);
+        permissionManager.addPermission(sheetName, permission);
+    }
+
+    // עדכון הרשאה למשתמש קיים עבור גיליון
+    public void updatePermission(String sheetName, String username, PermissionType newType) {
+        permissionManager.updatePermission(sheetName, username, newType);
+    }
+
+    // בדיקה אם למשתמש יש הרשאת עריכה
+    public boolean hasEditPermission(String sheetName, String username) {
+        return permissionManager.hasEditPermission(sheetName, username);
+    }
+
+    // בדיקה אם למשתמש יש הרשאת צפייה
+    public boolean hasViewPermission(String sheetName, String username) {
+        return permissionManager.hasViewPermission(sheetName, username);
     }
 
 }
