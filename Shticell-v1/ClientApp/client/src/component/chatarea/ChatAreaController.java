@@ -120,7 +120,6 @@ public class ChatAreaController implements Closeable {
         chatAreaRefresher = new ChatAreaRefresher(
                 chatVersion,
                 autoUpdate,
-                httpStatusUpdate::updateHttpLine,
                 this::updateChatLines);
         timer = new Timer();
         timer.schedule(chatAreaRefresher, REFRESH_RATE, REFRESH_RATE);

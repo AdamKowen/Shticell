@@ -19,14 +19,13 @@ import static util.Constants.GSON_INSTANCE;
 
 public class ChatAreaRefresher extends TimerTask {
 
-    private final Consumer<String> httpRequestLoggerConsumer;
     private final Consumer<ChatLinesWithVersion> chatlinesConsumer;
     private final IntegerProperty chatVersion;
     private final BooleanProperty shouldUpdate;
     private int requestNumber;
 
-    public ChatAreaRefresher(IntegerProperty chatVersion, BooleanProperty shouldUpdate, Consumer<String> httpRequestLoggerConsumer, Consumer<ChatLinesWithVersion> chatlinesConsumer) {
-        this.httpRequestLoggerConsumer = httpRequestLoggerConsumer;
+    public ChatAreaRefresher(IntegerProperty chatVersion, BooleanProperty shouldUpdate, Consumer<ChatLinesWithVersion> chatlinesConsumer) {
+
         this.chatlinesConsumer = chatlinesConsumer;
         this.chatVersion = chatVersion;
         this.shouldUpdate = shouldUpdate;
@@ -50,23 +49,23 @@ public class ChatAreaRefresher extends TimerTask {
                 .build()
                 .toString();
 
-        httpRequestLoggerConsumer.accept("About to invoke: " + finalUrl + " | Chat Request # " + finalRequestNumber);
+        //httpRequestLoggerConsumer.accept("About to invoke: " + finalUrl + " | Chat Request # " + finalRequestNumber);
 
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                httpRequestLoggerConsumer.accept("Something went wrong with Chat Request # " + finalRequestNumber);
+                //httpRequestLoggerConsumer.accept("Something went wrong with Chat Request # " + finalRequestNumber);
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String rawBody = response.body().string();
-                    httpRequestLoggerConsumer.accept("Response of Chat Request # " + finalRequestNumber + ": " + rawBody);
+                    //httpRequestLoggerConsumer.accept("Response of Chat Request # " + finalRequestNumber + ": " + rawBody);
                     ChatLinesWithVersion chatLinesWithVersion = GSON_INSTANCE.fromJson(rawBody, ChatLinesWithVersion.class);
                     chatlinesConsumer.accept(chatLinesWithVersion);
                 } else {
-                    httpRequestLoggerConsumer.accept("Something went wrong with Request # " + finalRequestNumber + ". Code is " + response.code());
+                    //httpRequestLoggerConsumer.accept("Something went wrong with Request # " + finalRequestNumber + ". Code is " + response.code());
                 }
             }
         });

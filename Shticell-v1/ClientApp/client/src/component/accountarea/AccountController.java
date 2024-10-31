@@ -100,6 +100,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
         chatAreaComponentController.autoUpdatesProperty().bind(actionCommandsComponentController.autoUpdatesProperty());
         usersListComponentController.autoUpdatesProperty().bind(actionCommandsComponentController.autoUpdatesProperty());
+        chatAreaComponentController.startListRefresher();
     }
 
 
