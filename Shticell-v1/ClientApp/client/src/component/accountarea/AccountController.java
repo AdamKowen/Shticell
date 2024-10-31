@@ -3,6 +3,7 @@ package component.accountarea;
 import com.google.gson.Gson;
 import component.api.AccountCommands;
 import component.api.HttpStatusUpdate;
+import component.chatarea.ChatAreaController;
 import component.commands.CommandsController;
 import component.main.AppMainController;
 import component.sheetViewfinder.SheetViewfinderController;
@@ -51,6 +52,9 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     @FXML private UsersListController usersListComponentController;
     @FXML private VBox actionCommandsComponent;
     @FXML private CommandsController actionCommandsComponentController;
+    @FXML private GridPane chatAreaComponent;
+    @FXML private ChatAreaController chatAreaComponentController;
+
 
     private AppMainController chatAppMainController;
 
@@ -92,6 +96,10 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
                 System.out.println("Selected sheet: " + selectedSheetName);  // להדגמה
             }
         });
+
+
+        chatAreaComponentController.autoUpdatesProperty().bind(actionCommandsComponentController.autoUpdatesProperty());
+        usersListComponentController.autoUpdatesProperty().bind(actionCommandsComponentController.autoUpdatesProperty());
     }
 
 

@@ -68,17 +68,17 @@ public class ChatAreaController implements Closeable {
                 .build()
                 .toString();
 
-        httpStatusUpdate.updateHttpLine(finalUrl);
+        //httpStatusUpdate.updateHttpLine(finalUrl);
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                httpStatusUpdate.updateHttpLine("Attempt to send chat line [" + chatLine + "] request ended with failure...:(");
+                //httpStatusUpdate.updateHttpLine("Attempt to send chat line [" + chatLine + "] request ended with failure...:(");
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    httpStatusUpdate.updateHttpLine("Attempt to send chat line [" + chatLine + "] request ended with failure. Error code: " + response.code());
+                    //httpStatusUpdate.updateHttpLine("Attempt to send chat line [" + chatLine + "] request ended with failure. Error code: " + response.code());
                 }
             }
         });
@@ -87,7 +87,7 @@ public class ChatAreaController implements Closeable {
     }
 
     public void setHttpStatusUpdate(HttpStatusUpdate chatRoomMainController) {
-        this.httpStatusUpdate = chatRoomMainController;
+        //this.httpStatusUpdate = chatRoomMainController;
     }
 
     private void updateChatLines(ChatLinesWithVersion chatLinesWithVersion) {

@@ -1,40 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Accordion?>
-<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="127.0" spacing="5.0" stylesheets="@action-commands.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.commands.CommandsController">
    <children>
-      <Accordion>
-        <panes>
-          <TitledPane prefHeight="229.0" prefWidth="108.0" text="untitled 1">
-               <content>
-                  <GridPane>
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                  </GridPane>
-               </content>
-          </TitledPane>
-          <TitledPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="286.0" prefWidth="116.0" text="untitled 2">
-               <content>
-                  <ToggleButton id="auto-updates-button" fx:id="autoUpdatesButton" mnemonicParsing="false" prefWidth="100.0" selected="true" styleClass="main-action-button" text="Auto Updates" textAlignment="CENTER" wrapText="true" />
-               </content>
-          </TitledPane>
-          <TitledPane prefHeight="171.0" prefWidth="116.0" text="untitled 3" />
-        </panes>
-      </Accordion>
+      <ToggleButton id="auto-updates-button" fx:id="autoUpdatesButton" maxHeight="0.0" maxWidth="0.0" minHeight="0.0" minWidth="0.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" selected="true" styleClass="main-action-button" text="Auto Updates" textAlignment="CENTER" wrapText="true" />
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

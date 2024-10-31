@@ -1,6 +1,7 @@
 package component.main;
 
 import component.api.HttpStatusUpdate;
+import component.chatarea.ChatAreaController;
 import component.chatroom.ChatRoomMainController;
 import component.login.LoginController;
 import component.sheetViewfinder.SheetViewfinderController;
@@ -30,6 +31,7 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
 
     @FXML private Parent httpStatusComponent;
     @FXML private StatusController httpStatusComponentController;
+
 
     private GridPane loginComponent;
     private LoginController logicController;
