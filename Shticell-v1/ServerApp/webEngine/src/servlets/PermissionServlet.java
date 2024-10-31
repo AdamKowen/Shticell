@@ -42,7 +42,7 @@ public class PermissionServlet extends HttpServlet {
         response.getWriter().println("Permission added successfully.");
     }
 
-    // עדכון הרשאה קיימת
+    // עדכון הרשאה קיימת/
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String[] pathInfo = request.getPathInfo().split("/");
