@@ -1733,4 +1733,16 @@ public class SheetControllerImpl implements SheetController {
     }
 
 
+    public String getCellValue(String cell)
+    {
+        String value =  DisplayedSheet.getCell(CoordinateCache.createCoordinateFromString(cell)).getValue();
+        if (value!=null) {
+            return value;
+        }
+        else {
+            return "";
+        }
+    }
+
+
 }

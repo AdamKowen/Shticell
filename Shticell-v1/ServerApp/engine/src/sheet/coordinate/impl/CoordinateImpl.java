@@ -2,7 +2,9 @@ package sheet.coordinate.impl;
 
 import sheet.coordinate.api.Coordinate;
 
-public class CoordinateImpl implements Coordinate {
+import java.io.Serializable;
+
+public class CoordinateImpl implements Coordinate, Serializable {
     private int row;
     private int column;
 

@@ -8,6 +8,7 @@ import sheet.coordinate.api.*;
 import sheet.coordinate.impl.CoordinateCache;
 import sheet.range.api.Range;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 import static sheet.coordinate.impl.CoordinateCache.createCoordinate;
 
-public class SheetImpl implements Sheet {
+public class SheetImpl implements Sheet, Serializable {
 
     private int numOfColumns;
     private int numOfRows;
@@ -24,8 +25,8 @@ public class SheetImpl implements Sheet {
     private Integer columnUnits;
     private Integer rowUnits;
     private Map<Coordinate, Cell> cellsInSheet = null;
-    private Map<Integer, SheetDto> versionHistory = null;
-    private List<Integer> numCellChangedHistory = null;
+    private transient Map<Integer, SheetDto> versionHistory = null;
+    private transient List<Integer> numCellChangedHistory = null;
     private Map<String, Range> ranges = null;
 
 
@@ -406,5 +407,11 @@ public class SheetImpl implements Sheet {
     }
 
 
+    public void initializaEmptyLists()
+    {
+        versionHistory = new HashMap<>();
+        numCellChangedHistory = new ArrayList<>();
+        //ranges = new HashMap<>();
+    }
 
 }

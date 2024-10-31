@@ -142,6 +142,10 @@ public interface SheetController {
     public String getTopLeft();
 
     public String getBottomRight();
+
+
+
+    String getCellValue(String cell);
 }
 
 

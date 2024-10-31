@@ -38,6 +38,8 @@ public class Constants {
     public final static String DELETE_RANGE_URL = FULL_SERVER_PATH + "/deleteRange";
     public final static String ADD_RANGE_URL = FULL_SERVER_PATH + "/addRange";
 
+    public final static String UPDATE_TEMP_SHEET_URL = FULL_SERVER_PATH + "/updateTemporarySheet";
+
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();
 }

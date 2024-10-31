@@ -1,6 +1,8 @@
 package sheet.range.boundaries;
 
-public class Boundaries {
+import java.io.Serializable;
+
+public class Boundaries implements Serializable {
     private String from;
     private String to;
 

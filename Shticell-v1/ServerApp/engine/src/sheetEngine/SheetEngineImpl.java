@@ -20,7 +20,7 @@ import sheet.range.impl.RangeImpl;
 import sheetCalculator.SheetCalculatorImpl;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,12 +28,13 @@ import java.util.Map;
 public class SheetEngineImpl implements sheetEngine.SheetEngine {
 
     private Sheet currentSheet;
+    private Sheet temporarySheet = null;
     private Loader loader;
     private HashMap<String, Sheet> MyFiles;
     private HashMap<String, Sheet> readerFiles;
     private HashMap<String, Sheet> writerFiles;
 
-    private String nameOfOwner = null;
+
 
 
 
@@ -335,4 +336,80 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
     }
 
 
+
+    public void createTemporarySheet() {
+        if (temporarySheet == null) {
+            temporarySheet = deepCopy(currentSheet);
+        }
+    }
+
+    public void resetTemporarySheet() {
+        temporarySheet = null;
+    }
+
+    private Sheet deepCopy(Sheet sheet) {
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(bos);
+            out.writeObject(sheet);
+            out.flush();
+            ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+            ObjectInputStream in = new ObjectInputStream(bis);
+            return (Sheet) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void updateCellBasedOnSlider(String cellID, String value) throws Exception {
+        if (temporarySheet == null) {
+            createTemporarySheet(); // יצירת העתק אם עוד לא קיים
+        }
+        updateCellValueTempSheet(cellID, value); // זריקת Exception אם מתרחשת שגיאה
+    }
+
+
+
+    public SheetDto getTemporarySheetDTO() {
+        if (temporarySheet == null) {
+            return getCurrentSheetDTO(); // במקרה שאין גיליון זמני, מחזיר את הגיליון האמיתי
+        }
+        temporarySheet.initializaEmptyLists();
+        return new SheetDtoImpl(temporarySheet); // יצירת SheetDto עבור הגיליון הזמני
+    }
+
+
+    @Override
+    public void recalculateTempSheet() {
+        SheetCalculator evaluator = new SheetCalculatorImpl(temporarySheet);
+        //temporarySheet.saveVersion();
+    }
+
+
+
+    @Override
+    public void updateCellValueTempSheet(String cell, String newValue) throws Exception {
+        Coordinate coordinate = CoordinateCache.createCoordinateFromString(cell);
+
+        Cell currCell = temporarySheet.getSheet().get(coordinate);
+
+        if (currCell != null) {
+            String oldValue = currCell.getOriginalValue();
+            if (!oldValue.equals(newValue)) { // Recalculate only if the value changed
+                currCell.setCellOriginalValue(newValue, temporarySheet.getVersion() + 1);
+                recalculateTempSheet();
+            }
+        } else {
+            // If the cell doesn't exist, try to create a new one
+            try {
+                currCell = new CellImpl(coordinate.getRow(), coordinate.getColumn(), newValue, temporarySheet.getVersion() + 1);
+                temporarySheet.setCell(coordinate, currCell);
+                recalculateTempSheet();
+            } catch (Exception e) {
+                // אם יצירת התא או הוספתו נכשלת, נזרוק שגיאה למעלה
+                throw new Exception("Failed to update or create cell at coordinate: " + cell, e);
+            }
+        }
+    }
 }

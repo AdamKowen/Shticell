@@ -1,6 +1,8 @@
 package sheet.cell.api;
 
-public class CellStyle {
+import java.io.Serializable;
+
+public class CellStyle implements Serializable {
     private String backgroundColor; // יכול להיות null אם אין עיצוב
     private String textColor;       // יכול להיות null אם אין עיצוב
     private TextAlignment alignment; // CENTER, LEFT, RIGHT
