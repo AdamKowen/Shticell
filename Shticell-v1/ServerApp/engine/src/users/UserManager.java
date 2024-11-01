@@ -50,7 +50,7 @@ public class UserManager {
         return permissionManager;
     }
 
-    // המתודה מחזירה רשימה של SheetInfoDto לכל הגיליונות של המשתמשים
+    /// המתודה מחזירה רשימה של SheetInfoDto לכל הגיליונות של המשתמשים
     public List<SheetInfoDto> getAllSheetsInfo() {
         List<SheetInfoDto> sheetList = new ArrayList<>();
 
