@@ -89,9 +89,6 @@ public class FileUploadServlet extends HttpServlet {
                 // Load the sheet from the temporary file
                 engine.loadSheetFromXML(tempFile.getAbsolutePath());
 
-                // הוספת הרשאת owner עבור המשתמש שהעלה את הקובץ
-                String sheetName = engine.getCurrentSheetName();
-                userManager.addPermission(sheetName, username, PermissionType.OWNER);
 
                 // Update response
                 resp.setStatus(HttpServletResponse.SC_OK);
