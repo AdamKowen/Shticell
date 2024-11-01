@@ -6,6 +6,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import loader.SheetLoadingException;
 import org.xml.sax.SAXException;
+import permissions.PermissionType;
+import permissions.SheetPermission;
 import sheetEngine.SheetEngine;
 import sheetEngine.SheetEngineImpl;
 import users.User;
@@ -130,10 +132,16 @@ public class FileUploadServlet extends HttpServlet {
             try {
                 // Load the sheet from the temporary file
                 engine.loadSheetFromXML(tempFile.getAbsolutePath());
+                SheetPermission newPerm=new SheetPermission(username, PermissionType.OWNER);
+                userManager.getPermissionManager().addPermission(engine.getCurrentSheetDTO().getName(),newPerm);
 
                 // Update response
                 resp.setStatus(HttpServletResponse.SC_OK);
                 resp.getWriter().write("Sheet uploaded and loaded successfully for user: " + username);
+                resp.getWriter().write(" Permission added for user: " + username+" as Owner");
+
+
+
 
             } catch (ParserConfigurationException | SAXException | SheetLoadingException e) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
