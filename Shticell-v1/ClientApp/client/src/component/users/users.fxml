@@ -10,14 +10,14 @@
    <children>
       <Label fx:id="chatUsersLabel" text="Active Users:">
          <font>
-            <Font name="System Bold" size="16.0" />
+            <Font size="15.0" />
          </font>
          <VBox.margin>
-            <Insets bottom="8.0" top="8.0" />
+            <Insets left="10.0" top="10.0" />
          </VBox.margin></Label>
       <ListView fx:id="usersListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="150.0" VBox.vgrow="ALWAYS">
          <VBox.margin>
-            <Insets />
+            <Insets bottom="30.0" left="5.0" right="10.0" top="3.0" />
          </VBox.margin></ListView>
    </children>
    <padding>

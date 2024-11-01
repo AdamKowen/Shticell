@@ -1,18 +1,18 @@
 /* עיצוב הכפתורים */
 .button {
     /* צבע כהה יותר */
-    -fx-text-fill: #3a3a3a; /* טקסט לבן */
+    -fx-text-fill: #494949;
     -fx-font-weight: normal;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
     /* מעבר לינארי לרקע */
     /* מעבר לינארי לרקע */
-    -fx-background-color: rgb(216, 216, 216);
-    -fx-background-radius: 16px; /* עיגול פינות של הרקע */
-    -fx-border-color: linear-gradient(to top, rgb(237, 237, 237), rgba(182, 182, 182, 0.65)); /* צבע הגבול */
-    -fx-border-width: 1.3; /* רוחב הגבול */
+
+    -fx-background-color: #e2e6ea;
+    -fx-background-radius: 15px; /* עיגול פינות של הרקע */
+    -fx-border-color: linear-gradient(to top, rgb(223, 225, 236), rgb(219, 225, 234)); /* צבע הגבול */
+    -fx-border-width: 1.5; /* רוחב הגבול */
     -fx-border-radius: 15px; /* עיגול פינות של הגבול */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.14), 8, 0.0, 0, 4); /* אפקט צל */
     -fx-transition: background-color 0.3s ease, -fx-text-fill 0.3s ease;
 }
 
@@ -37,16 +37,18 @@
     /* מעבר לינארי לרקע */
     /* מעבר לינארי לרקע */
 
-    -fx-background-color: rgb(216, 216, 216);
+    -fx-background-color: rgb(246, 246, 248);
     -fx-background-radius: 40px; /* עיגול פינות של הרקע */
-    -fx-border-color: linear-gradient(to top, rgb(182, 182, 182, 0.65), rgba(237, 237, 237)); /* צבע הגבול */
-    -fx-border-width: 1.3; /* רוחב הגבול */
+    -fx-border-color: linear-gradient(to top, rgba(255, 255, 255), rgb(255, 255, 255)); /* צבע הגבול */
+    -fx-border-width: 1.5; /* רוחב הגבול */
     -fx-border-radius: 40px; /* עיגול פינות של הגבול */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.14), 8, 0.0, 0, 4); /* אפקט צל */
+    -fx-effect: dropshadow(gaussian, rgba(48, 46, 46, 0.14), 60, 0.0, 10, 20); /* אפקט צל */
     -fx-transition: background-color 0.3s ease, -fx-text-fill 0.3s ease;
 }
 
-
+#topGrid {
+    -fx-background-color: rgb(255, 255, 255);
+}
 
 /* עיצוב כללי ל-TableView */
 .table-view {
@@ -102,3 +104,188 @@
     -fx-margin: 10px 10px; /* ריווח חיצוני של 10 פיקסלים משני הצדדים */
 }
 
+
+
+
+
+
+/* הסתרת החץ לחלוטין */
+.titled-pane > .title > .arrow-button {
+    -fx-opacity: 0; /* להפוך אותו לשקוף לחלוטין */
+    -fx-shape: ""; /* הסרת צורת החץ */
+    -fx-background-color: transparent; /* שקיפות מוחלטת */
+    -fx-padding: 0; /* הסרת ריווח */
+    -fx-min-width: 0;
+    -fx-min-height: 0;
+    -fx-max-width: 0;
+    -fx-max-height: 0;
+}
+
+.titled-pane > .title > .text {
+    -fx-fill: #FFFFFF; /* טקסט לבן */
+}
+
+
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #9dabba; /* צבע רקע */
+    -fx-background-radius: 10px 10px 0 0; /* רדיוס עיגול רק לפינות העליונות */
+}
+
+
+/* עיצוב עבור ה-tabs */
+.tab {
+    -fx-background-color: #552f39; /* צבע כהה */
+    -fx-text-base-color: #d8d8d8;
+    -fx-background-radius: 5 5 0 0;
+
+
+    -fx-background-color: rgba(151, 151, 151, 0.2); /* צבע הרקע עם שקיפות */
+    -fx-border-color: rgba(225, 225, 225, 0.3); /* צבע הגבול */
+    -fx-border-width: 1px; /* רוחב הגבול */
+    -fx-border-radius: 5 5 0 0; /* עיגול פינות של הגבול */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0.0, 0, 4); /* אפקט צל */
+}
+
+.tab:selected {
+
+    -fx-background-color: #8f7e7e; /* צבע כהה */
+    -fx-text-base-color: #FFFFFF; /* טקסט לבן */
+    -fx-background-radius: 5 5 0 0;
+    -fx-background-color: rgba(255, 255, 255, 0.2); /* צבע הרקע עם שקיפות */
+    -fx-border-color: rgba(255, 255, 255, 0.3); /* צבע הגבול */
+    -fx-border-width: 1px; /* רוחב הגבול */
+    -fx-border-radius: 5 5 0 0; /* עיגול פינות של הגבול */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0.0, 0, 4); /* אפקט צל */
+
+}
+
+
+
+
+
+
+
+
+
+
+/* עיצוב ה-TitledPane וה-Accordion */
+.titled-pane > .title {
+    -fx-background-color: #563f46; /* צבע כהה יותר */
+    -fx-text-fill: #FFFFFF; /* טקסט לבן */
+    -fx-font-weight: normal;
+    -fx-background-radius: 10; /* פינות מעוגלות */
+    -fx-padding: 7; /* ריווח פנימי */
+
+    /* התאמה ל-JavaFX */
+    -fx-background-color: rgba(255, 255, 255, 0.2); /* צבע הרקע עם שקיפות */
+    -fx-border-color: rgba(255, 255, 255, 0.3); /* צבע הגבול */
+    -fx-border-width: 1px; /* רוחב הגבול */
+    -fx-border-radius: 10; /* עיגול פינות של הגבול */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0.0, 0, 4); /* אפקט צל */
+
+}
+
+.titled-pane > .content {
+    -fx-background-color: #ffffff; /* צבע בהיר */
+    -fx-padding: 0; /* ריווח פנימי */
+    -fx-background-radius: 10; /* פינות מעוגלות */
+}
+
+/* מרווח בין האופציות באקורדיון */
+.titled-pane {
+    -fx-border-color: transparent;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 2 0; /* מרווח בין האקורדיונים */
+}
+
+/* הפיכת החצים באקורדיון ללבן */
+.titled-pane > .title > .arrow {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-fill: #FFFFFF; /* חץ בצבע לבן */
+}
+
+/* עיצוב עבור ScrollPane */
+.scroll-pane {
+
+    -fx-background: #f0f0f0; /* צבע רקע בהיר יותר */
+    -fx-background-radius: 5; /* פינות מעוגלות */
+    -fx-padding: 5; /* ריווח פנימי */
+}
+
+.scroll-bar {
+    -fx-background-color: transparent; /* צבע שקוף */
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #b4d6d6; /* צבע בהיר יותר */
+    -fx-background-radius: 20; /* עיגול פינות */
+    -fx-padding: 0; /* ריווח פנימי ל-thumb */
+}
+
+.scroll-bar:horizontal {
+    -fx-pref-height: 16px; /* גובה עבור ScrollBar אופקי */
+}
+.scroll-bar:vertical {
+    -fx-pref-width: 16px; /* רוחב עבור ScrollBar אנכי */
+}
+
+
+
+
+
+
+
+/* קביעת רקע לבן לשורות הרשימה */
+.list-view .list-cell {
+    -fx-background-color: white; /* רקע לבן לשורות */
+    -fx-text-fill: black; /* צבע הטקסט */
+    -fx-alignment: center;
+}
+
+/* הסרת היילייט בעת בחירה ופוקוס */
+.list-view .list-cell:focused,
+.list-view .list-cell:selected,
+.list-view .list-cell:hover {
+    -fx-background-color: white; /* שמירת רקע לבן גם במצבי פוקוס, בחירה והובר */
+    -fx-text-fill: black; /* צבע הטקסט */
+}
+
+/* הסרת אפשרות הבחירה (הסתרת צבעי הבחירה) */
+.list-view {
+    -fx-selection-bar: transparent; /* הסרת צבע הבחירה */
+    -fx-selection-bar-non-focused: transparent; /* הסרת צבע הבחירה כאשר לא בפוקוס */
+    -fx-focus-color: transparent; /* הסרת צבע הפוקוס */
+    -fx-faint-focus-color: transparent; /* הסרת צבע הפוקוס המעודן */
+}
+
+/* הוספת ריווח של 5 פיקסלים מדפנות האלמנט */
+.list-view {
+    -fx-padding: 5px; /* ריווח פנימי */
+}
+
+/* הוספת פינות מעוגלות */
+.list-view {
+    -fx-background-radius: 10px; /* פינות מעוגלות לרקע */
+    -fx-border-radius: 10px; /* פינות מעוגלות למסגרת */
+}
+
+/* הסרת המסגרת האפורה מסביב לרשימה */
+.list-view {
+    -fx-border-color: transparent; /* מסגרת שקופה */
+    -fx-background-insets: 0; /* הסרת מרווחי הרקע */
+    -fx-border-insets: 0; /* הסרת מרווחי המסגרת */
+}
+
+.list-view:focused,
+.list-view:hover {
+    -fx-border-color: transparent; /* מסגרת שקופה גם במצב פוקוס או הובר */
+}
+
+
+
+#commandGrid {
+    -fx-background-color: #ffffff; /* צבע בהיר יותר */
+}
