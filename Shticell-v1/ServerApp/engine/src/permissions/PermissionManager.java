@@ -4,17 +4,43 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PermissionManager {
     private Map<String, List<SheetPermission>> permissions; // מיפוי שמות גיליונות לרשימות של הרשאות
+    private List<PermissionRequest> requests = new ArrayList<>();
 
     public PermissionManager() {
         permissions = new HashMap<>();
+        requests=new ArrayList<>();
     }
+
+    // הוספת בקשת הרשאה חדשה
+    public void addPermissionRequest(PermissionRequest request) {
+        requests.add(request);
+    }
+
+    // קבלת רשימת בקשות
+    public List<PermissionRequest> getPendingRequests() {
+        return requests.stream().filter(r -> r.getStatus() == RequestStatus.PENDING).collect(Collectors.toList());
+    }
+
+    // אישור או דחיית בקשה
+    public void updateRequestStatus(PermissionRequest request, RequestStatus newStatus) {
+        request.setStatus(newStatus);
+        if (newStatus == RequestStatus.APPROVED) {
+            SheetPermission newPermission=new SheetPermission(request.getRequesterUsername(),request.getRequestedPermission());
+            addPermission(request.getSheetName(), newPermission );
+        }
+    }
+
+
+
 
     // הוספת הרשאה חדשה למשתמש על גיליון
     public void addPermission(String sheetName, SheetPermission permission) {
         permissions.computeIfAbsent(sheetName, k -> new ArrayList<>()).add(permission);
+
     }
 
     // עדכון הרשאה קיימת
