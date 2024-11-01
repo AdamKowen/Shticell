@@ -1,5 +1,7 @@
 package permissions;
 
+import dto.PermissionDTO;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,6 +84,25 @@ public class PermissionManager {
 
     public List<SheetPermission> getPermissionsForSheet(String sheetName) {
         return this.permissions.get(sheetName);
+    }
+
+    public List<PermissionDTO> getPermissionsForSheetDTO(String sheetName) {
+        List<PermissionDTO> dtoList = new ArrayList<>();
+
+        // הוספת הרשאות
+        List<SheetPermission> sheetPermissions = permissions.getOrDefault(sheetName, new ArrayList<>());
+        for (SheetPermission perm : sheetPermissions) {
+            dtoList.add(new PermissionDTO(perm.getUsername(), perm.getType().toString(), "Granted"));
+        }
+
+        // הוספת בקשות ממתינות
+        for (PermissionRequest req : requests) {
+            if (req.getSheetName().equals(sheetName) && req.getStatus() == RequestStatus.PENDING) {
+                dtoList.add(new PermissionDTO(req.getRequesterUsername(), req.getRequestedPermission().toString(), "Pending"));
+            }
+        }
+
+        return dtoList;
     }
 }
 
