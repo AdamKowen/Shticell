@@ -1,7 +1,7 @@
 /* עיצוב הכפתורים */
 .button {
     /* צבע כהה יותר */
-    -fx-text-fill: #494949;
+    -fx-text-fill: #798491;
     -fx-font-weight: normal;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
@@ -30,7 +30,7 @@
 
 #sheetCard{
     /* צבע כהה יותר */
-    -fx-text-fill: #3a3a3a; /* טקסט לבן */
+    -fx-text-fill: #8e9eac;
     -fx-font-weight: normal;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
@@ -98,7 +98,7 @@
 /* עיצוב תאי הכותרת */
 .table-view .column-header .label {
     -fx-font-weight: normal;
-    -fx-text-fill: #007171; /* צבע טקסט מותאם */
+    -fx-text-fill: #646d78;
     -fx-background-color: transparent; /* רקע שקוף לטקסט */
     -fx-padding: 2; /* ריווח פנימי */
     -fx-margin: 10px 10px; /* ריווח חיצוני של 10 פיקסלים משני הצדדים */
@@ -122,7 +122,7 @@
 }
 
 .titled-pane > .title > .text {
-    -fx-fill: #FFFFFF; /* טקסט לבן */
+    -fx-fill: #9da0a5; /* טקסט לבן */
 }
 
 
@@ -171,20 +171,22 @@
 
 /* עיצוב ה-TitledPane וה-Accordion */
 .titled-pane > .title {
-    -fx-background-color: #563f46; /* צבע כהה יותר */
+    -fx-background-color: #10060a; /* צבע כהה יותר */
     -fx-text-fill: #FFFFFF; /* טקסט לבן */
     -fx-font-weight: normal;
     -fx-background-radius: 10; /* פינות מעוגלות */
-    -fx-padding: 7; /* ריווח פנימי */
+    -fx-padding: 10; /* ריווח פנימי */
 
     /* התאמה ל-JavaFX */
-    -fx-background-color: rgba(255, 255, 255, 0.2); /* צבע הרקע עם שקיפות */
-    -fx-border-color: rgba(255, 255, 255, 0.3); /* צבע הגבול */
-    -fx-border-width: 1px; /* רוחב הגבול */
-    -fx-border-radius: 10; /* עיגול פינות של הגבול */
+    -fx-background-color: #e2e6ea;
+    -fx-border-color: linear-gradient(to top, rgb(223, 225, 236), rgb(219, 225, 234)); /* צבע הגבול */
+    -fx-border-width: 1.5; /* רוחב הגבול */
+    -fx-border-radius: 15; /* עיגול פינות של הגבול */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0.0, 0, 4); /* אפקט צל */
 
 }
+
+
 
 .titled-pane > .content {
     -fx-background-color: #ffffff; /* צבע בהיר */
@@ -288,4 +290,10 @@
 
 #commandGrid {
     -fx-background-color: #ffffff; /* צבע בהיר יותר */
+}
+
+
+#sheetPremmisionTable
+{
+    -fx-background-color: transparent; /* צבע בהיר יותר */
 }

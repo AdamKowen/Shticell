@@ -78,9 +78,9 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <TabPane maxHeight="280.0" maxWidth="240.0" minHeight="100.0" minWidth="0.0" prefHeight="190.0" prefWidth="90.0" tabClosingPolicy="UNAVAILABLE" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                              <TabPane maxHeight="300.0" maxWidth="240.0" minHeight="100.0" minWidth="0.0" prefHeight="190.0" prefWidth="90.0" tabClosingPolicy="UNAVAILABLE" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
                                 <tabs>
-                                  <Tab text="    Sheet Commands    ">
+                                  <Tab text="     Sheet Commands     ">
                                        <content>
                                           <BorderPane prefHeight="200.0" prefWidth="200.0">
                                              <center>
@@ -89,22 +89,22 @@
                                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                   </columnConstraints>
                                                   <rowConstraints>
-                                                    <RowConstraints maxHeight="132.714111328125" minHeight="10.0" prefHeight="122.45950317382812" vgrow="SOMETIMES" />
-                                                    <RowConstraints maxHeight="282.6530456542969" minHeight="10.0" prefHeight="185.54049682617188" vgrow="SOMETIMES" />
-                                                    <RowConstraints maxHeight="263.27752685546875" minHeight="10.0" prefHeight="21.40313720703125" vgrow="SOMETIMES" />
+                                                    <RowConstraints maxHeight="132.714111328125" minHeight="10.0" prefHeight="85.5" vgrow="SOMETIMES" />
+                                                    <RowConstraints maxHeight="282.6530456542969" minHeight="10.0" prefHeight="180.5" vgrow="SOMETIMES" />
+                                                    <RowConstraints maxHeight="263.27752685546875" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <Button fx:id="openSheetViewfinder" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#openSheetViewfinder" prefHeight="78.0" prefWidth="203.0" text="View Selected Sheet" GridPane.halignment="CENTER" GridPane.valignment="TOP">
+                                                      <Button fx:id="openSheetViewfinder" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#openSheetViewfinder" prefHeight="60.0" prefWidth="165.0" text="View Selected Sheet" GridPane.halignment="CENTER" GridPane.valignment="TOP">
                                                          <GridPane.margin>
-                                                            <Insets top="20.0" />
+                                                            <Insets top="15.0" />
                                                          </GridPane.margin>
                                                          <font>
                                                             <Font size="16.0" />
                                                          </font>
                                                       </Button>
-                                                      <Accordion minHeight="0.0" GridPane.rowIndex="1">
+                                                      <Accordion maxWidth="179.0" minHeight="0.0" prefHeight="164.0" prefWidth="150.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                                                         <panes>
-                                                          <TitledPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="-Infinity" prefHeight="197.0" prefWidth="199.0" text="Request Access">
+                                                          <TitledPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="-Infinity" prefHeight="124.0" prefWidth="164.0" text="Request Access">
                                                                <content>
                                                                   <GridPane minHeight="0.0" minWidth="0.0" prefHeight="100.0">
                                                                     <columnConstraints>
@@ -125,7 +125,7 @@
                                                                   </GridPane>
                                                                </content>
                                                             </TitledPane>
-                                                            <TitledPane minHeight="0.0" minWidth="0.0" prefHeight="201.0" prefWidth="199.0" text="Accepet or Deny Requests">
+                                                            <TitledPane minHeight="0.0" minWidth="0.0" prefHeight="104.0" prefWidth="179.0" text="Accepet or Deny Requests">
                                                                <content>
                                                                   <GridPane>
                                                                     <columnConstraints>
@@ -153,6 +153,9 @@
                                                                                  </GridPane.margin>
                                                                               </Button>
                                                                            </children>
+                                                                           <rowConstraints>
+                                                                              <RowConstraints />
+                                                                           </rowConstraints>
                                                                         </GridPane>
                                                                         <GridPane>
                                                                           <columnConstraints>
@@ -181,7 +184,7 @@
                                                             </TitledPane>
                                                         </panes>
                                                          <GridPane.margin>
-                                                            <Insets left="15.0" right="15.0" />
+                                                            <Insets />
                                                          </GridPane.margin>
                                                       </Accordion>
                                                       <fx:include fx:id="actionCommandsComponent" maxHeight="0.0" maxWidth="0.0" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="0.0" source="../../component/commands/action-commands.fxml" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS" />
