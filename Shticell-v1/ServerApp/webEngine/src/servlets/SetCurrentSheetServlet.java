@@ -25,6 +25,7 @@ public class SetCurrentSheetServlet extends HttpServlet {
             return;
         }
 
+
         String sheetName = req.getParameter("sheetName");
         if (sheetName == null || sheetName.isEmpty()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
