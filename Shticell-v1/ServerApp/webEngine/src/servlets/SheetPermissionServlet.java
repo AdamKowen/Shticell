@@ -35,7 +35,7 @@ public class SheetPermissionServlet extends HttpServlet {
             return;
         }
 
-        // קבלת רשימת ההרשאות והבקשות מהמנהל
+        /// קבלת רשימת ההרשאות והבקשות מהמנהל
         List<PermissionDTO> permissionList = permissionManager.getPermissionsForSheetDTO(sheetName);
 
         // החזרת הנתונים כ-JSON
