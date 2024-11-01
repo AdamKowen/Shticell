@@ -5,6 +5,7 @@ public class SheetInfoDto {
     private int numberOfRows;
     private int numberOfColumns;
     private String ownerName;
+    private String access;
 
     // Constructor
     public SheetInfoDto(String sheetName, int numberOfRows, int numberOfColumns, String ownerName) {
@@ -12,6 +13,7 @@ public class SheetInfoDto {
         this.numberOfRows = numberOfRows;
         this.numberOfColumns = numberOfColumns;
         this.ownerName = ownerName;
+        this.access = "no access";  // ערך ברירת מחדל
     }
 
     // Getters and Setters
@@ -46,6 +48,15 @@ public class SheetInfoDto {
     public void setOwnerName(String ownerName) {
         this.ownerName = ownerName;
     }
+
+    public String getAccess() {
+        return this.access;
+    }
+
+    public void setAccess(String UsersAccess) {
+        this.access = access;
+    }
+
 
     // toString method for debugging
     @Override

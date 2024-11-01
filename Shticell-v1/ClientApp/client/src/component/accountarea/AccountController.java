@@ -17,6 +17,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -41,6 +43,7 @@ import java.lang.reflect.Type;
 import java.util.Timer;
 import java.util.TimerTask;
 import javafx.scene.input.MouseEvent;
+import utils.SessionUtils;
 
 import static util.Constants.REFRESH_RATE;
 
@@ -78,8 +81,47 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     @FXML
     private TableColumn<SheetInfoDto, String> ownerColumn;  // עמודת שם הבעלים
 
+    @FXML
+    private TableColumn<SheetInfoDto, String> accessColumn;  // עמודת הרשאות
+
+
+    @FXML
+    private Label selectedSheetNameLabel;  // תווית שם הגיליון שנבחר
+
+
     private String selectedSheetName = null;  // משתנה לשמירת שם הגיליון הנבחר
 
+
+
+
+
+
+
+
+
+    @FXML
+    private TableView<String> sheetPremmisionTable;  // טבלת ההרשאות של הגיליון, מוגדרת כ-String
+
+    @FXML
+    private TableColumn<String, String> permissionUserCol;  // עמודת שם המשתמש בטבלת ההרשאות, כ-String
+
+    @FXML
+    private TableColumn<String, String> permissionCol;  // עמודת סוג ההרשאה בטבלת ההרשאות, כ-String
+
+    @FXML
+    private TableColumn<String, String> statusCol;  // עמודת סטטוס בטבלת ההרשאות, כ-String
+
+    @FXML
+    private Label premmisionStatus;  // תווית סטטוס ההרשאה עבור המשתמש
+
+    @FXML
+    private Button acceptButton;  // כפתור לאישור הרשאה
+
+    @FXML
+    private Button rejectButton;  // כפתור לדחיית הרשאה
+
+    @FXML
+    private Label selectedUserName;  // תווית שם המשתמש הנבחר בטבלת ההרשאות
 
     @FXML
     public void initialize() {
@@ -88,19 +130,57 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         usersListComponentController.autoUpdatesProperty().bind(actionCommandsComponentController.autoUpdatesProperty());
         initTableColumns();  // אתחול העמודות בעת ההפעלה
         startSheetListRefresher();   // התחלת עדכון הטבלה כל 2 שניות (REFRESH_RATE)
-        // מאזין ללחיצה על שורה בטבלה
-        sheetTableView.setOnMouseClicked((MouseEvent event) -> {
-            SheetInfoDto selectedSheet = sheetTableView.getSelectionModel().getSelectedItem();
-            if (selectedSheet != null) {
-                selectedSheetName = selectedSheet.getSheetName();  // שמירת שם הגיליון הנבחר
-                System.out.println("Selected sheet: " + selectedSheetName);  // להדגמה
-            }
-        });
+
 
 
         chatAreaComponentController.autoUpdatesProperty().bind(actionCommandsComponentController.autoUpdatesProperty());
         usersListComponentController.autoUpdatesProperty().bind(actionCommandsComponentController.autoUpdatesProperty());
         chatAreaComponentController.startListRefresher();
+
+
+
+
+
+        // מאזין ללחיצה על שורה בטבלה
+        sheetTableView.setOnMouseClicked((MouseEvent event) -> {
+            SheetInfoDto selectedSheet = sheetTableView.getSelectionModel().getSelectedItem();
+            if (selectedSheet != null) {
+                selectedSheetName = selectedSheet.getSheetName();  // שמירת שם הגיליון הנבחר
+                System.out.println("Selected sheet: " + selectedSheetName);  // הדפסת שם הגיליון שנבחר
+
+                // עדכון תווית שם הגיליון בכרטיסייה
+                selectedSheetNameLabel.setText(selectedSheetName);
+
+                // בקשת הרשאות למשתמש הנוכחי (נניח שיש לנו פונקציה מתאימה שמחזירה את סוג ההרשאה)
+                String userAccess = selectedSheet.getAccess();
+
+                // קביעה מה להציג בהתאם לסוג ההרשאה
+                switch (userAccess) {
+                    case "owner": // בעל הגיליון
+                        sheetPremmisionTable.setVisible(true);  // הצגת הטבלה
+                        statusCol.setVisible(true);             // הצגת עמודת הסטטוס
+                        //loadFullPermissionTable(selectedSheetName); // טעינת הטבלה במלואה עבור בעל הגיליון
+                        break;
+
+                    case "write": // הרשאת כתיבה
+                    case "read":  // הרשאת קריאה
+                        sheetPremmisionTable.setVisible(true);  // הצגת הטבלה
+                        statusCol.setVisible(false);            // הסתרת עמודת הסטטוס
+                        //loadPartialPermissionTable(selectedSheetName); // טעינת הטבלה ללא עמודת הסטטוס
+                        break;
+
+                    case "none":  // אין הרשאה
+                        sheetPremmisionTable.setVisible(false); // הסתרת הטבלה כולה
+                        premmisionStatus.setText("בקשה ממתינה לאישור"); // עדכון תווית במידה והוגשה בקשה
+                        break;
+                }
+
+                // הסרת הסימון לאחר הצגת המידע
+                Platform.runLater(() -> sheetTableView.getSelectionModel().clearSelection());
+            }
+        });
+
+
     }
 
 
@@ -287,12 +367,13 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         rowsColumn.setCellValueFactory(new PropertyValueFactory<>("numberOfRows"));
         columnsColumn.setCellValueFactory(new PropertyValueFactory<>("numberOfColumns"));
         ownerColumn.setCellValueFactory(new PropertyValueFactory<>("ownerName"));
+        accessColumn.setCellValueFactory(new PropertyValueFactory<>("access"));  // קישור עמודת הרשאות לשדה access
     }
 
 
     // הפונקציה שמתחילה את הרענון המחזורי של רשימת הגיליונות
     private void startSheetListRefresher() {
-        sheetListRefresher = new component.sheets.SheetListRefresher(
+        sheetListRefresher = new component.accountarea.SheetListRefresher(
                 this::logHttpRequest,
                 this::updateSheetTable);
         timer = new Timer();
@@ -310,6 +391,30 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     // לוג הבקשה לשרת
     private void logHttpRequest(String logMessage) {
         System.out.println(logMessage);  // יכול לשמש למעקב אחר בקשות
+    }
+
+
+
+    private void displaySheetDetails(SheetInfoDto selectedSheet) {
+        // הצגת שם הגיליון הנבחר
+        selectedSheetNameLabel.setText(selectedSheet.getSheetName());
+
+        /*
+        // בדיקה אם המשתמש הוא הבעלים של הגיליון
+        if (selectedSheet.getOwnerName().equals(SessionUtils.getUsername())) {
+            // אם המשתמש הוא הבעלים - מציגים את כל המשתתפים כולל פנדינג
+            loadPermissionsForOwner(selectedSheet.getSheetName());
+        } else {
+            // אם המשתמש הוא בעל הרשאת עריכה או קריאה
+            if ("write".equals(selectedSheet.getAccessType()) || "read".equals(selectedSheet.getAccessType())) {
+                loadPermissionsForEditorOrViewer(selectedSheet.getSheetName());
+            } else {
+                // אם אין למשתמש הרשאה
+                checkPendingRequestStatus(selectedSheet.getSheetName());
+            }
+        }
+
+         */
     }
 
 
