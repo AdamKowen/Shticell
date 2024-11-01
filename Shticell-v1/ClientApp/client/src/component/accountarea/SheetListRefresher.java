@@ -1,4 +1,4 @@
-package component.sheets;
+package component.accountarea;
 
 import dto.SheetInfoDto;
 import util.Constants;

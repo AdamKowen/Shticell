@@ -74,4 +74,6 @@ public interface SheetEngine {
     void recalculateTempSheet();
 
     void updateCellValueTempSheet(String cell, String newValue) throws Exception;
+
+    String getCurrentSheetName();
 }

@@ -412,4 +412,10 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
             }
         }
     }
+
+
+    public String getCurrentSheetName()
+    {
+        return currentSheet.getName();
+    }
 }
