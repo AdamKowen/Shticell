@@ -15,12 +15,14 @@
     -fx-faint-focus-color: transparent;
     /* מעבר לינארי לרקע */
     /* מעבר לינארי לרקע */
-    -fx-background-color: rgb(216, 216, 216);
+
+    -fx-background-color: rgb(246, 246, 248);
     -fx-background-radius: 30px; /* עיגול פינות של הרקע */
-    -fx-border-color: linear-gradient(to top, rgb(237, 237, 237), rgba(225, 225, 225, 0.65)); /* צבע הגבול */
+
+    -fx-border-color: linear-gradient(to top, rgba(255, 255, 255), rgb(255, 255, 255)); /* צבע הגבול */
     -fx-border-width: 1.3; /* רוחב הגבול */
     -fx-border-radius: 30px; /* עיגול פינות של הגבול */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.14), 8, 0.0, 0, 4); /* אפקט צל */
+    -fx-effect: dropshadow(gaussian, rgba(214, 214, 214, 0.14), 8, 0.0, 0, 4); /* אפקט צל */
     -fx-transition: background-color 0.3s ease, -fx-text-fill 0.3s ease;
 }
 
@@ -43,9 +45,9 @@
 }
 
 .main-action-button {
-    -fx-text-fill: #81a5a5;
+    -fx-text-fill: #8e9eac;
     -fx-font-size: 20px;
-    -fx-font-weight: BOLD;
+    -fx-font-weight: NORMAL;
 }
 
 
@@ -60,5 +62,6 @@
 }
 
 #quit-button {
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: #9f9f9f;
+    -fx-font-weight: NORMAL;
 }

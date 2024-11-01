@@ -119,7 +119,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
     @FXML
     private Button rejectButton;  // כפתור לדחיית הרשאה
-
+//
     @FXML
     private Label selectedUserName;  // תווית שם המשתמש הנבחר בטבלת ההרשאות
 

@@ -37,7 +37,7 @@ public class UsersListController implements Closeable {
 
     @FXML
     public void initialize() {
-        chatUsersLabel.textProperty().bind(Bindings.concat("Chat Users: (", totalUsers.asString(), ")"));
+        chatUsersLabel.textProperty().bind(Bindings.concat("Active Users: (", totalUsers.asString(), ")"));
     }
 
     public void setHttpStatusUpdate(HttpStatusUpdate httpStatusUpdate) {
