@@ -54,7 +54,7 @@ public class SheetInfoDto {
     }
 
     public void setAccess(String UsersAccess) {
-        this.access = access;
+        this.access = UsersAccess;
     }
 
 

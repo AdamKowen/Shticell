@@ -78,7 +78,7 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <TabPane maxHeight="300.0" maxWidth="240.0" minHeight="100.0" minWidth="0.0" prefHeight="190.0" prefWidth="90.0" tabClosingPolicy="UNAVAILABLE" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                              <TabPane maxHeight="290.0" maxWidth="240.0" minHeight="100.0" minWidth="0.0" prefHeight="190.0" prefWidth="90.0" tabClosingPolicy="UNAVAILABLE" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
                                 <tabs>
                                   <Tab text="     Sheet Commands     ">
                                        <content>
@@ -115,12 +115,12 @@
                                                                         <RowConstraints maxHeight="78.25570678710938" minHeight="10.0" prefHeight="60.661346435546875" vgrow="NEVER" />
                                                                     </rowConstraints>
                                                                      <children>
-                                                                        <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="164.0" text="Request Reader Access" GridPane.halignment="CENTER" GridPane.valignment="TOP">
+                                                                        <Button fx:id="requestReaderButton" mnemonicParsing="false" onAction="#requestReaderAccess" prefHeight="50.0" prefWidth="164.0" text="Request Reader Access" GridPane.halignment="CENTER" GridPane.valignment="TOP">
                                                                            <GridPane.margin>
                                                                               <Insets />
                                                                            </GridPane.margin>
                                                                         </Button>
-                                                                        <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="163.0" text="Request Writer Access" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                                                                        <Button fx:id="requestWriterButton" mnemonicParsing="false" onAction="#requestWriterAccess" prefHeight="50.0" prefWidth="163.0" text="Request Writer Access" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                                                                      </children>
                                                                   </GridPane>
                                                                </content>
@@ -142,12 +142,12 @@
                                                                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="83.7742919921875" minWidth="10.0" prefWidth="69.7177734375" />
                                                                           </columnConstraints>
                                                                            <children>
-                                                                              <Button fx:id="acceptButton" mnemonicParsing="false" prefHeight="46.0" prefWidth="96.0" text="Accept" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                                                              <Button fx:id="acceptButton" mnemonicParsing="false" onAction="#acceptRequest" prefHeight="46.0" prefWidth="96.0" text="Accept" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                                                                  <GridPane.margin>
                                                                                     <Insets />
                                                                                  </GridPane.margin>
                                                                               </Button>
-                                                                              <Button fx:id="rejectButton" mnemonicParsing="false" prefHeight="48.0" prefWidth="60.0" text="reject" GridPane.columnIndex="1">
+                                                                              <Button fx:id="rejectButton" mnemonicParsing="false" onAction="#rejectRequest" prefHeight="48.0" prefWidth="60.0" text="reject" GridPane.columnIndex="1">
                                                                                  <GridPane.margin>
                                                                                     <Insets left="5.0" />
                                                                                  </GridPane.margin>
@@ -189,6 +189,9 @@
                                                       </Accordion>
                                                       <fx:include fx:id="actionCommandsComponent" maxHeight="0.0" maxWidth="0.0" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="0.0" source="../../component/commands/action-commands.fxml" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS" />
                                                    </children>
+                                                   <BorderPane.margin>
+                                                      <Insets />
+                                                   </BorderPane.margin>
                                                 </GridPane>
                                              </center>
                                           </BorderPane>
@@ -201,7 +204,7 @@
                                   </Tab>
                                 </tabs>
                                  <GridPane.margin>
-                                    <Insets left="450.0" />
+                                    <Insets bottom="35.0" left="450.0" />
                                  </GridPane.margin>
                               </TabPane>
                               <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">

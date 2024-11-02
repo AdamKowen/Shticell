@@ -40,6 +40,16 @@ public class Constants {
 
     public final static String UPDATE_TEMP_SHEET_URL = FULL_SERVER_PATH + "/updateTemporarySheet";
 
+
+    public final static String SHEET_PERMISSION_URL = FULL_SERVER_PATH + "/sheet-permissions?sheetName=";
+
+
+    public final static String PERMISSION_REQUEST_URL = FULL_SERVER_PATH + "/permission-requests";
+
+
+    public final static String APPROVAL_REQUEST_URL = FULL_SERVER_PATH + "/approval-request";
+
+
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();
 }
