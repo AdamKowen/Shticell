@@ -466,7 +466,7 @@ public class SheetViewfinderController {
     private void handleUpdate() {
         String buttonText = updateValueButton.getText();
 
-        if ("Refresh Sheet".equals(buttonText)) { //based on current button function
+        if ("Refresh".equals(buttonText)) { //based on current button function
             refreshSheet();
             setUpdatingControlsDisabled(false);
         } else{
@@ -1610,7 +1610,7 @@ public class SheetViewfinderController {
     private void handleVersionCheck(boolean isUpdated) {
         if (!isUpdated) {
             Platform.runLater(() -> {
-                updateValueButton.setText("Refresh Sheet");  // שינוי טקסט הכפתור
+                updateValueButton.setText("Refresh");  // שינוי טקסט הכפתור
                 setUpdatingControlsDisabled(true);
             });
         }
