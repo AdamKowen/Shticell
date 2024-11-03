@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -256,8 +257,8 @@
             <GridPane fx:id="topGrid">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="393.9541931152344" minWidth="10.0" prefWidth="206.45152282714844" />
-                  <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="346.04847717285156" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="669.0380859375" minWidth="10.0" prefWidth="142.3870849609375" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="279.5" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="669.0380859375" minWidth="10.0" prefWidth="209.5" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="669.0380859375" minWidth="10.0" prefWidth="105.1129150390625" />
               </columnConstraints>
               <rowConstraints>
@@ -270,6 +271,7 @@
                      </GridPane.margin>
                   </Button>
                   <Button mnemonicParsing="false" onAction="#logoutClicked" prefHeight="38.0" prefWidth="90.0" text="Logout" GridPane.columnIndex="3" />
+                  <ProgressBar maxWidth="1.7976931348623157E308" prefHeight="25.0" progress="0.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" />
                </children>
             </GridPane>
          </children>
