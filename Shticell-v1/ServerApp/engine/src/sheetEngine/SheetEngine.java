@@ -24,7 +24,7 @@ public interface SheetEngine {
 
     void recalculateSheet();
 
-    void updateCellValue(String cell, String newValue) throws Exception;
+    void updateCellValue(String cell, String newValue,String lastUserUpdated) throws Exception;
 
 
     /*

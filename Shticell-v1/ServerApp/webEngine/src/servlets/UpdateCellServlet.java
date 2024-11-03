@@ -54,9 +54,10 @@ public class UpdateCellServlet extends HttpServlet {
 
         // Try to update the cell
         try {
-            sheetEngine.updateCellValue(cellCoordinate, newValue);
+            sheetEngine.updateCellValue(cellCoordinate, newValue,username);
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().write("Cell updated successfully.");
+            resp.getWriter().write("Cell updated successfully by" +sheetEngine.getCellDTO(cellCoordinate).getLastUserUpdated());
+            System.out.println("Cell updated successfully by" +sheetEngine.getCellDTO(cellCoordinate).getLastUserUpdated());
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("Failed to update cell: " + e.getMessage());

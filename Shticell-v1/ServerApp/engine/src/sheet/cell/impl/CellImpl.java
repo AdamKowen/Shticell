@@ -156,13 +156,21 @@ public class CellImpl implements Cell , Serializable {
         this.version = newVersion;
     }
 
+    @Override
+    public void setLastUserUpdated(String currentUser) {
+        this.lastUserUpdated = currentUser;
+
+    }
+
     public boolean isEmptyCell(){
         return  this.getOriginalValue().isBlank();
     }
 
     @Override
     public String getLastUserUpdated() {
-        return lastUserUpdated;
+        if(lastUserUpdated!=null)
+            return lastUserUpdated;
+        return "Owner";
     }
 
 }
