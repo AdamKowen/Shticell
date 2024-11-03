@@ -88,7 +88,7 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
 
 
     @Override
-    public void updateCellValue(String cell, String newValue) throws Exception {
+    public void updateCellValue(String cell, String newValue,String currentUser) throws Exception {
         Coordinate coordinate = CoordinateCache.createCoordinateFromString(cell);
 
         Cell currCell = currentSheet.getSheet().get(coordinate);
@@ -103,6 +103,9 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
             // If the cell doesn't exist, try to create a new one
             try {
                 currCell = new CellImpl(coordinate.getRow(), coordinate.getColumn(), newValue, currentSheet.getVersion() + 1);
+                if(currentUser.isBlank())
+                    currentUser="Owner";
+                currCell.setLastUserUpdated(currentUser);
                 currentSheet.setCell(coordinate, currCell);
                 recalculateSheet();
             } catch (Exception e) {

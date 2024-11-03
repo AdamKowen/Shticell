@@ -29,4 +29,6 @@ public interface Cell {
     String getLastUserUpdated();
 
     void setVersion(int newVersion);
+
+    void setLastUserUpdated(String currentUser);
 }
