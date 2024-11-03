@@ -153,11 +153,7 @@ public class SheetViewfinderController {
 
     @FXML
     private Label errorSelectMassage;
-
-
-    @FXML
-    private ProgressBar taskProgressBar;
-
+    
 
     @FXML
     private ListView<String> colList; // ListView לרשימת העמודות
@@ -409,8 +405,6 @@ public class SheetViewfinderController {
         alignmentBox.setValue("Left");
 
 
-
-        taskProgressBar.setVisible(false);
 
 
 

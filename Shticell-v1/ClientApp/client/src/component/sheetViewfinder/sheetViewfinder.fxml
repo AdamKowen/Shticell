@@ -7,7 +7,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Tab?>
@@ -48,14 +47,6 @@
                      <font>
                         <Font size="14.0" />
                      </font></Label>
-                  <ProgressBar fx:id="taskProgressBar" maxWidth="1.7976931348623157E308" minWidth="0.0" prefHeight="30.0" prefWidth="551.0" progress="0.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS">
-                     <opaqueInsets>
-                        <Insets bottom="10.0" />
-                     </opaqueInsets>
-                     <padding>
-                        <Insets right="10.0" />
-                     </padding>
-                  </ProgressBar>
                   <Label fx:id="cellUpdateError" alignment="BASELINE_LEFT" prefHeight="26.0" prefWidth="300.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.valignment="BOTTOM">
                      <GridPane.margin>
                         <Insets bottom="3.0" />

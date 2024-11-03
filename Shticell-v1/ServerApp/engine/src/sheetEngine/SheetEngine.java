@@ -58,6 +58,7 @@ public interface SheetEngine {
 
     void setMyFiles(HashMap<String, Sheet> myFiles);
     void setReaderFiles(HashMap<String, Sheet> readerFiles);
+    void setWriterFiles(HashMap<String, Sheet> writerFiles);
 
 
     boolean setCurrentSheet(String sheetName);

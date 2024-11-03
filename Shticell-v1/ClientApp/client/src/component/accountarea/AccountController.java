@@ -18,10 +18,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -128,6 +125,11 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     private Label selectedUserName;  // תווית שם המשתמש הנבחר בטבלת ההרשאות
 
     @FXML
+    private ProgressBar taskProgressBar;
+
+
+
+    @FXML
     public void initialize() {
         usersListComponentController.setHttpStatusUpdate(this);
         accountCommands = this;
@@ -145,6 +147,9 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         permissionUserCol.setCellValueFactory(new PropertyValueFactory<>("username"));
         permissionCol.setCellValueFactory(new PropertyValueFactory<>("permission"));
         statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        taskProgressBar.setVisible(false);
+
 
 
 

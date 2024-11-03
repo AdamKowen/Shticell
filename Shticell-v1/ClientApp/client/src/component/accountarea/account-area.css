@@ -1,10 +1,11 @@
 /* עיצוב הכפתורים */
 .button {
     /* צבע כהה יותר */
-    -fx-text-fill: #798491;
+    -fx-text-fill: #636b77;
     -fx-font-weight: normal;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
+    -fx-font-size: 14px; /* הגדרת גודל פונט ל- */
     /* מעבר לינארי לרקע */
     /* מעבר לינארי לרקע */
 
@@ -63,6 +64,7 @@
     -fx-background-radius: 10; /* פינות מעוגלות */
     -fx-border-color: transparent; /* הסרת גבולות חיצוניים */
     -fx-transition: background-color 0.3s ease, -fx-effect 0.3s ease; /* מעבר חלק */
+
 }
 
 /* אפקט ריחוף */
@@ -80,6 +82,8 @@
 .table-cell {
     -fx-background-color: transparent; /* רקע שקוף */
     -fx-text-fill: #2f2f60; /* צבע טקסט */
+    -fx-alignment: CENTER; /* מרכז את הטקסט */
+    -fx-text-alignment: CENTER; /* מרכז את הטקסט בתוך התא */
 }
 
 /* עיצוב הכותרת של הטבלה */
@@ -97,7 +101,7 @@
 
 /* עיצוב תאי הכותרת */
 .table-view .column-header .label {
-    -fx-font-weight: normal;
+    -fx-font-weight: BOLD;
     -fx-text-fill: #646d78;
     -fx-background-color: transparent; /* רקע שקוף לטקסט */
     -fx-padding: 2; /* ריווח פנימי */
@@ -122,14 +126,15 @@
 }
 
 .titled-pane > .title > .text {
-    -fx-fill: #9da0a5; /* טקסט לבן */
+    -fx-fill: #73757a;
+    -fx-font-size: 14px; /* הגדרת גודל פונט ל-16px */
 }
 
 
 
 .tab-pane .tab-header-area .tab-header-background {
     -fx-background-color: #9dabba; /* צבע רקע */
-    -fx-background-radius: 10px 10px 0 0; /* רדיוס עיגול רק לפינות העליונות */
+    -fx-background-radius: 20px 20px 0 0; /* רדיוס עיגול רק לפינות העליונות */
 }
 
 
@@ -137,13 +142,13 @@
 .tab {
     -fx-background-color: #552f39; /* צבע כהה */
     -fx-text-base-color: #d8d8d8;
-    -fx-background-radius: 5 5 0 0;
+    -fx-background-radius: 15 15 0 0;
 
 
     -fx-background-color: rgba(151, 151, 151, 0.2); /* צבע הרקע עם שקיפות */
     -fx-border-color: rgba(225, 225, 225, 0.3); /* צבע הגבול */
     -fx-border-width: 1px; /* רוחב הגבול */
-    -fx-border-radius: 5 5 0 0; /* עיגול פינות של הגבול */
+    -fx-border-radius: 15 15 0 0; /* עיגול פינות של הגבול */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0.0, 0, 4); /* אפקט צל */
 }
 
@@ -151,11 +156,11 @@
 
     -fx-background-color: #8f7e7e; /* צבע כהה */
     -fx-text-base-color: #FFFFFF; /* טקסט לבן */
-    -fx-background-radius: 5 5 0 0;
+    -fx-background-radius: 15 15 0 0;
     -fx-background-color: rgba(255, 255, 255, 0.2); /* צבע הרקע עם שקיפות */
     -fx-border-color: rgba(255, 255, 255, 0.3); /* צבע הגבול */
     -fx-border-width: 1px; /* רוחב הגבול */
-    -fx-border-radius: 5 5 0 0; /* עיגול פינות של הגבול */
+    -fx-border-radius: 15 15 0 0; /* עיגול פינות של הגבול */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0.0, 0, 4); /* אפקט צל */
 
 }
@@ -175,14 +180,13 @@
     -fx-text-fill: #FFFFFF; /* טקסט לבן */
     -fx-font-weight: normal;
     -fx-background-radius: 10; /* פינות מעוגלות */
-    -fx-padding: 10; /* ריווח פנימי */
+    -fx-padding: 7; /* ריווח פנימי */
 
     /* התאמה ל-JavaFX */
     -fx-background-color: #e2e6ea;
     -fx-border-color: linear-gradient(to top, rgb(223, 225, 236), rgb(219, 225, 234)); /* צבע הגבול */
     -fx-border-width: 1.5; /* רוחב הגבול */
-    -fx-border-radius: 15; /* עיגול פינות של הגבול */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0.0, 0, 4); /* אפקט צל */
+    -fx-border-radius: 10; /* עיגול פינות של הגבול */
 
 }
 
@@ -192,6 +196,7 @@
     -fx-background-color: #ffffff; /* צבע בהיר */
     -fx-padding: 0; /* ריווח פנימי */
     -fx-background-radius: 10; /* פינות מעוגלות */
+    -fx-border-color: transparent;
 }
 
 /* מרווח בין האופציות באקורדיון */
@@ -289,7 +294,9 @@
 
 
 #commandGrid {
-    -fx-background-color: #ffffff; /* צבע בהיר יותר */
+    -fx-background-color: #ffffff; /* צבע בהיר */
+    -fx-background-radius: 0 0 20px 20px; /* עיגול רק לפינות התחתונות */
+    -fx-border-radius: 0 0 20px 20px; /* עיגול למסגרת רק לפינות התחתונות */
 }
 
 
@@ -297,3 +304,13 @@
 {
     -fx-background-color: transparent; /* צבע בהיר יותר */
 }
+
+/* הסרת סימון כחול סביב אלמנטים */
+* {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-border-style: none;
+}
+
