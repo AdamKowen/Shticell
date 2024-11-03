@@ -76,4 +76,12 @@ public interface SheetEngine {
     void updateCellValueTempSheet(String cell, String newValue) throws Exception;
 
     String getCurrentSheetName();
+
+    // הוספת גליון לרשימת הגליונות לקריאה
+    void addSheetToRead(Sheet passSheet);
+    // הוספת גליון לרשימת הגליונות לכתיבה
+    void addSheetToWrite(Sheet passSheet);
+
+    void passSheetPermission(String passSheetName, SheetEngine usersEngine, String permission);
+
 }

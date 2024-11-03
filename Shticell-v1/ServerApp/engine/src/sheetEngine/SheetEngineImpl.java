@@ -418,4 +418,52 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
     {
         return currentSheet.getName();
     }
+
+
+    // הוספת גליון לרשימת הגליונות לקריאה
+    public void addSheetToRead(Sheet passSheet) {
+        if (passSheet != null && !readerFiles.containsKey(passSheet.getName())) {
+            readerFiles.put(passSheet.getName(), passSheet);
+            System.out.println("Sheet added to read files: " + passSheet.getName());
+        }
+    }
+
+    // הוספת גליון לרשימת הגליונות לכתיבה
+    public void addSheetToWrite(Sheet passSheet) {
+        if (passSheet != null && !writerFiles.containsKey(passSheet.getName())) {
+            writerFiles.put(passSheet.getName(), passSheet);
+            System.out.println("Sheet added to write files: " + passSheet.getName());
+        }
+    }
+
+    // פונקציה להעברת גליון למנוע של משתמש אחר לפי סוג ההרשאה
+    public void passSheetPermission(String passSheetName, SheetEngine usersEngine, String permission) {
+        if (usersEngine == null || passSheetName == null || permission == null) {
+            System.out.println("Invalid parameters for passing sheet permission.");
+            return;
+        }
+
+        // בדיקה אם הגליון קיים ב-MyFiles של המשתמש הנוכחי
+        Sheet passSheet = MyFiles.get(passSheetName);
+        if (passSheet == null) {
+            System.out.println("Sheet not found in MyFiles: " + passSheetName);
+            return;
+        }
+
+        // העברת הגליון לפי סוג ההרשאה
+        if (permission.equalsIgnoreCase("reader")) {
+            usersEngine.addSheetToRead(passSheet);
+            System.out.println("Sheet " + passSheetName + " passed to " + usersEngine + " with read permission.");
+        } else if (permission.equalsIgnoreCase("writer")) {
+            usersEngine.addSheetToWrite(passSheet);
+            System.out.println("Sheet " + passSheetName + " passed to " + usersEngine + " with write permission.");
+        } else {
+            System.out.println("Invalid permission type: " + permission);
+        }
+    }
+
+
 }
+
+
+

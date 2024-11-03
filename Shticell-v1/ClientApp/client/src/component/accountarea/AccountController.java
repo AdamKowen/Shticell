@@ -265,12 +265,12 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
             RequestBody body = new FormBody.Builder()
                     .add("username", selectedUsername)
                     .add("sheetName", selectedSheetName)
-                    .add("status", "accepted")
+                    .add("status", "APPROVED")
                     .build();
 
             Request request = new Request.Builder()
                     .url(url)
-                    .post(body) // שימוש ב-POST לבקשה פשוטה
+                    .post(body) // שימוש ב-POST עבור בקשה פשוטה
                     .build();
 
             System.out.println("Sending HTTP request...");
@@ -287,7 +287,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    String responseBody = response.body().string();
+                    String responseBody = response.body() != null ? response.body().string() : "No response body";
                     Platform.runLater(() -> {
                         System.out.println("Response Code: " + response.code());
                         System.out.println("Response Message: " + response.message());
@@ -303,36 +303,54 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     }
 
 
-
     @FXML
     private void rejectRequest() {
         if (selectedSheetName != null && selectedUsername != null) {
-            String url = Constants.PERMISSION_REQUEST_URL;
+            String url = Constants.APPROVAL_REQUEST_URL; // נתיב לסרבלט החדש
+            System.out.println("URL to Servlet: " + url);
+            System.out.println("Selected Sheet Name: " + selectedSheetName);
+            System.out.println("Selected Username: " + selectedUsername);
+
             RequestBody body = new FormBody.Builder()
                     .add("username", selectedUsername)
                     .add("sheetName", selectedSheetName)
-                    .add("status", "rejected")
+                    .add("status", "DENIED")
                     .build();
 
             Request request = new Request.Builder()
                     .url(url)
-                    .put(body)
+                    .post(body) // שימוש ב-POST עבור בקשה פשוטה
                     .build();
+
+            System.out.println("Sending HTTP request...");
 
             HttpClientUtil.runAsync(request, new Callback() {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    Platform.runLater(() -> updateHttpLine("Error rejecting request: " + e.getMessage()));
+                    Platform.runLater(() -> {
+                        String errorMessage = "Error rejecting request: " + e.getMessage();
+                        System.out.println(errorMessage);
+                        updateHttpLine(errorMessage);
+                    });
                 }
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    Platform.runLater(() -> updateHttpLine("Request rejected: " + response.message()));
+                    String responseBody = response.body() != null ? response.body().string() : "No response body";
+                    Platform.runLater(() -> {
+                        System.out.println("Response Code: " + response.code());
+                        System.out.println("Response Message: " + response.message());
+                        System.out.println("Response Body: " + responseBody);
+                        updateHttpLine("Request rejected: " + response.message());
+                    });
                     response.close();
                 }
             });
+        } else {
+            System.out.println("Either selectedSheetName or selectedUsername is null");
         }
     }
+
 
 
 

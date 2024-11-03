@@ -32,7 +32,7 @@ public class PermissionManager {
         request.setStatus(newStatus);
         if (newStatus == RequestStatus.APPROVED) {
             SheetPermission newPermission=new SheetPermission(request.getRequesterUsername(),request.getRequestedPermission());
-            addPermission(request.getSheetName(), newPermission );
+            addPermission(request.getSheetName(), newPermission);
         }
     }
 

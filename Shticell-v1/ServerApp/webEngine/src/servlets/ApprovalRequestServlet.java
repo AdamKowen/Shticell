@@ -8,25 +8,34 @@ import jakarta.servlet.http.HttpServletResponse;
 import permissions.PermissionManager;
 import permissions.PermissionRequest;
 import permissions.RequestStatus;
+import sheetEngine.SheetEngine;
+import users.User;
 import users.UserManager;
 import utils.ServletUtils;
+import utils.SessionUtils;
 
 import java.io.IOException;
 
 @WebServlet(name = "ApprovalRequestServlet", urlPatterns = {"/approval-request"})
 public class ApprovalRequestServlet extends HttpServlet {
 
-    private final UserManager userManager = ServletUtils.getUserManager(getServletContext());
-    private final PermissionManager permissionManager = userManager.getPermissionManager();
+    private UserManager userManager;
+    private PermissionManager permissionManager;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        userManager = ServletUtils.getUserManager(getServletContext());
+        permissionManager = userManager.getPermissionManager();
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // פרמטרים מהבקשה
         String targetUsername = request.getParameter("username");
         String sheetName = request.getParameter("sheetName");
         String status = request.getParameter("status");
 
-        // בדיקה אם כל הפרמטרים קיימים
+        // בדיקה שכל הפרמטרים הנדרשים קיימים
         if (targetUsername == null || sheetName == null || status == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("Missing parameters: username, sheetName, or status");
@@ -37,14 +46,29 @@ public class ApprovalRequestServlet extends HttpServlet {
             // המרת הסטטוס ל-Enum
             RequestStatus requestStatus = RequestStatus.valueOf(status.toUpperCase());
 
-            // מציאת הבקשה
+            // מציאת הבקשה לפי המשתמש והגיליון
             PermissionRequest permissionRequest = findRequest(targetUsername, sheetName);
 
             if (permissionRequest != null) {
                 // עדכון סטטוס הבקשה
                 permissionManager.updateRequestStatus(permissionRequest, requestStatus);
+
+                //user in session - approving request
+                String username = SessionUtils.getUsername(request);
+                User user = ServletUtils.getUserManager(getServletContext()).getUser(username);
+                SheetEngine sheetEngine = user.getSheetEngine();
+
+
+                //user to pass the sheet to
+                User userToPass = ServletUtils.getUserManager(getServletContext()).getUser(targetUsername);
+                SheetEngine sheetEngineToPass = userToPass.getSheetEngine();
+
+
+                sheetEngine.passSheetPermission(sheetName, sheetEngineToPass, permissionRequest.getRequestedPermission().toString());
+
+
                 response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().write("Request status updated.");
+                response.getWriter().write("Request status updated to: " + status);
             } else {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 response.getWriter().write("Request not found for specified username and sheetName.");
@@ -58,7 +82,7 @@ public class ApprovalRequestServlet extends HttpServlet {
         }
     }
 
-    // פונקציה למציאת הבקשה לפי משתמש וגיליון
+    // פונקציה למציאת הבקשה לפי המשתמש והגיליון
     private PermissionRequest findRequest(String username, String sheetName) {
         return permissionManager.getPendingRequests().stream()
                 .filter(req -> req.getRequesterUsername().equals(username) && req.getSheetName().equals(sheetName))
