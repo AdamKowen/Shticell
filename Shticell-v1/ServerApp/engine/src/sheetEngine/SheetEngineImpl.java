@@ -312,26 +312,31 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
                 Coordinate coordinate = CoordinateCache.createCoordinateFromString(cellReference);
                 Cell currentCell = currentSheet.getCell(coordinate);
 
-                if (currentCell != null) {
-                    switch (styleType) {
-                        case "backgroundColor":
-                            currentCell.getStyle().setBackgroundColor(styleValue);
-                            break;
-                        case "textColor":
-                            currentCell.getStyle().setTextColor(styleValue);
-                            break;
-                        case "alignment":
-                            currentCell.getStyle().setAlignment(styleValue);
-                            break;
-                        case "reset":
-                            currentCell.getStyle().setToDefault();
-                            break;
-                        default:
-                            throw new IllegalArgumentException("Unsupported style type: " + styleType);
-                    }
-
-                    currentCell.setVersion(newVersion);
+                // אם התא לא קיים, ניצור תא חדש עם ערך ריק
+                if (currentCell == null) {
+                    currentCell = new CellImpl(coordinate.getRow(), coordinate.getColumn(), "", newVersion); // יצירת תא ריק
+                    currentCell.calculateEffectiveValue(currentSheet);
+                    currentSheet.setCell(coordinate, currentCell);
                 }
+
+                switch (styleType) {
+                    case "backgroundColor":
+                        currentCell.getStyle().setBackgroundColor(styleValue);
+                        break;
+                    case "textColor":
+                        currentCell.getStyle().setTextColor(styleValue);
+                        break;
+                    case "alignment":
+                        currentCell.getStyle().setAlignment(styleValue);
+                        break;
+                    case "reset":
+                        currentCell.getStyle().setToDefault();
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unsupported style type: " + styleType);
+                }
+
+                currentCell.setVersion(newVersion);
             }
         }
 
