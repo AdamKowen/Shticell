@@ -55,6 +55,10 @@ public class SheetViewfinderController {
     private boolean isProgrammaticChange = false;
     private Coordinate topLeft;
     private Coordinate bottomRight;
+    private boolean responsiveMode = false;
+    private Timer versionCheckTimer;
+    private int currentSheetVersion;
+
 
     @FXML
     private Button LoadButton;
@@ -460,28 +464,35 @@ public class SheetViewfinderController {
     // Cell value update functions:
     @FXML
     private void handleUpdate() {
-        // קבלת התא הנבחר
-        Coordinate selectedCoordinate = sheetComponentController.getSelectedCoordinate();
+        String buttonText = updateValueButton.getText();
 
-        // קבלת הטקסט מהתיבה
-        String newValue = cellInputContentTextField.getText().trim();
+        if ("Refresh Sheet".equals(buttonText)) { //based on current button function
+            refreshSheet();
+            setUpdatingControlsDisabled(false);
+        } else{
+            // קבלת התא הנבחר
+            Coordinate selectedCoordinate = sheetComponentController.getSelectedCoordinate();
 
-        // בדיקה אם יש תא נבחר וטקסט לא ריק
-        if (selectedCoordinate != null) {
-            try {
-                // הגדרת פרמטרים לבקשת העדכון
-                String coordinate = coordinateToString(selectedCoordinate); // המרה למחרוזת של הקואורדינטה (לדוגמה: "A1")
-                int currentSheetVersion = sheetComponentController.getCurrentSheetVersion(); // קבלת גרסת הגיליון הנוכחית
+            // קבלת הטקסט מהתיבה
+            String newValue = cellInputContentTextField.getText().trim();
 
-                // יצירת הבקשה לעדכון התא
-                sendUpdateRequest(coordinate, newValue, currentSheetVersion);
+            // בדיקה אם יש תא נבחר וטקסט לא ריק
+            if (selectedCoordinate != null) {
+                try {
+                    // הגדרת פרמטרים לבקשת העדכון
+                    String coordinate = coordinateToString(selectedCoordinate); // המרה למחרוזת של הקואורדינטה (לדוגמה: "A1")
+                    int currentSheetVersion = sheetComponentController.getCurrentSheetVersion(); // קבלת גרסת הגיליון הנוכחית
 
-            } catch (Exception e) {
-                cellUpdateError.setText(e.getMessage());
+                    // יצירת הבקשה לעדכון התא
+                    sendUpdateRequest(coordinate, newValue, currentSheetVersion);
+
+                } catch (Exception e) {
+                    cellUpdateError.setText(e.getMessage());
+                }
+            } else {
+                // אין מה לעדכן - אפשר לבחור להציג הודעה או פשוט לעשות כלום
+                cellUpdateError.setText("No cell selected");
             }
-        } else {
-            // אין מה לעדכן - אפשר לבחור להציג הודעה או פשוט לעשות כלום
-            cellUpdateError.setText("No cell selected");
         }
     }
 
@@ -522,6 +533,17 @@ public class SheetViewfinderController {
                 response.close();
             }
         });
+    }
+
+
+    private void setUpdatingControlsDisabled(boolean disabled) {
+        cellInputContentTextField.setDisable(disabled);
+        alignmentBox.setDisable(disabled);
+        addOrDeleteRange.setDisable(disabled);
+        backgroundPicker.setDisable(disabled);
+        fontPicker.setDisable(disabled);
+        listOfRanges.setDisable(disabled);
+        rangeNameTextBox.setDisable(disabled);
     }
 
 
@@ -1400,33 +1422,32 @@ public class SheetViewfinderController {
         this.appMainController = appMainControll;
     }
 
-
     public void setSheet(String sheetName) {
-        System.out.println("Displaying sheet: " + sheetName);  // רק להדגמה
-
+        System.out.println("Displaying sheet: " + sheetName);
 
         try {
-            setCurrentSheet(sheetName, log -> System.out.println(log));  // שליחת הבקשה לעדכון
+            setCurrentSheet(sheetName, log -> System.out.println(log)); // שליחת הבקשה לעדכון
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-
         // בקשה אסינכרונית לקבלת ה-SheetDto המעודכן
         getCurrentSheet(sheetDto -> {
-            // בדיקה אם ה-DTO התקבל
             if (sheetDto != null) {
-                System.out.println("Sheet is here maybe");  // דוגמה להדפסת שם הגיליון
-                sheetComponentController.setPresentedSheet(sheetDto);  // עדכון תצוגת הגיליון ב-UI
+                System.out.println("Sheet loaded successfully: " + sheetName);
+                sheetComponentController.setPresentedSheet(sheetDto);
                 updateListOfRanges();
-                //listOfRanges.getItems().addAll(sheetComponentController.getRanges().keySet());
                 refreshVersionComboBox();
+                currentSheetVersion = sheetComponentController.getCurrentSheetVersion();
+
+                // התחלת הבדיקה רק לאחר טעינת ה-SheetDto
+                setActive();
             }
         }, errorMessage -> {
-            // טיפול בשגיאה (הודעה ל-UI או ללוג)
             System.out.println("Error: " + errorMessage);
         });
     }
+
 
     @FXML
     private void goBackToSheetList() {
@@ -1512,6 +1533,11 @@ public class SheetViewfinderController {
             //listOfRanges.getItems().addAll(sheetComponentController.getRanges().keySet());
             updateListOfRanges();
             refreshVersionComboBox();
+
+            currentSheetVersion = sheetComponentController.getCurrentSheetVersion();
+            // החזרת הכפתור למצב "Update"
+            updateValueButton.setText("Update");
+
             System.out.println("Updated sheet to version: " + sheetDto.getVersion());
 
         }, errorMessage -> {
@@ -1558,6 +1584,47 @@ public class SheetViewfinderController {
             }
         });
     }
+
+
+
+
+    public void startVersionCheck() {
+        versionCheckTimer = new Timer(true);
+        versionCheckTimer.schedule(new SheetVersionRefresher(this::getCurrentLocalSheetVersion, this::handleVersionCheck), Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
+
+    // פונקציה שמחזירה את הגרסה הנוכחית
+    private int getCurrentLocalSheetVersion() {
+        return sheetComponentController.getCurrentSheetVersion(); // קבלת הגרסה הנוכחית מהאלמנט
+    }
+
+    // עצירה של הבדיקה
+    public void stopVersionCheck() {
+        if (versionCheckTimer != null) {
+            versionCheckTimer.cancel();
+            versionCheckTimer = null;
+        }
+    }
+
+    // פונקציה שתיקרא כאשר יש גרסה חדשה - לפי ה־callback
+    private void handleVersionCheck(boolean isUpdated) {
+        if (!isUpdated) {
+            Platform.runLater(() -> {
+                updateValueButton.setText("Refresh Sheet");  // שינוי טקסט הכפתור
+                setUpdatingControlsDisabled(true);
+            });
+        }
+    }
+
+
+    public void setActive() {
+        startVersionCheck(); // התחלת בדיקת גרסה
+    }
+
+    public void setInActive() {
+        stopVersionCheck(); // עצירת בדיקת גרסה
+    }
+
 
 
 
