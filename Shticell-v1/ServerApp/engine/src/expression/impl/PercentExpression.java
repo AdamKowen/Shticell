@@ -21,16 +21,17 @@ public class PercentExpression implements Expression {
 
     @Override
     public EffectiveValue eval(SheetReadActions sheet) {
-
-        double partValue = part.eval(sheet).extractValueWithExpectation(Double.class);
-        double wholeValue = whole.eval(sheet).extractValueWithExpectation(Double.class);
-
         // Validate argument types
         if ((!part.eval(sheet).getCellType().equals(CellType.NUMERIC) ) ||
                 (!whole.eval(sheet).getCellType().equals(CellType.NUMERIC) )) {
             //throw new IllegalArgumentException("Invalid argument types for PERCENT function. Expected NUMERIC, but got " + part.getFunctionResultType() + " and " + whole.getFunctionResultType());
             return new EffectiveValueImpl(CellType.STRING, "NaN");
         }
+
+        double partValue = part.eval(sheet).extractValueWithExpectation(Double.class);
+        double wholeValue = whole.eval(sheet).extractValueWithExpectation(Double.class);
+
+
 
         double result = (partValue * wholeValue) / 100;
         return new EffectiveValueImpl(CellType.NUMERIC, result);

@@ -103,6 +103,7 @@ public class AverageExpression implements Expression {
             row = Integer.parseInt(cell.substring(1)) - 1;     // השורה (מתחילה מ-0)
         }
 
+
         return new int[]{row, column};
     }
 

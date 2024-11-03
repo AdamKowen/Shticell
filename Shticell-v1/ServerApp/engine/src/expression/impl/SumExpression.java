@@ -23,7 +23,6 @@ public class SumExpression implements Expression {
     public EffectiveValue eval(SheetReadActions sheet) {
         double sum = 0;
         try {
-
             List<Cell> cellsInRange = sheet.getCellsInRange(rangeName);
             for (Cell cell :cellsInRange ) {
                 Expression expr= cell.getExpression();
