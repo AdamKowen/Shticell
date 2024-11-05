@@ -46,6 +46,12 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         // this.nameofowner = name;
     }
 
+    // טעינת גיליון ישירות מתוך InputStream
+    public void loadSheetFromXML(InputStream inputStream) throws ParserConfigurationException, IOException, SheetLoadingException, SAXException {
+        currentSheet = loader.loadSheetFromXML(inputStream);
+        MyFiles.put(currentSheet.getName(), currentSheet);
+        recalculateSheet();
+    }
 
     //  XML load with og value in cells
     @Override

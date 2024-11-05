@@ -79,7 +79,7 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <TabPane maxHeight="290.0" maxWidth="240.0" minHeight="100.0" minWidth="0.0" prefHeight="190.0" prefWidth="90.0" tabClosingPolicy="UNAVAILABLE" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                              <TabPane maxHeight="285.0" maxWidth="240.0" minHeight="100.0" minWidth="0.0" prefHeight="190.0" prefWidth="90.0" tabClosingPolicy="UNAVAILABLE" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
                                 <tabs>
                                   <Tab text="     Sheet Commands     ">
                                        <content>
@@ -90,19 +90,19 @@
                                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                   </columnConstraints>
                                                   <rowConstraints>
-                                                    <RowConstraints maxHeight="132.714111328125" minHeight="10.0" prefHeight="87.28524780273438" vgrow="SOMETIMES" />
-                                                    <RowConstraints maxHeight="282.6530456542969" minHeight="10.0" prefHeight="168.71475219726562" vgrow="SOMETIMES" />
+                                                    <RowConstraints maxHeight="132.714111328125" minHeight="10.0" prefHeight="93.27194213867188" vgrow="SOMETIMES" />
+                                                    <RowConstraints maxHeight="282.6530456542969" minHeight="10.0" prefHeight="163.72805786132812" vgrow="SOMETIMES" />
                                                     <RowConstraints maxHeight="263.27752685546875" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <Button fx:id="openSheetViewfinder" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#openSheetViewfinder" prefHeight="68.0" prefWidth="180.0" text="View Selected Sheet" GridPane.halignment="CENTER" GridPane.valignment="TOP">
+                                                      <Button fx:id="openSheetViewfinder" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#openSheetViewfinder" prefHeight="71.0" prefWidth="203.0" text="View Selected Sheet" GridPane.halignment="CENTER" GridPane.valignment="TOP">
                                                          <GridPane.margin>
                                                             <Insets top="10.0" />
                                                          </GridPane.margin>
                                                       </Button>
                                                       <Accordion maxHeight="1.7976931348623157E308" maxWidth="180.0" minWidth="0.0" prefHeight="153.0" prefWidth="175.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                                                         <panes>
-                                                          <TitledPane maxHeight="162.0" minHeight="50.0" prefHeight="138.0" prefWidth="180.0" text="Request Access">
+                                                          <TitledPane maxHeight="162.0" minHeight="50.0" prefHeight="133.0" prefWidth="180.0" text="Request Access">
                                                                <content>
                                                                   <GridPane maxWidth="200.0" minHeight="100.0" minWidth="200.0" prefHeight="300.0">
                                                                     <columnConstraints>
@@ -126,15 +126,15 @@
                                                                   </GridPane>
                                                                </content>
                                                             </TitledPane>
-                                                          <TitledPane prefHeight="143.0" prefWidth="180.0" text="Accept or Deny Requests">
+                                                          <TitledPane prefHeight="134.0" prefWidth="180.0" text="Accept or Deny Requests">
                                                                <content>
                                                                   <GridPane>
                                                                     <columnConstraints>
                                                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                                     </columnConstraints>
                                                                     <rowConstraints>
-                                                                      <RowConstraints maxHeight="28.519927978515625" minHeight="10.0" prefHeight="24.7998046875" vgrow="SOMETIMES" />
-                                                                      <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                                                                      <RowConstraints maxHeight="32.292449951171875" minHeight="10.0" prefHeight="23.65203857421875" vgrow="SOMETIMES" />
+                                                                      <RowConstraints maxHeight="60.0" minHeight="35.543853759765625" prefHeight="39.84796142578125" vgrow="SOMETIMES" />
                                                                     </rowConstraints>
                                                                      <children>
                                                                         <GridPane>
@@ -164,7 +164,7 @@
                                                                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="68.7200927734375" minWidth="10.0" prefWidth="65.6199951171875" />
                                                                           </columnConstraints>
                                                                           <rowConstraints>
-                                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                            <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                           </rowConstraints>
                                                                            <children>
                                                                               <Button fx:id="acceptButton" mnemonicParsing="false" onAction="#acceptRequest" prefHeight="40.0" prefWidth="97.0" text="Accept" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
@@ -220,7 +220,7 @@
                                   </Tab>
                                 </tabs>
                                  <GridPane.margin>
-                                    <Insets bottom="35.0" left="450.0" />
+                                    <Insets bottom="40.0" left="450.0" />
                                  </GridPane.margin>
                               </TabPane>
                               <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
@@ -249,7 +249,7 @@
                                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                              </columnResizePolicy>
                                           </TableView>
-                                          <Label prefHeight="25.0" prefWidth="91.0" text="Selected Sheet:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                                          <Label fx:id="selectedLabel" prefHeight="25.0" prefWidth="91.0" text="Selected Sheet:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                                           <Label fx:id="selectedSheetNameLabel" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                                              <font>
                                                 <Font size="28.0" />

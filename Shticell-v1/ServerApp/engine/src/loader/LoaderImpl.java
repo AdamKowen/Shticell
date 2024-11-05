@@ -17,11 +17,31 @@ import sheet.range.boundaries.Boundaries;
 import sheet.range.impl.RangeImpl;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
 public class LoaderImpl implements Loader {
+
+    @Override
+    public Sheet loadSheetFromXML(InputStream inputStream) throws SheetLoadingException {
+        try {
+            // שימוש ב-JAXB כדי לפרש את קובץ ה-XML מתוך InputStream
+            JAXBContext jaxbContext = JAXBContext.newInstance(STLSheet.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            STLSheet stlSheet = (STLSheet) unmarshaller.unmarshal(inputStream);
+
+            // אימות התוכן של הקובץ
+            validateSheet(stlSheet);
+
+            return convertToSheet(stlSheet);
+        } catch (JAXBException e) {
+            throw new SheetLoadingException("An error occurred while loading the XML file from InputStream.", e);
+        }
+    }
+
+
 
     public Sheet loadSheetFromXML(String filePath) throws SheetLoadingException {
         // בדיקות תקינות הקובץ

@@ -10,6 +10,7 @@ import sheetCalculator.SheetCalculatorImpl;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,8 @@ import java.util.Map;
 public interface SheetEngine {
 
     void loadSheetFromXML(String filePath) throws ParserConfigurationException, IOException, SheetLoadingException, SAXException;
+
+    void loadSheetFromXML(InputStream inputStream) throws ParserConfigurationException, IOException, SheetLoadingException, SAXException;
 
     SheetDto getCurrentSheetDTO();
 

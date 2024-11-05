@@ -1,6 +1,7 @@
 package component.accountarea;
 
 import dto.SheetInfoDto;
+import javafx.application.Platform;
 import util.Constants;
 import util.http.HttpClientUtil;
 import okhttp3.Call;
@@ -48,7 +49,10 @@ public class SheetListRefresher extends TimerTask {
 
                 // המרת התשובה המתקבלת מ-JSON לרשימת אובייקטי SheetInfoDto
                 SheetInfoDto[] sheetArray = GSON_INSTANCE.fromJson(jsonArrayOfSheets, SheetInfoDto[].class);
-                sheetListConsumer.accept(List.of(sheetArray));  // עדכון הרשימה עם SheetInfoDto
+
+                Platform.runLater(() -> {
+                    sheetListConsumer.accept(List.of(sheetArray));  // עדכון הרשימה עם SheetInfoDto
+                });
             }
         });
     }

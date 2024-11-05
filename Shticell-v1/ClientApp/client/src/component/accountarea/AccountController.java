@@ -152,68 +152,71 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
 
 
-
-// מאזין ללחיצה על שורה בטבלה
+// מאזין ללחיצה על שורה בטבלה - לחיצה אחת במקום לחיצה כפולה
         sheetTableView.setOnMouseClicked((MouseEvent event) -> {
-            SheetInfoDto selectedSheet = sheetTableView.getSelectionModel().getSelectedItem();
-            if (selectedSheet != null) {
-                selectedSheetName = selectedSheet.getSheetName();  // שמירת שם הגיליון הנבחר
-                System.out.println("Selected sheet: " + selectedSheetName);  // הדפסת שם הגיליון שנבחר
+            if (event.getClickCount() == 1) { // שינוי ללחיצה אחת
+                SheetInfoDto selectedSheet = sheetTableView.getSelectionModel().getSelectedItem();
+                if (selectedSheet != null) {
+                    selectedSheetName = selectedSheet.getSheetName();  // שמירת שם הגיליון הנבחר
+                    System.out.println("Selected sheet: " + selectedSheetName);  // הדפסת שם הגיליון שנבחר
 
-                // עדכון תווית שם הגיליון בכרטיסייה
-                selectedSheetNameLabel.setText(selectedSheetName);
+                    // עדכון תווית שם הגיליון בכרטיסייה
+                    selectedSheetNameLabel.setText(selectedSheetName);
 
-                // בקשת הרשאות למשתמש הנוכחי (נניח שיש לנו פונקציה מתאימה שמחזירה את סוג ההרשאה)
-                String userAccess = selectedSheet.getAccess();
+                    // בקשת הרשאות למשתמש הנוכחי
+                    String userAccess = selectedSheet.getAccess();
 
-                // עדכון מצב הכפתור של צפייה בגיליון
-                openSheetViewfinder.setDisable(!("owner".equals(userAccess) || "write".equals(userAccess) || "read".equals(userAccess)));
+                    // עדכון מצב הכפתור של צפייה בגיליון
+                    openSheetViewfinder.setDisable(!("owner".equals(userAccess) || "write".equals(userAccess) || "read".equals(userAccess)));
 
-                // קביעה מה להציג בהתאם לסוג ההרשאה
-                switch (userAccess) {
-                    case "owner": // בעל הגיליון
-                        sheetPremmisionTable.setVisible(true);  // הצגת הטבלה
-                        statusCol.setVisible(true);             // הצגת עמודת הסטטוס
-                        acceptButton.setDisable(true);          // כפתורי אישור ודחייה מושבתים עד לבחירה של בקשה
-                        rejectButton.setDisable(true);
-                        loadPermissionsForOwner(selectedSheet.getSheetName());
-                        break;
+                    // קביעה מה להציג בהתאם לסוג ההרשאה
+                    switch (userAccess) {
+                        case "owner":
+                            sheetPremmisionTable.setVisible(true);
+                            statusCol.setVisible(true);
+                            acceptButton.setDisable(true);
+                            rejectButton.setDisable(true);
+                            loadPermissionsForOwner(selectedSheet.getSheetName());
+                            break;
 
-                    case "write": // הרשאת כתיבה
-                    case "read":  // הרשאת קריאה
-                        sheetPremmisionTable.setVisible(true);  // הצגת הטבלה
-                        statusCol.setVisible(false);            // הסתרת עמודת הסטטוס
-                        acceptButton.setDisable(true);          // כפתורי אישור ודחייה מושבתים עבור משתמשים שאינם הבעלים
-                        rejectButton.setDisable(true);
-                        loadPermissionsForEditorOrViewer(selectedSheet.getSheetName());
-                        break;
+                        case "write":
+                        case "read":
+                            sheetPremmisionTable.setVisible(true);
+                            statusCol.setVisible(false);
+                            acceptButton.setDisable(true);
+                            rejectButton.setDisable(true);
+                            loadPermissionsForEditorOrViewer(selectedSheet.getSheetName());
+                            break;
 
-                    case "no access":  // אין הרשאה
-                        sheetPremmisionTable.setVisible(false); // הסתרת הטבלה כולה
-                        premmisionStatus.setText("בקשה ממתינה לאישור");
-                        openSheetViewfinder.setDisable(true);   // השבתת הכפתור לצפייה בגיליון
-                        break;
+                        case "no access":
+                            sheetPremmisionTable.setVisible(false);
+                            premmisionStatus.setText("בקשה ממתינה לאישור");
+                            openSheetViewfinder.setDisable(true);
+                            break;
+                    }
+
+                    Platform.runLater(() -> sheetTableView.getSelectionModel().clearSelection());
                 }
-
-                // הסרת הסימון לאחר הצגת המידע
-                Platform.runLater(() -> sheetTableView.getSelectionModel().clearSelection());
             }
         });
 
+// מאזין ללחיצה על שורה בטבלה - לחיצה אחת במקום לחיצה כפולה
         sheetPremmisionTable.setOnMouseClicked((MouseEvent event) -> {
-            PermissionDTO selectedPermission = sheetPremmisionTable.getSelectionModel().getSelectedItem();
-            if (selectedPermission != null) {
-                selectedUserName.setText(selectedPermission.getUsername());  // הצגת שם המשתמש שנבחר
-                selectedUsername = selectedPermission.getUsername();  // שמירת שם המשתמש שנבחר
+            if (event.getClickCount() == 1) { // שינוי ללחיצה אחת
+                PermissionDTO selectedPermission = sheetPremmisionTable.getSelectionModel().getSelectedItem();
+                if (selectedPermission != null) {
+                    selectedUserName.setText(selectedPermission.getUsername());
+                    selectedUsername = selectedPermission.getUsername();
 
-                // קביעת האם הכפתורים יושבתו בהתאם לסטטוס
-                boolean isPending = "Pending".equals(selectedPermission.getStatus());
-                acceptButton.setDisable(!isPending);
-                rejectButton.setDisable(!isPending);
-            } else {
-                selectedUsername = null;  // איפוס המשתנה אם אין משתמש מסומן או שאין הרשאות
-                acceptButton.setDisable(true);
-                rejectButton.setDisable(true);
+                    // קביעת האם הכפתורים יושבתו בהתאם לסטטוס
+                    boolean isPending = "Pending".equals(selectedPermission.getStatus());
+                    acceptButton.setDisable(!isPending);
+                    rejectButton.setDisable(!isPending);
+                } else {
+                    selectedUsername = null;
+                    acceptButton.setDisable(true);
+                    rejectButton.setDisable(true);
+                }
             }
         });
 
