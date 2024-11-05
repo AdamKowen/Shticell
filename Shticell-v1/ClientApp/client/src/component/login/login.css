@@ -41,7 +41,7 @@
 .error-label {
     -fx-text-fill: #ff0073;
     -fx-font-weight: BOLD;
-    -fx-font-size: 12px;
+    -fx-font-size: 5px;
 }
 
 .main-action-button {

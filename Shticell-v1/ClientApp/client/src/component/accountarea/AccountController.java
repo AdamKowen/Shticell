@@ -44,6 +44,7 @@ import javafx.scene.input.MouseEvent;
 import utils.SessionUtils;
 
 import static util.Constants.REFRESH_RATE;
+import static util.Constants.UPLOAD_SHEET_URL;
 
 public class AccountController implements Closeable, HttpStatusUpdate, AccountCommands {
 
@@ -495,9 +496,8 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
  */
 
     private void uploadFileToServer(File file) throws IOException {
-        String RESOURCE = "/uploadSheet";
-        String BASE_URL = "http://localhost:8080/webEngine_Web_exploded";
-        String finalUrl = BASE_URL + RESOURCE;  // משתמש באותו BASE_URL כמו שאר הקוד
+
+        String finalUrl = UPLOAD_SHEET_URL;  // משתמש באותו BASE_URL כמו שאר הקוד
 
         RequestBody body = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
