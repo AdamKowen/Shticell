@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -252,7 +251,7 @@
                                           <Label fx:id="selectedLabel" prefHeight="25.0" prefWidth="91.0" text="Selected Sheet:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                                           <Label fx:id="selectedSheetNameLabel" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                                              <font>
-                                                <Font size="28.0" />
+                                                <Font size="36.0" />
                                              </font>
                                           </Label>
                                           <Label fx:id="premmisionStatus" alignment="CENTER" contentDisplay="CENTER" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
@@ -286,7 +285,6 @@
                      </GridPane.margin>
                   </Button>
                   <Button mnemonicParsing="false" onAction="#logoutClicked" prefHeight="38.0" prefWidth="90.0" text="Logout" GridPane.columnIndex="3" />
-                  <ProgressBar fx:id="taskProgressBar" maxWidth="1.7976931348623157E308" prefHeight="25.0" progress="0.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" />
                   <Label fx:id="loadingStatusLabel" maxWidth="1.7976931348623157E308" prefHeight="24.0" GridPane.columnIndex="1" />
                </children>
             </GridPane>

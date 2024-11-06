@@ -1,22 +1,27 @@
 /* עיצוב הכפתורים */
 .button {
     /* צבע כהה יותר */
-    -fx-text-fill: #636b77;
+    -fx-text-fill: #FFFFFF; /* טקסט לבן */
     -fx-font-weight: normal;
+
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
-    -fx-font-size: 14px; /* הגדרת גודל פונט ל- */
-    /* מעבר לינארי לרקע */
-    /* מעבר לינארי לרקע */
 
-    -fx-background-color: #e2e6ea;
-    -fx-background-radius: 15px; /* עיגול פינות של הרקע */
-    -fx-border-color: linear-gradient(to top, rgb(223, 225, 236), rgb(219, 225, 234)); /* צבע הגבול */
-    -fx-border-width: 1.5; /* רוחב הגבול */
+
+    /* מעבר לינארי לרקע */
+    /* מעבר לינארי לרקע */
+    -fx-background-color: rgb(16, 64, 53);
+
+    -fx-background-radius: 16px; /* עיגול פינות של הרקע */
+    -fx-border-color: linear-gradient(to top, rgb(37, 92, 76), rgba(255, 255, 255, 0.80)); /* צבע הגבול */
+    -fx-border-width: 1.3; /* רוחב הגבול */
     -fx-border-radius: 15px; /* עיגול פינות של הגבול */
-    -fx-transition: background-color 0.3s ease, -fx-text-fill 0.3s ease;
-}
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.14), 4, 0.0, 0, 4); /* אפקט צל */
 
+
+    -fx-transition: background-color 0.3s ease, -fx-text-fill 0.3s ease;
+
+}
 
 
 .button:hover {
@@ -31,21 +36,25 @@
 
 #sheetCard{
     /* צבע כהה יותר */
-    -fx-text-fill: #8e9eac;
+    -fx-text-fill: #fafafa;
     -fx-font-weight: normal;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
     /* מעבר לינארי לרקע */
     /* מעבר לינארי לרקע */
 
-    -fx-background-color: rgb(246, 246, 248);
+    -fx-background-color: rgba(255, 255, 255, 0.4); /* צבע הרקע עם שקיפות */
     -fx-background-radius: 40px; /* עיגול פינות של הרקע */
-    -fx-border-color: linear-gradient(to top, rgba(255, 255, 255), rgb(255, 255, 255)); /* צבע הגבול */
+    -fx-border-color: linear-gradient(to bottom, rgb(241, 240, 240), transparent); /* צבע הגבול */
     -fx-border-width: 1.5; /* רוחב הגבול */
     -fx-border-radius: 40px; /* עיגול פינות של הגבול */
-    -fx-effect: dropshadow(gaussian, rgba(48, 46, 46, 0.14), 60, 0.0, 10, 20); /* אפקט צל */
+    -fx-effect: dropshadow(gaussian, rgb(99, 129, 129), 60, 0.0, 30, 50); /* אפקט צל */
     -fx-transition: background-color 0.3s ease, -fx-text-fill 0.3s ease;
 }
+
+
+
+
 
 #topGrid {
     -fx-background-color: rgb(255, 255, 255);
@@ -60,7 +69,7 @@
 
 /* עיצוב השורות בטבלה */
 .table-row-cell {
-    -fx-background-color: rgba(255, 255, 255, 0.2); /* צבע רקע עם שקיפות */
+    -fx-background-color: transparent; /* צבע רקע עם שקיפות */
     -fx-background-radius: 10; /* פינות מעוגלות */
     -fx-border-color: transparent; /* הסרת גבולות חיצוניים */
     -fx-transition: background-color 0.3s ease, -fx-effect 0.3s ease; /* מעבר חלק */
@@ -306,9 +315,21 @@
     -fx-background-color: transparent; /* צבע בהיר יותר */
 }
 
+
+
+
+
+
+
+
 #selectedLabel
 {
-    -fx-text-fill: #636b77;
+    -fx-text-fill: #ffffff;
+}
+
+#selectedSheetNameLabel
+{
+    -fx-text-fill: #ffffff;
 }
 
 
@@ -318,38 +339,29 @@
 
 
 
-
-.progress-bar {
-    -fx-background-radius: 10px; /* עיגול פינות הרקע */
-    -fx-border-radius: 10px; /* עיגול פינות הגבול */
-    -fx-border-width: 1px; /* רוחב הגבול */
-    -fx-pref-height: 30px; /* גובה מותאם אישית */
-    -fx-padding: 2px; /* ריווח פנימי */
-    -fx-background-color: rgba(255, 255, 255, 0.2); /* רקע עם שקיפות */
-    -fx-border-color: #e2e6ea; /* צבע הגבול */
-    -fx-effect: dropshadow(gaussian, rgb(219, 239, 255), 10, 0.3, 0, 0); /* אפקט זוהר */
-    -fx-transition: -fx-background-color 0.5s ease, -fx-border-color 0.5s ease; /* מעבר חלק */
+/* עיצוב ספציפי ל-sheetPremmisionTable */
+#sheetPremmisionTable {
+    -fx-background-color: transparent;
+    -fx-text-fill: white; /* צבע טקסט הכותרת בלבן */
 }
 
-/* הרצועה של ה-ProgressBar */
-.progress-bar .track {
+#sheetPremmisionTable .column-header-background {
+    -fx-background-color: transparent; /* רקע הכותרת בלבן */
+    -fx-text-fill: white; /* צבע טקסט הכותרת בלבן */
+    -fx-font-size: 14px;
+}
+
+#sheetPremmisionTable .column-header .label {
+    -fx-text-fill: white; /* צבע טקסט הכותרת בלבן */
+}
+
+/* עיצוב תאי הטבלה */
+#sheetPremmisionTable .table-cell {
     -fx-background-color: transparent; /* רקע שקוף */
-    -fx-background-radius: 16px; /* עיגול פינות */
+    -fx-text-fill: #ffffff; /* צבע טקסט */
+    -fx-alignment: CENTER; /* מרכז את הטקסט */
+    -fx-text-alignment: CENTER; /* מרכז את הטקסט בתוך התא */
 }
-
-/* החלק המלא של ה-ProgressBar */
-.progress-bar .bar {
-    -fx-background-color: rgb(203, 230, 239); /* צבע כהה */
-    -fx-background-radius: 5px; /* עיגול פינות */
-    -fx-transition: -fx-background-color 0.5s ease; /* מעבר חלק */
-}
-
-
-
-
-
-
-
 
 
 

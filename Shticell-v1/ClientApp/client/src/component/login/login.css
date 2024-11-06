@@ -8,29 +8,28 @@
 
 /* עיצוב הכפתורים */
 .button {
-    /* צבע כהה יותר */
-    -fx-text-fill: #3a3a3a; /* טקסט לבן */
+    -fx-background-color: #563f46; /* צבע כהה יותר */
+    -fx-text-fill: #FFFFFF; /* טקסט לבן */
     -fx-font-weight: normal;
-    -fx-focus-color: transparent;
-    -fx-faint-focus-color: transparent;
-    /* מעבר לינארי לרקע */
-    /* מעבר לינארי לרקע */
+    -fx-background-radius: 30; /* פינות מעוגלות */
+    -fx-padding: 7; /* ריווח פנימי */
 
-    -fx-background-color: rgb(246, 246, 248);
-    -fx-background-radius: 30px; /* עיגול פינות של הרקע */
-
-    -fx-border-color: linear-gradient(to top, rgba(255, 255, 255), rgb(255, 255, 255)); /* צבע הגבול */
-    -fx-border-width: 1.3; /* רוחב הגבול */
-    -fx-border-radius: 30px; /* עיגול פינות של הגבול */
-    -fx-effect: dropshadow(gaussian, rgba(214, 214, 214, 0.14), 8, 0.0, 0, 4); /* אפקט צל */
+    /* התאמה ל-JavaFX */
+    -fx-background-color: rgba(255, 255, 255, 0.3); /* צבע הרקע עם שקיפות */
+    -fx-border-width: 1px; /* רוחב הגבול */
+    -fx-border-radius: 30; /* עיגול פינות של הגבול */
+    -fx-border-color: linear-gradient(to bottom, rgb(241, 240, 240), transparent); /* צבע הגבול */
+    -fx-effect: dropshadow(gaussian, rgba(248, 247, 247, 0.14), 10, 0.0, 0, 4); /* אפקט צל */
     -fx-transition: background-color 0.3s ease, -fx-text-fill 0.3s ease;
 }
 
 
 
+
 .button:hover {
-    -fx-background-color: #a1a8a8; /* צבע בהיר יותר */
-    -fx-border-color: linear-gradient(to top, rgba(16, 64, 53, 0.07), rgba(255, 255, 255, 0.65)); /* צבע הגבול */
+    -fx-background-color: rgba(248, 248, 248, 0.5); /* צבע הרקע עם שקיפות */
+    -fx-border-color: linear-gradient(to top, rgba(16, 64, 53, 0.07), rgba(246, 246, 246, 0.65)); /* צבע הגבול */
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.14), 8, 0.0, 0, 4); /* אפקט צל */
 }
 
 .button:pressed {
@@ -39,13 +38,13 @@
 
 
 .error-label {
-    -fx-text-fill: #ff0073;
+    -fx-text-fill: #ffffff;
     -fx-font-weight: BOLD;
-    -fx-font-size: 5px;
+    -fx-font-size: 12px;
 }
 
 .main-action-button {
-    -fx-text-fill: #8e9eac;
+    -fx-text-fill: #ffffff;
     -fx-font-size: 20px;
     -fx-font-weight: NORMAL;
 }
@@ -62,6 +61,19 @@
 }
 
 #quit-button {
-    -fx-text-fill: #9f9f9f;
+    -fx-text-fill: #e4f3f3;
     -fx-font-weight: NORMAL;
+    -fx-background-color: rgba(255, 255, 255, 0.1); /* צבע הרקע עם שקיפות */
+    -fx-border-color: linear-gradient(to bottom, rgb(218, 218, 218), rgb(174, 207, 207)); /* צבע הגבול */
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.14), 8, 0.0, 0, 4); /* אפקט צל */
+}
+
+#quit-button:hover{
+    -fx-background-color: rgba(248, 248, 248, 0.3); /* צבע הרקע עם שקיפות */
+    -fx-border-color: linear-gradient(to top, rgba(175, 214, 206, 0.07), rgba(246, 246, 246, 0.65)); /* צבע הגבול */
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.14), 8, 0.0, 0, 4); /* אפקט צל */
+}
+
+.label{
+    -fx-text-fill: #ffffff;
 }

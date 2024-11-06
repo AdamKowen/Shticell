@@ -132,8 +132,6 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     @FXML
     private Label selectedUserName;  // תווית שם המשתמש הנבחר בטבלת ההרשאות
 
-    @FXML
-    private ProgressBar taskProgressBar;
 
 
 
@@ -147,7 +145,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         usersListComponentController.autoUpdatesProperty().bind(actionCommandsComponentController.autoUpdatesProperty());
         initTableColumns();  // אתחול העמודות בעת ההפעלה
         //startSheetListRefresher();   // התחלת עדכון הטבלה כל 2 שניות (REFRESH_RATE)
-
+        sheetPremmisionTable.setVisible(false);
 
 
         chatAreaComponentController.autoUpdatesProperty().bind(actionCommandsComponentController.autoUpdatesProperty());
@@ -158,10 +156,6 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         permissionUserCol.setCellValueFactory(new PropertyValueFactory<>("username"));
         permissionCol.setCellValueFactory(new PropertyValueFactory<>("permission"));
         statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
-
-        taskProgressBar.setVisible(false);
-
-
 
 // מאזין ללחיצה על שורה בטבלה - לחיצה אחת במקום לחיצה כפולה
         sheetTableView.setOnMouseClicked((MouseEvent event) -> {
