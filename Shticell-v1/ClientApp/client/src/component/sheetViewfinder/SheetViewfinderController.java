@@ -418,6 +418,7 @@ public class SheetViewfinderController {
                 setControlsDisabledVersionMode(true);
             } else {
                 setControlsDisabledVersionMode(false);
+                setUpdatingControlsDisabled(readerMode); //if reader mode elements for updating not active
             }
         });
 
@@ -464,7 +465,13 @@ public class SheetViewfinderController {
 
         if ("Refresh".equals(buttonText)) { //based on current button function
             refreshSheet();
-            setUpdatingControlsDisabled(false);
+            if (readerMode)
+            {
+                updateValueButton.setDisable(true);
+            }
+            else {
+                setUpdatingControlsDisabled(false);
+            }
         } else{
             // קבלת התא הנבחר
             Coordinate selectedCoordinate = sheetComponentController.getSelectedCoordinate();
@@ -542,6 +549,10 @@ public class SheetViewfinderController {
         fontPicker.setDisable(disabled);
         listOfRanges.setDisable(disabled);
         rangeNameTextBox.setDisable(disabled);
+
+        if (!updateValueButton.getText().equals("Refresh")) {
+            updateValueButton.setDisable(disabled);
+        }
     }
 
 
@@ -552,41 +563,14 @@ public class SheetViewfinderController {
     }
 
     private void disableEditingElements(boolean isReaderMode) {
-        resetFiltersButton.setDisable(!isReaderMode);
-        versionComboBox.setDisable(!isReaderMode);
         alignmentBox.setDisable(isReaderMode);
-        darkModeToggle.setDisable(!isReaderMode);
-        rowHeightSlider.setDisable(!isReaderMode);
-        colWidthSlider.setDisable(!isReaderMode);
         rangeNameTextBox.setDisable(isReaderMode);
         cellInputContentTextField.setDisable(isReaderMode);
-        topLeftBox.setDisable(!isReaderMode);
-        bottomRightBox.setDisable(!isReaderMode);
-        sort.setDisable(!isReaderMode);
-        resetsort.setDisable(!isReaderMode);
-        reSelect.setDisable(!isReaderMode);
         updateValueButton.setDisable(isReaderMode);
         addOrDeleteRange.setDisable(isReaderMode);
-        selectedCellLabel.setDisable(!isReaderMode);
-        cellUpdateError.setDisable(!isReaderMode);
-        LastUpdate.setDisable(!isReaderMode);
-        rangeErrorMassage.setDisable(!isReaderMode);
-        errorSelectMassage.setDisable(!isReaderMode);
-        colList.setDisable(!isReaderMode);
-        listOfRanges.setDisable(!isReaderMode);
         backgroundPicker.setDisable(isReaderMode);
         fontPicker.setDisable(isReaderMode);
-        mainTabPane.setDisable(!isReaderMode);
-        currentSheetTab.setDisable(!isReaderMode);
-        prevSheetTab.setDisable(!isReaderMode);
-        topPane.setDisable(!isReaderMode);
-        sliderTable.setDisable(isReaderMode);
-        sliderFromTextfield.setDisable(!isReaderMode);
-        sliderToTextfield.setDisable(!isReaderMode);
-        stepSizeChoice.setDisable(!isReaderMode);
-        addSliderButton.setDisable(!isReaderMode);
-        emptySheetAndResetButton.setDisable(!isReaderMode);
-        dynamicAnalysisErrorMassage.setDisable(!isReaderMode);
+
     }
 
 
@@ -1651,6 +1635,7 @@ public class SheetViewfinderController {
         if (!isUpdated) {
             Platform.runLater(() -> {
                 updateValueButton.setText("Refresh");  // שינוי טקסט הכפתור
+                updateValueButton.setDisable(false);
                 setUpdatingControlsDisabled(true);
             });
         }
