@@ -376,7 +376,7 @@
                                           <RowConstraints maxHeight="40.96453857421875" minHeight="10.0" prefHeight="20.93304443359375" vgrow="NEVER" />
                                       </rowConstraints>
                                        <children>
-                                          <Button fx:id="addOrDeleteRange" mnemonicParsing="false" onAction="#handleAddOrDeleteRange" prefHeight="29.0" prefWidth="110.0" text="Add Selected Range" GridPane.rowIndex="2">
+                                          <Button fx:id="addOrDeleteRange" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleAddOrDeleteRange" prefHeight="29.0" prefWidth="110.0" text="Add Selected Range" GridPane.rowIndex="2">
                                              <font>
                                                 <Font size="11.0" />
                                              </font>

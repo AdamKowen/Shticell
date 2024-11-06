@@ -48,6 +48,8 @@ import static util.Constants.UPLOAD_SHEET_URL;
 
 public class AccountController implements Closeable, HttpStatusUpdate, AccountCommands {
 
+
+    private boolean readerUser = false;
     public GridPane sheetCard;
     private AccountCommands accountCommands;
     @FXML private VBox usersListComponent;
@@ -132,6 +134,9 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
 
 
+
+
+
     @FXML
     public void initialize() {
         usersListComponentController.setHttpStatusUpdate(this);
@@ -180,15 +185,23 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
                             acceptButton.setDisable(true);
                             rejectButton.setDisable(true);
                             loadPermissionsForOwner(selectedSheet.getSheetName());
+                            readerUser = false;
                             break;
-
                         case "write":
+                            sheetPremmisionTable.setVisible(true);
+                            statusCol.setVisible(false);
+                            acceptButton.setDisable(true);
+                            rejectButton.setDisable(true);
+                            loadPermissionsForEditorOrViewer(selectedSheet.getSheetName());
+                            readerUser = false;
+                            break;
                         case "read":
                             sheetPremmisionTable.setVisible(true);
                             statusCol.setVisible(false);
                             acceptButton.setDisable(true);
                             rejectButton.setDisable(true);
                             loadPermissionsForEditorOrViewer(selectedSheet.getSheetName());
+                            readerUser = true;
                             break;
 
                         case "no access":
@@ -451,7 +464,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     // פעולה לפתיחת ה-Viewfinder
     public void openSheetViewfinder() {
         if (selectedSheetName != null) {
-            chatAppMainController.switchToViewfinder(selectedSheetName);  // מעבר ל-viewfinder
+            chatAppMainController.switchToViewfinder(selectedSheetName, readerUser);  // מעבר ל-viewfinder
         } else {
             System.out.println("No sheet selected");
         }

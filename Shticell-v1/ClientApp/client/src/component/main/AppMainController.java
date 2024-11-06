@@ -169,22 +169,13 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
     }
 
 
-
-    public void switchToViewfinder(String sheetName) {
-        viewfinderController.setSheet(sheetName);  // מעביר את השם של הגיליון הנבחר
-        mainBorderPane.setCenter(viewfinderComponent);  // החלפה של התצוגה הראשית
+    public void switchToViewfinder(String sheetName, boolean isReaderMode) {
+        viewfinderController.setSheet(sheetName);  // מעביר את שם הגיליון
+        viewfinderController.setReaderMode(isReaderMode);  // מעביר את מצב הקריאה
+        mainBorderPane.setCenter(viewfinderComponent);  // מחליף את התצוגה הראשית
     }
 
 
-
-    @FXML
-    public void openSheetViewfinder(String selectedSheetName) {
-        if (selectedSheetName != null) {
-            switchToViewfinder(selectedSheetName);  // מעבר ל-viewfinder
-        } else {
-            System.out.println("No sheet selected");
-        }
-    }
 
     public void switchToAccountArea() {
         mainBorderPane.setCenter(accountAreaComponent);  // חזרה למסך ה-account
