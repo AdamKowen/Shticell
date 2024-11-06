@@ -566,6 +566,12 @@
 
 
 
+#fileNameLabel{
+    -fx-font-weight: BOLD;
+    -fx-font-size: 14px;
+}
+
+
 /* הסרת סימון כחול סביב אלמנטים */
 * {
     -fx-focus-color: transparent;

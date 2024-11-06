@@ -43,7 +43,7 @@
                      <GridPane.margin>
                         <Insets left="15.0" />
                      </GridPane.margin></Button>
-                  <Label fx:id="fileNameLabel" prefHeight="35.0" text="loaded file" GridPane.columnIndex="1">
+                  <Label fx:id="fileNameLabel" prefHeight="35.0" GridPane.columnIndex="1">
                      <font>
                         <Font size="14.0" />
                      </font></Label>

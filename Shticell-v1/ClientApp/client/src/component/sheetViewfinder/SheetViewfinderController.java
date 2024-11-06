@@ -1622,6 +1622,7 @@ public class SheetViewfinderController {
 
     public void setSheet(String sheetName) {
         System.out.println("Displaying sheet: " + sheetName);
+        fileNameLabel.setText(sheetName);
 
         try {
             setCurrentSheet(sheetName, log -> System.out.println(log)); // שליחת הבקשה לעדכון
