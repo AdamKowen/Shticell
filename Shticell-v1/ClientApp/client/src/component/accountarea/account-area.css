@@ -151,11 +151,11 @@
 /* עיצוב עבור ה-tabs */
 .tab {
     -fx-background-color: #552f39; /* צבע כהה */
-    -fx-text-base-color: #d8d8d8;
+    -fx-text-base-color: #e3e3e3;
     -fx-background-radius: 20 20 0 0;
 
 
-    -fx-background-color: rgba(151, 151, 151, 0.2); /* צבע הרקע עם שקיפות */
+    -fx-background-color: rgba(184, 184, 184, 0.2); /* צבע הרקע עם שקיפות */
     -fx-border-color: rgba(225, 225, 225, 0.3); /* צבע הגבול */
     -fx-border-width: 1px; /* רוחב הגבול */
     -fx-border-radius: 20 20 0 0; /* עיגול פינות של הגבול */
@@ -366,6 +366,28 @@
 #premmisionStatus{
     -fx-text-fill: #ffffff; /* צבע טקסט */
     -fx-font-size: 15px;
+}
+
+
+
+#openSheetViewfinder
+{
+    /* צבע כהה יותר */
+    -fx-text-fill: #fafafa;
+    -fx-font-weight: normal;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-font-size: 15px;
+    /* מעבר לינארי לרקע */
+    /* מעבר לינארי לרקע */
+
+    -fx-background-color: rgba(255, 255, 255, 0.3); /* צבע הרקע עם שקיפות */
+    -fx-background-radius: 30px; /* עיגול פינות של הרקע */
+    -fx-border-color: linear-gradient(to bottom, rgba(241, 240, 240, 0.55), transparent); /* צבע הגבול */
+    -fx-border-width: 1.5; /* רוחב הגבול */
+    -fx-border-radius: 30px; /* עיגול פינות של הגבול */
+    -fx-effect: dropshadow(gaussian, rgb(99, 129, 129), 60, 0.0, 30, 50); /* אפקט צל */
+    -fx-transition: background-color 0.3s ease, -fx-text-fill 0.3s ease;
 }
 
 
