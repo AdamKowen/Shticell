@@ -1019,6 +1019,20 @@ public class SheetControllerImpl implements SheetController {
     }
 
 
+    public String getLastUserUpdatedCell()
+    {
+
+        CellDto cell = DisplayedSheet.getCell(getSelectedCoordinate());
+        if(cell != null)
+        {
+            return cell.getLastUserUpdated();
+        }
+
+        return "";
+    }
+
+
+
 
 
 

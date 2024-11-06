@@ -150,6 +150,10 @@ public class SheetViewfinderController {
 
 
     @FXML
+    private Label lastUserUpdatedLabel;
+
+
+    @FXML
     private Label rangeErrorMassage;
 
 
@@ -238,6 +242,7 @@ public class SheetViewfinderController {
                 selectedCoordinate = sheetComponentController.getSelectedCoordinate();
                 selectedCellLabel.setText("Selected cell: " + selectedCoordinate);
                 LastUpdate.setText("Last Update: Version " + sheetComponentController.getLastUpdatedVersion());
+                lastUserUpdatedLabel.setText("By User: " + sheetComponentController.getLastUserUpdatedCell());
 
                 // **עדכון הסליידרים עם רוחב וגובה התא הנבחר**
                 double cellWidth = sheetComponentController.getCellWidth();
@@ -301,6 +306,9 @@ public class SheetViewfinderController {
                 rangeErrorMassage.setText("");
                 cellUpdateError.setText("");
                 errorSelectMassage.setText("");
+                LastUpdate.setText("");
+                lastUserUpdatedLabel.setText("");
+
 
 
             } else {
@@ -451,6 +459,9 @@ public class SheetViewfinderController {
         initializeTableColumns();
         initializeStepSizeBox();
 
+
+        LastUpdate.setText("");
+        lastUserUpdatedLabel.setText("");
         //setControlsDisabledAppStart(true);
 
     }

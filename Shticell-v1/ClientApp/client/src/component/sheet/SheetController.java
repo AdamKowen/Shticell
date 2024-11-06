@@ -143,7 +143,7 @@ public interface SheetController {
 
     public String getBottomRight();
 
-
+    String getLastUserUpdatedCell();
 
     String getCellValue(String cell);
 }

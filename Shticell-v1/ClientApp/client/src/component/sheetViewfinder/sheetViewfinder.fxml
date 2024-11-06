@@ -101,9 +101,9 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label fx:id="LastUpdate" prefHeight="34.0" prefWidth="152.0" text="Last Updated Version:" GridPane.columnIndex="4">
+                        <Label fx:id="LastUpdate" prefHeight="27.0" prefWidth="145.0" text="Last Updated Version:" GridPane.columnIndex="4">
                            <GridPane.margin>
-                              <Insets left="10.0" />
+                              <Insets bottom="15.0" left="10.0" />
                            </GridPane.margin>
                         </Label>
                         <TextField fx:id="cellInputContentTextField" maxWidth="1.7976931348623157E308" minWidth="0.0" prefHeight="32.0" prefWidth="0.0" GridPane.columnIndex="2" />
@@ -121,6 +121,14 @@
                               <Insets left="5.0" right="5.0" />
                            </GridPane.margin>
                         </Button>
+                        <Label fx:id="lastUserUpdatedLabel" prefHeight="23.0" prefWidth="143.0" text="Last User Updated:" GridPane.columnIndex="4">
+                           <GridPane.margin>
+                              <Insets left="10.0" top="23.0" />
+                           </GridPane.margin>
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </Label>
                      </children>
                   </GridPane>
                   <ComboBox fx:id="versionComboBox" prefHeight="33.0" prefWidth="153.0" promptText="Previous Version" visibleRowCount="15" GridPane.columnIndex="1" GridPane.hgrow="NEVER">
