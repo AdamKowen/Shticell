@@ -57,7 +57,7 @@
 
 
 #topGrid {
-    -fx-background-color: rgb(255, 255, 255);
+    -fx-background-color: #ffffff;
 }
 
 /* עיצוב כללי ל-TableView */
@@ -122,22 +122,7 @@
 
 
 
-/* הסתרת החץ לחלוטין */
-.titled-pane > .title > .arrow-button {
-    -fx-opacity: 0; /* להפוך אותו לשקוף לחלוטין */
-    -fx-shape: ""; /* הסרת צורת החץ */
-    -fx-background-color: transparent; /* שקיפות מוחלטת */
-    -fx-padding: 0; /* הסרת ריווח */
-    -fx-min-width: 0;
-    -fx-min-height: 0;
-    -fx-max-width: 0;
-    -fx-max-height: 0;
-}
 
-.titled-pane > .title > .text {
-    -fx-fill: #73757a;
-    -fx-font-size: 14px; /* הגדרת גודל פונט ל-16px */
-}
 
 
 
@@ -186,24 +171,39 @@
 
 /* עיצוב ה-TitledPane וה-Accordion */
 .titled-pane > .title {
-    -fx-background-color: #10060a; /* צבע כהה יותר */
     -fx-text-fill: #FFFFFF; /* טקסט לבן */
     -fx-font-weight: normal;
-    -fx-background-radius: 10; /* פינות מעוגלות */
+    -fx-background-radius: 15; /* פינות מעוגלות */
     -fx-padding: 7; /* ריווח פנימי */
 
-    /* התאמה ל-JavaFX */
-    -fx-background-color: #f3f6f8;
+    -fx-background-color: rgba(255, 255, 255, 0.2); /* צבע הרקע עם שקיפות */
 
     -fx-border-width: 1.5; /* רוחב הגבול */
     -fx-border-radius: 10; /* עיגול פינות של הגבול */
 
 }
 
+/* הסתרת החץ לחלוטין */
+.titled-pane > .title > .arrow-button {
+    -fx-opacity: 0; /* להפוך אותו לשקוף לחלוטין */
+    -fx-shape: ""; /* הסרת צורת החץ */
+    -fx-background-color: transparent; /* שקיפות מוחלטת */
+    -fx-padding: 0; /* הסרת ריווח */
+    -fx-min-width: 0;
+    -fx-min-height: 0;
+    -fx-max-width: 0;
+    -fx-max-height: 0;
+}
+
+.titled-pane > .title > .text {
+    -fx-fill: #f1f1f1;
+    -fx-font-size: 14px; /* הגדרת גודל פונט ל-16px */
+}
+
 
 
 .titled-pane > .content {
-    -fx-background-color: #ffffff; /* צבע בהיר */
+    -fx-background-color: #739a9a; /* צבע בהיר */
     -fx-padding: 0; /* ריווח פנימי */
     -fx-background-radius: 10; /* פינות מעוגלות */
     -fx-border-color: transparent;
@@ -384,10 +384,15 @@
     -fx-background-color: rgba(255, 255, 255, 0.3); /* צבע הרקע עם שקיפות */
     -fx-background-radius: 30px; /* עיגול פינות של הרקע */
     -fx-border-color: linear-gradient(to bottom, rgba(241, 240, 240, 0.55), transparent); /* צבע הגבול */
-    -fx-border-width: 1.5; /* רוחב הגבול */
+    -fx-border-width: 1; /* רוחב הגבול */
     -fx-border-radius: 30px; /* עיגול פינות של הגבול */
     -fx-effect: dropshadow(gaussian, rgb(99, 129, 129), 60, 0.0, 30, 50); /* אפקט צל */
     -fx-transition: background-color 0.3s ease, -fx-text-fill 0.3s ease;
+}
+
+
+#openSheetViewfinder:hover{
+    -fx-background-color: rgba(255, 255, 255, 0.4); /* צבע הרקע עם שקיפות */
 }
 
 

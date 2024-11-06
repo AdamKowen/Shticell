@@ -80,7 +80,7 @@
                   </GridPane>
                </children>
             </GridPane>
-            <GridPane maxWidth="1.7976931348623157E308" prefHeight="91.0" prefWidth="924.0">
+            <GridPane fx:id="priviousVersionGridContainer" maxWidth="1.7976931348623157E308" prefHeight="91.0" prefWidth="924.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="0.0" />
                 <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" prefWidth="170.0" />

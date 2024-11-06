@@ -27,6 +27,12 @@
     -fx-background-color: #ffffff; /* צבע נוסף */
 }
 
+
+#priviousVersionGridContainer
+{
+    -fx-background-color: #ffffff; /* צבע נוסף */
+}
+
 /* עיצוב הכפתורים */
 .button {
     /* צבע כהה יותר */
@@ -567,7 +573,6 @@
 
 
 #fileNameLabel{
-    -fx-font-weight: BOLD;
     -fx-font-size: 14px;
 }
 
