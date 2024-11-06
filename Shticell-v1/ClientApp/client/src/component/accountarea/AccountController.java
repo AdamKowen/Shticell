@@ -64,7 +64,6 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     private TimerTask sheetListRefresher;  // משתנה שיחזיק את ה-TimerTask
 
 
-
     @FXML
     private TableView<SheetInfoDto> sheetTableView;
 
