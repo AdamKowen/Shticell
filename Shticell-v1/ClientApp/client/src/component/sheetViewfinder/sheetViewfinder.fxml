@@ -313,8 +313,8 @@
                                        <children>
                                           <TableView fx:id="sliderTable" maxHeight="1.7976931348623157E308" minHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                                             <columns>
-                                              <TableColumn fx:id="cellNameCol" prefWidth="39.1452751159668" text="Cell" />
-                                              <TableColumn fx:id="sliderCol" prefWidth="88.35469818115234" resizable="false" text="Slider" />
+                                              <TableColumn fx:id="cellNameCol" prefWidth="42.872140884399414" text="Cell" />
+                                              <TableColumn fx:id="sliderCol" prefWidth="84.12788009643555" resizable="false" text="Slider" />
                                             </columns>
                                              <VBox.margin>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -323,37 +323,52 @@
                                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                              </columnResizePolicy>
                                           </TableView>
-                                          <GridPane minHeight="60.0" minWidth="100.0" VBox.vgrow="NEVER">
+                                          <GridPane maxWidth="130.0" minHeight="60.0" minWidth="100.0" VBox.vgrow="NEVER">
                                             <columnConstraints>
-                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="70.4651870727539" minWidth="10.0" prefWidth="70.4651870727539" />
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.627845764160156" minWidth="10.0" prefWidth="59.534812927246094" />
                                             </columnConstraints>
                                             <rowConstraints>
                                               <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
                                               <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                              <children>
-                                                <Label text="From Value:" />
-                                                <Label text="To Value:" GridPane.rowIndex="1" />
+                                                <Label text="From Value:">
+                                                   <font>
+                                                      <Font size="12.0" />
+                                                   </font></Label>
+                                                <Label text="To Value:" GridPane.rowIndex="1">
+                                                   <font>
+                                                      <Font size="12.0" />
+                                                   </font></Label>
                                                 <TextField fx:id="sliderToTextfield" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                 <TextField fx:id="sliderFromTextfield" GridPane.columnIndex="1" />
                                              </children>
                                           </GridPane>
-                                          <GridPane minHeight="30.0" VBox.vgrow="NEVER">
+                                          <GridPane maxWidth="130.0" minHeight="30.0" VBox.vgrow="NEVER">
                                             <columnConstraints>
-                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="82.6296157836914" minWidth="10.0" prefWidth="70.04843139648438" />
-                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="68.95156860351562" minWidth="10.0" prefWidth="68.95156860351562" />
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="82.6296157836914" minWidth="10.0" prefWidth="57.84873962402344" />
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="71.65126037597656" minWidth="10.0" prefWidth="71.65126037597656" />
                                             </columnConstraints>
                                             <rowConstraints>
                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                              <children>
                                                 <ComboBox fx:id="stepSizeChoice" prefWidth="150.0" promptText="Size" GridPane.columnIndex="1" />
-                                                <Label text="Step Size:" />
+                                                <Label text="Step Size:">
+                                                   <font>
+                                                      <Font size="12.0" />
+                                                   </font></Label>
                                              </children>
                                           </GridPane>
-                                          <Button fx:id="addSliderButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#addSliderForCell" prefHeight="28.0" prefWidth="80.0" text="Add Slider" VBox.vgrow="NEVER" />
-                                          <Button fx:id="emptySheetAndResetButton" mnemonicParsing="false" text="Empty List and Reset" />
+                                          <Button fx:id="addSliderButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#addSliderForCell" prefHeight="35.0" prefWidth="130.0" text="Add Slider" VBox.vgrow="NEVER">
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin></Button>
+                                          <Button fx:id="emptySheetAndResetButton" maxWidth="130.0" mnemonicParsing="false" text="Empty List and Reset">
+                                             <VBox.margin>
+                                                <Insets top="10.0" />
+                                             </VBox.margin></Button>
                                           <Label fx:id="dynamicAnalysisErrorMassage" />
                                        </children>
                                     </VBox>
@@ -369,7 +384,7 @@
                                 </columnConstraints>
                                 <rowConstraints>
                                   <RowConstraints maxHeight="1.7976931348623157E308" minHeight="0.0" prefHeight="0.0" vgrow="ALWAYS" />
-                                  <RowConstraints maxHeight="171.01565551757812" minHeight="10.0" prefHeight="113.0194091796875" vgrow="NEVER" />
+                                  <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="113.0194091796875" vgrow="NEVER" />
                                 </rowConstraints>
                                  <children>
                                     <ListView fx:id="listOfRanges" minWidth="0.0" prefHeight="110.0" prefWidth="200.0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" />

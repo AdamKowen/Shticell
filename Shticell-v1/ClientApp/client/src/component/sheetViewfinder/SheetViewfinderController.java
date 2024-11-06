@@ -192,7 +192,7 @@ public class SheetViewfinderController {
 
 
 
-
+    private Slider excludedSlider = null; //in movement in dynamic will make sure things dong mess up
 
 
     //Dynamic Analysis:
@@ -1090,6 +1090,127 @@ public class SheetViewfinderController {
         sliderTable.setItems(sliderData);
     }
 
+    /*
+    @FXML
+    private void addSliderForCell() {
+        // קריאת ערכים מה-TextField
+        String fromText = sliderFromTextfield.getText();
+        String toText = sliderToTextfield.getText();
+
+        // בדיקת תקינות הערכים
+        if (!isNumeric(fromText) || !isNumeric(toText)) {
+            dynamicAnalysisErrorMassage.setText("Please enter numeric values only.");
+            return;
+        }
+
+        double fromValue = Double.parseDouble(fromText);
+        double toValue = Double.parseDouble(toText);
+        double stepSize = stepSizeChoice.getSelectionModel().getSelectedItem();
+
+        // בדיקת טווח ו-step size
+        if (!isValidRange(fromValue, toValue, stepSize)) {
+            dynamicAnalysisErrorMassage.setText("Range is not large enough for the selected step size.");
+            return;
+        }
+
+        // הסרת הודעת השגיאה
+        dynamicAnalysisErrorMassage.setText("");
+
+        // שמירת הקואורדינטה של התא הנבחר במשתנה מקומי
+        String cellCoordinate = coordinateToString(selectedCoordinate);
+
+        // יצירת סליידר חדש
+        Slider newSlider = new Slider(fromValue, toValue, (fromValue + toValue) / 2);
+
+        // הגדרת stepSize על הסליידר
+        newSlider.setBlockIncrement(stepSize);
+        newSlider.setMajorTickUnit(stepSize);
+        newSlider.setMinorTickCount(0);
+        newSlider.setSnapToTicks(true);
+
+        // משתנה דגל פנימי עבור הסליידר המסוים בלבד
+        final boolean[] isUserAction = {false};
+
+        // מאזינים להתחלת ונעילת אינטראקציה על הסליידר
+        newSlider.setOnMousePressed(event -> isUserAction[0] = true);
+        newSlider.setOnMouseReleased(event -> isUserAction[0] = false);
+
+        // שמירה של הערך הקודם כדי לוודא שהעדכון קורה רק בעת שינוי אמיתי
+        final double[] lastSentValue = {newSlider.getValue()};
+
+        // מאזין לשינוי ערך הסליידר כאשר המשתמש גורר אותו
+        newSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (isUserAction[0]) {
+                // עיגול הערך בהתאם ל-stepSize
+                double roundedValue = Math.round(newVal.doubleValue() / stepSize) * stepSize;
+
+                // שליחת עדכון רק אם הערך השתנה למדרגה חדשה לפי ה-stepSize
+                if (roundedValue != lastSentValue[0]) {
+                    lastSentValue[0] = roundedValue; // עדכון הערך האחרון שנשלח
+                    String newValueStr = Double.toString(roundedValue);
+
+                    updateCellInTemporarySheet(cellCoordinate, newValueStr, sheetDto -> {
+                        sheetComponentController.setPresentedSheet(sheetDto);
+                        updateSlidersPosition();
+                        System.out.println("Updated sheet DTO to version: " + sheetDto.getVersion());
+
+                        // עדכון רשימות נוספות בממשק
+                        updateListOfRanges();
+                        refreshVersionComboBox();
+                    }, errorMessage -> {
+                        System.out.println("Error updating cell: " + errorMessage);
+                    });
+                }
+            }
+        });
+
+        // קביעת ערך התחלתי של הסליידר לפי ערך התא
+        String value = sheetComponentController.getCellValue(cellCoordinate);
+
+        if (isNumeric(value)) {
+            double cellValue = Double.parseDouble(value);
+            if (cellValue >= fromValue && cellValue <= toValue) {
+                newSlider.setValue(cellValue);
+            } else if (cellValue < fromValue) {
+                newSlider.setValue(fromValue);
+            } else {
+                newSlider.setValue(toValue);
+            }
+        } else {
+            newSlider.setValue((fromValue + toValue) / 2);
+        }
+
+        // הוספת שם התא והסליידר לטבלה
+        sliderData.add(new AbstractMap.SimpleEntry<>(cellCoordinate, newSlider));
+    }
+
+    private void updateSlidersPosition() {
+        for (Map.Entry<String, Slider> entry : sliderData) {
+            String cellCoordinate = entry.getKey();  // קבלת הקואורדינטה של התא
+            Slider slider = entry.getValue();  // קבלת הסליידר
+
+            // קבלת הערך הנוכחי של התא לפי הקואורדינטה
+            String cellValue = sheetComponentController.getCellValue(cellCoordinate);
+
+            if (isNumeric(cellValue)) {
+                double cellValueDouble = Double.parseDouble(cellValue);
+
+                // בדיקה אם הערך נמצא בטווח של הסליידר
+                if (cellValueDouble >= slider.getMin() && cellValueDouble <= slider.getMax()) {
+                    slider.setValue(cellValueDouble);
+                } else if (cellValueDouble < slider.getMin()) {
+                    slider.setValue(slider.getMin());
+                } else {
+                    slider.setValue(slider.getMax());
+                }
+            } else {
+                // אם הערך אינו מספרי, ממקמים את הסמן באמצע הטווח
+                slider.setValue((slider.getMin() + slider.getMax()) / 2);
+            }
+        }
+    }
+
+     */
 
     @FXML
     private void addSliderForCell() {
@@ -1116,63 +1237,104 @@ public class SheetViewfinderController {
         // הסרת הודעת השגיאה
         dynamicAnalysisErrorMassage.setText("");
 
+        // שמירת הקואורדינטה של התא הנבחר במשתנה מקומי
+        String cellCoordinate = coordinateToString(selectedCoordinate);
+
         // יצירת סליידר חדש
         Slider newSlider = new Slider(fromValue, toValue, (fromValue + toValue) / 2);
-        newSlider.setBlockIncrement(stepSize);
 
-        // משתנה דגל פנימי עבור הסליידר המסוים בלבד
+        // הגדרת stepSize על הסליידר
+        newSlider.setBlockIncrement(stepSize);
+        newSlider.setMajorTickUnit(stepSize);
+        newSlider.setMinorTickCount(0);
+        newSlider.setSnapToTicks(true);
+
+        // משתנה דגל פנימי לסימון האם המשתמש כרגע מזיז את הסליידר
         final boolean[] isUserAction = {false};
 
         // מאזינים להתחלת ונעילת אינטראקציה על הסליידר
-        newSlider.setOnMousePressed(event -> isUserAction[0] = true);
-        newSlider.setOnMouseReleased(event -> isUserAction[0] = false);
+        newSlider.setOnMousePressed(event -> {
+            isUserAction[0] = true;
+            excludedSlider = newSlider; // הגדרת הסליידר כ-excluded כשהמשתמש מתחיל להזיז
+        });
+
+        newSlider.setOnMouseReleased(event -> {
+            isUserAction[0] = false;
+            excludedSlider = null; // איפוס excludedSlider לאחר שהמשתמש שחרר את העכבר
+        });
+
+        // שמירה של הערך הקודם כדי לוודא שהעדכון קורה רק בעת שינוי אמיתי
+        final double[] lastSentValue = {newSlider.getValue()};
 
         // מאזין לשינוי ערך הסליידר כאשר המשתמש גורר אותו
         newSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (isUserAction[0]) { // נוודא שרק בלחיצה ישירה על הסליידר הבקשה תישלח
-                String newValueStr = Double.toString(newVal.doubleValue());
+                double roundedValue = Math.round(newVal.doubleValue() / stepSize) * stepSize;
 
-                updateCellInTemporarySheet(coordinateToString(selectedCoordinate), newValueStr, sheetDto -> {
-                    // עדכון הממשק עם ה-SheetDto המעודכן
-                    sheetComponentController.setPresentedSheet(sheetDto);
-                    System.out.println("Updated sheet DTO to version: " + sheetDto.getVersion());
+                if (roundedValue != lastSentValue[0]) {
+                    lastSentValue[0] = roundedValue; // עדכון הערך האחרון שנשלח
+                    String newValueStr = Double.toString(roundedValue);
 
-                    // עדכון רשימות נוספות בממשק
-                    updateListOfRanges();
-                    refreshVersionComboBox();
-                }, errorMessage -> {
-                    // טיפול בשגיאה
-                    System.out.println("Error updating cell: " + errorMessage);
-                });
+                    updateCellInTemporarySheet(cellCoordinate, newValueStr, sheetDto -> {
+                        sheetComponentController.setPresentedSheet(sheetDto);
+                        updateSlidersPosition(); // מעדכן את כל הסליידרים חוץ מהסליידר שהמשתמש מזיז
+                        System.out.println("Updated sheet DTO to version: " + sheetDto.getVersion());
+
+                        // עדכון רשימות נוספות בממשק
+                        updateListOfRanges();
+                        refreshVersionComboBox();
+                    }, errorMessage -> {
+                        System.out.println("Error updating cell: " + errorMessage);
+                    });
+                }
             }
         });
 
-
         // קביעת ערך התחלתי של הסליידר לפי ערך התא
-        String value = sheetComponentController.getCellValue(coordinateToString(selectedCoordinate));
+        String value = sheetComponentController.getCellValue(cellCoordinate);
 
         if (isNumeric(value)) {
-            // אם הערך מספרי, ממירים אותו ל-double
             double cellValue = Double.parseDouble(value);
-
-            // אם הערך בתוך הטווח, ממקמים את הסליידר בהתאם
             if (cellValue >= fromValue && cellValue <= toValue) {
                 newSlider.setValue(cellValue);
             } else if (cellValue < fromValue) {
-                // אם הערך קטן מהטווח, ממקמים בקצה השמאלי
                 newSlider.setValue(fromValue);
             } else {
-                // אם הערך גדול מהטווח, ממקמים בקצה הימני
                 newSlider.setValue(toValue);
             }
         } else {
-            // אם הערך אינו מספרי, ממקמים את הסליידר באמצע הטווח
             newSlider.setValue((fromValue + toValue) / 2);
         }
 
         // הוספת שם התא והסליידר לטבלה
-        sliderData.add(new AbstractMap.SimpleEntry<>(coordinateToString(selectedCoordinate), newSlider));
+        sliderData.add(new AbstractMap.SimpleEntry<>(cellCoordinate, newSlider));
     }
+
+    // פונקציה שמעדכנת את כל הסליידרים למעט הסליידר שהמשתמש מזיז
+    private void updateSlidersPosition() {
+        for (Map.Entry<String, Slider> entry : sliderData) {
+            Slider slider = entry.getValue();
+            if (slider != excludedSlider) {  // אם הסליידר לא זה שהמשתמש מזיז
+                String cellCoordinate = entry.getKey();
+                String cellValue = sheetComponentController.getCellValue(cellCoordinate);
+
+                if (isNumeric(cellValue)) {
+                    double cellValueDouble = Double.parseDouble(cellValue);
+                    if (cellValueDouble >= slider.getMin() && cellValueDouble <= slider.getMax()) {
+                        slider.setValue(cellValueDouble);
+                    } else if (cellValueDouble < slider.getMin()) {
+                        slider.setValue(slider.getMin());
+                    } else {
+                        slider.setValue(slider.getMax());
+                    }
+                } else {
+                    slider.setValue((slider.getMin() + slider.getMax()) / 2);
+                }
+            }
+        }
+    }
+
+
 
     private boolean isValidRange(double fromValue, double toValue, double stepSize) {
         return (fromValue < toValue) && ((toValue - fromValue) >= (5 * stepSize));
@@ -1241,6 +1403,7 @@ public class SheetViewfinderController {
                     {
                         onSuccess.accept(sheetDto);
                         sheetComponentController.setPresentedSheet(sheetDto);
+                        updateSlidersPosition();
                     });
                 } else {
                     // קריאה לפונקציית השגיאה אם הבקשה נכשלה
@@ -1565,9 +1728,11 @@ public class SheetViewfinderController {
         // בקשת ה-sheetDTO מהשרת
         getCurrentSheet(sheetDto -> {
             sheetComponentController.setPresentedSheet(sheetDto);
+
             //listOfRanges.getItems().addAll(sheetComponentController.getRanges().keySet());
             updateListOfRanges();
             refreshVersionComboBox();
+            updateSlidersPosition();
 
             currentSheetVersion = sheetComponentController.getCurrentSheetVersion();
             // החזרת הכפתור למצב "Update"

@@ -10,6 +10,8 @@ import component.sheetViewfinder.SheetViewfinderController;
 import component.users.UsersListController;
 import dto.PermissionDTO;
 import dto.SheetInfoDto;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,6 +25,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.util.Duration;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import util.Constants;
@@ -448,14 +451,27 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
                 uploadFileToServer(file);
             } catch (IOException e) {
                 e.printStackTrace();
-                // כאן אפשר להוסיף טיפול בשגיאות כמו הצגת הודעה למשתמש
-                loadingStatusLabel.setText(e.getMessage());
+                // הצגת הודעת שגיאה ל-7 שניות
+                showTemporaryMessage(loadingStatusLabel, e.getMessage(), 7);
             }
-        }else {
-            // Display an error message if no file is selected
-            loadingStatusLabel.setText("No file selected or an error occurred.");
+        } else {
+            // הצגת הודעה על חוסר קובץ ל-7 שניות
+            showTemporaryMessage(loadingStatusLabel, "No file selected or an error occurred.", 7);
         }
     }
+
+    // פונקציה שתציג הודעה לזמן מוגבל
+    private void showTemporaryMessage(Label label, String message, int seconds) {
+        label.setText(message);
+
+        // יצירת Timeline שיאפס את ההודעה לאחר X שניות
+        Timeline timeline = new Timeline(new KeyFrame(
+                Duration.seconds(seconds),
+                event -> label.setText("")));
+        timeline.setCycleCount(1); // פועל רק פעם אחת
+        timeline.play();
+    }
+
 
 
 
@@ -471,6 +487,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     }
 
 
+    /*
 
     private void uploadFileToServer(File file) throws IOException {
 
@@ -513,9 +530,54 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     }
 
 
+     */
 
 
-    public void setAccountCommands(AccountCommands chatRoomMainController) {
+    private void uploadFileToServer(File file) throws IOException {
+
+        String finalUrl = UPLOAD_SHEET_URL;  // משתמש באותו BASE_URL כמו שאר הקוד
+
+        RequestBody body = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", file.getName(),
+                        RequestBody.create(file, MediaType.parse("application/xml")))
+                .build();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .post(body)  // משתמש ב-POST במקום GET
+                .build();
+
+        // משתמש באותו HTTP_CLIENT עם אותו CookieManager
+        HttpClientUtil.runAsync(request, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        showTemporaryMessage(loadingStatusLabel, e.getMessage(), 4)
+                );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "No response body";
+                    Platform.runLater(() -> {
+                        if (response.isSuccessful()) {
+                            // הצגת הודעת הצלחה למשך 7 שניות
+                            //showTemporaryMessage(loadingStatusLabel, "Upload succeeded", 4);
+                        } else {
+                            // הצגת הודעת שגיאה מהשרת למשך 7 שניות
+                            showTemporaryMessage(loadingStatusLabel, responseBodyString, 4);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+
+
+        public void setAccountCommands(AccountCommands chatRoomMainController) {
         this.accountCommands = chatRoomMainController;
     }
 

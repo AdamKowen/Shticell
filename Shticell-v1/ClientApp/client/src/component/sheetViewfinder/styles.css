@@ -502,6 +502,70 @@
 
 
 
+
+
+
+
+/* עיצוב כללי ל-TableView */
+.table-view {
+    -fx-background-color: white; /* רקע שקוף לטבלה */
+    -fx-border-color: transparent; /* הסרת גבולות */
+    -fx-background-radius: 16; /* פינות מעוגלות */
+}
+
+/* עיצוב השורות בטבלה */
+.table-row-cell {
+    -fx-background-color: rgba(255, 255, 255, 0.2); /* צבע רקע עם שקיפות */
+    -fx-background-radius: 10; /* פינות מעוגלות */
+    -fx-border-color: transparent; /* הסרת גבולות חיצוניים */
+    -fx-transition: background-color 0.3s ease, -fx-effect 0.3s ease; /* מעבר חלק */
+
+}
+
+/* אפקט ריחוף */
+.table-row-cell:hover {
+    -fx-background-color: rgba(100, 143, 143, 0.3); /* שינוי צבע קל בריחוף */
+}
+
+/* עיצוב השורה המסומנת */
+.table-row-cell:selected {
+    -fx-background-color: #6c8f8f; /* צבע של השורה המסומנת */
+    -fx-text-fill: white; /* טקסט לבן */
+}
+
+/* עיצוב תאי הטבלה */
+.table-cell {
+    -fx-background-color: transparent; /* רקע שקוף */
+    -fx-text-fill: #2f2f60; /* צבע טקסט */
+    -fx-alignment: CENTER; /* מרכז את הטקסט */
+    -fx-text-alignment: CENTER; /* מרכז את הטקסט בתוך התא */
+}
+
+/* עיצוב הכותרת של הטבלה */
+.column-header-background {
+    -fx-background-color: transparent; /* הפיכת רקע הכותרת לשקוף */
+    -fx-border-color: transparent; /* הסרת גבול */
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent; /* צבע הכותרת הראשי */
+    -fx-background-radius: 15; /* פינות מעוגלות */
+    -fx-padding: 2 8; /* ריווח פנימי */
+    -fx-margin: 10 10; /* ריווח חיצוני של 10 פיקסלים משני הצדדים */
+}
+
+/* עיצוב תאי הכותרת */
+.table-view .column-header .label {
+    -fx-font-weight: BOLD;
+    -fx-text-fill: #646d78;
+    -fx-background-color: transparent; /* רקע שקוף לטקסט */
+    -fx-padding: 2; /* ריווח פנימי */
+    -fx-margin: 10px 10px; /* ריווח חיצוני של 10 פיקסלים משני הצדדים */
+}
+
+
+
+
 /* הסרת סימון כחול סביב אלמנטים */
 * {
     -fx-focus-color: transparent;
