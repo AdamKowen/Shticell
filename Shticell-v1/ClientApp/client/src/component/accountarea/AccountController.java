@@ -203,7 +203,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
                         case "no access":
                             sheetPremmisionTable.setVisible(false);
-                            premmisionStatus.setText("בקשה ממתינה לאישור");
+                            premmisionStatus.setText("Request Pending Approval");
                             openSheetViewfinder.setDisable(true);
                             break;
                     }
