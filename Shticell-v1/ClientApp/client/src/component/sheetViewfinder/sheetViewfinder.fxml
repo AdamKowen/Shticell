@@ -31,7 +31,7 @@
             <GridPane fx:id="loadRow" prefHeight="96.0" prefWidth="908.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="NEVER" maxWidth="339.2989807128906" minWidth="10.0" prefWidth="119.03758239746094" />
-                <ColumnConstraints hgrow="NEVER" maxWidth="707.1642456054688" minWidth="10.0" prefWidth="176.35235595703125" />
+                <ColumnConstraints hgrow="NEVER" maxWidth="707.1642456054688" minWidth="10.0" prefWidth="90.0" />
                   <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="0.0" />
                   <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="320.9515380859375" />
               </columnConstraints>
@@ -47,7 +47,7 @@
                      <font>
                         <Font size="14.0" />
                      </font></Label>
-                  <Label fx:id="cellUpdateError" alignment="BASELINE_LEFT" prefHeight="26.0" prefWidth="300.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.valignment="BOTTOM">
+                  <Label fx:id="cellUpdateError" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="300.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.valignment="BOTTOM" GridPane.vgrow="ALWAYS">
                      <GridPane.margin>
                         <Insets bottom="3.0" />
                      </GridPane.margin>

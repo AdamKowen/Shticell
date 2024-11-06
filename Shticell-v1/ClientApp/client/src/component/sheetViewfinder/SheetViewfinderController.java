@@ -522,7 +522,9 @@ public class SheetViewfinderController {
                 } else if (response.code() == HttpServletResponse.SC_CONFLICT) {
                     Platform.runLater(() -> cellUpdateError.setText("Version conflict: Please refresh the sheet."));
                 } else {
-                    Platform.runLater(() -> cellUpdateError.setText("Failed to update cell. Response code: " + response.code()));
+                    // קריאה לגוף התגובה כדי לקבל את הודעת השגיאה מהשרת
+                    String errorMessage = response.body() != null ? response.body().string() : "Unknown error";
+                    Platform.runLater(() -> cellUpdateError.setText(errorMessage));
                 }
                 response.close();
             }
