@@ -49,16 +49,16 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
     // טעינת גיליון ישירות מתוך InputStream
     public void loadSheetFromXML(InputStream inputStream) throws ParserConfigurationException, IOException, SheetLoadingException, SAXException {
         currentSheet = loader.loadSheetFromXML(inputStream);
-        MyFiles.put(currentSheet.getName(), currentSheet);
         recalculateSheet();
+        MyFiles.put(currentSheet.getName(), currentSheet);
     }
 
     //  XML load with og value in cells
     @Override
     public void loadSheetFromXML(String filePath) throws ParserConfigurationException, IOException, SheetLoadingException, SAXException {
-        currentSheet = loader.loadSheetFromXML(filePath); //with only og value in!
-        MyFiles.put(currentSheet.getName(), currentSheet);
+        currentSheet = loader.loadSheetFromXML(filePath);
         recalculateSheet();
+        MyFiles.put(currentSheet.getName(), currentSheet);
     }
 
     // sheet DTO

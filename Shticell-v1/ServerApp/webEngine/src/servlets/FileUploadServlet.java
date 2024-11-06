@@ -85,7 +85,7 @@ public class FileUploadServlet extends HttpServlet {
             resp.getWriter().write("Error processing file: File size too large");
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write("Server error processing file: " + e.getMessage());
+            resp.getWriter().write("Problem processing file: " + e.getMessage());
         }
     }
 

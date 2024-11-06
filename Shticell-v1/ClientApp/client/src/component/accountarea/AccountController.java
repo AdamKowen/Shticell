@@ -87,6 +87,9 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     private Label selectedSheetNameLabel;  // תווית שם הגיליון שנבחר
 
 
+    @FXML
+    private Label loadingStatusLabel;
+
     private String selectedSheetName = null;  // משתנה לשמירת שם הגיליון הנבחר
 
     private String selectedUsername = null;  // משתנה לשמירת שם המשתמש שנבחר
@@ -433,11 +436,11 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
             } catch (IOException e) {
                 e.printStackTrace();
                 // כאן אפשר להוסיף טיפול בשגיאות כמו הצגת הודעה למשתמש
-                System.out.println("Error occurred during file upload.");
+                loadingStatusLabel.setText(e.getMessage());
             }
         }else {
             // Display an error message if no file is selected
-            //fileNameLabel.setText("No file selected or an error occurred.");
+            loadingStatusLabel.setText("No file selected or an error occurred.");
         }
     }
 
@@ -455,44 +458,6 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     }
 
 
-
-/*
-    private void uploadFileToServer(File file) throws IOException {
-        // Define the URL of the server to which the file will be uploaded
-        String RESOURCE = "/uploadSheet";  // The path where the file should be uploaded
-        String BASE_URL = "http://localhost:8080/webEngine_Web_exploded";  // Base URL of your application
-
-        // Create a multipart request body for the file upload
-        RequestBody body = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("file", file.getName(),
-                        RequestBody.create(file, MediaType.parse("text/plain")))  // Media type of the file (adjust if needed)
-                .build();
-
-        // Create an HTTP request to send the file
-        Request request = new Request.Builder()
-                .url(BASE_URL + RESOURCE)  // Full URL of the server endpoint
-                .post(body)  // POST method for file upload
-                .build();
-
-        // Use OkHttpClient to execute the request
-        OkHttpClient client = new OkHttpClient();
-        Call call = client.newCall(request);
-
-        try (Response response = call.execute()) {
-            // Check if the response is successful
-            if (response.isSuccessful()) {
-                System.out.println("File uploaded successfully: " + response.body().string());
-            } else {
-                System.out.println("Failed to upload file. Response code: " + response.code()+response.body().string());
-            }
-        } catch (IOException e) {
-            System.out.println("Error during file upload: " + e.getMessage());
-            throw e;  // Rethrow the exception to be handled by the caller
-        }
-    }
-
- */
 
     private void uploadFileToServer(File file) throws IOException {
 
@@ -514,20 +479,22 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() ->
-                        updateHttpLine("Error during file upload: " + e.getMessage())
+                        loadingStatusLabel.setText("Error during file upload: " + e.getMessage())
                 );
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String responseBody = response.body().string();
-                Platform.runLater(() -> {
-                    if (response.isSuccessful()) {
-                        updateHttpLine("Success: " + responseBody);
-                    } else {
-                        updateHttpLine("Error: " + responseBody + " (Code: " + response.code() + ")");
-                    }
-                });
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "No response body";
+                    Platform.runLater(() -> {
+                        if (response.isSuccessful()) {
+                            //loadingStatusLabel.setText("Success: " + responseBodyString);
+                        } else {
+                            loadingStatusLabel.setText( responseBodyString );
+                        }
+                    });
+                }
             }
         });
     }

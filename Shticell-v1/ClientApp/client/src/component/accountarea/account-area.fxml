@@ -271,8 +271,8 @@
             </GridPane>
             <GridPane fx:id="topGrid">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="393.9541931152344" minWidth="10.0" prefWidth="206.45152282714844" />
-                  <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="279.5" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="393.9541931152344" minWidth="10.0" prefWidth="127.5" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="357.5" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="669.0380859375" minWidth="10.0" prefWidth="209.5" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="669.0380859375" minWidth="10.0" prefWidth="105.1129150390625" />
               </columnConstraints>
@@ -287,6 +287,7 @@
                   </Button>
                   <Button mnemonicParsing="false" onAction="#logoutClicked" prefHeight="38.0" prefWidth="90.0" text="Logout" GridPane.columnIndex="3" />
                   <ProgressBar fx:id="taskProgressBar" maxWidth="1.7976931348623157E308" prefHeight="25.0" progress="0.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" />
+                  <Label fx:id="loadingStatusLabel" maxWidth="1.7976931348623157E308" prefHeight="24.0" GridPane.columnIndex="1" />
                </children>
             </GridPane>
          </children>
