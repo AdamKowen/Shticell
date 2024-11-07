@@ -54,7 +54,7 @@ public class Constants {
 
     public final static String UPLOAD_SHEET_URL = FULL_SERVER_PATH + "/uploadSheet";
 
-
+    public final static String SHEET_LIST_VERSION = FULL_SERVER_PATH + "/getSheetListVersion";
 
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();

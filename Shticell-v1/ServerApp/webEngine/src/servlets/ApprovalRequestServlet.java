@@ -69,6 +69,7 @@ public class ApprovalRequestServlet extends HttpServlet {
 
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write("Request status updated to: " + status);
+                userManager.updateSheetListVersion();
             } else {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 response.getWriter().write("Request not found for specified username and sheetName.");

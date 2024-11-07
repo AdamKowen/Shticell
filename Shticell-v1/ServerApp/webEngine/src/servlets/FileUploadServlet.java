@@ -75,6 +75,7 @@ public class FileUploadServlet extends HttpServlet {
                 resp.setStatus(HttpServletResponse.SC_OK);
                 resp.getWriter().write("Sheet uploaded and loaded successfully for user: " + username);
                 resp.getWriter().write(" Permission added for user: " + username + " as Owner");
+                userManager.updateSheetListVersion();
             } catch (ParserConfigurationException | SAXException | SheetLoadingException e) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().write("Error parsing XML file: " + e.getMessage());

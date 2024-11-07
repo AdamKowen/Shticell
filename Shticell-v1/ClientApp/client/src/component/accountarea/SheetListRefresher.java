@@ -21,6 +21,7 @@ public class SheetListRefresher extends TimerTask {
     private final Consumer<String> httpRequestLoggerConsumer;
     private final Consumer<List<SheetInfoDto>> sheetListConsumer;
     private int requestNumber;
+    private int listVersionNum = 1;
 
     public SheetListRefresher(Consumer<String> httpRequestLoggerConsumer, Consumer<List<SheetInfoDto>> sheetListConsumer) {
         this.httpRequestLoggerConsumer = httpRequestLoggerConsumer;
@@ -30,29 +31,59 @@ public class SheetListRefresher extends TimerTask {
 
     @Override
     public void run() {
-
         final int finalRequestNumber = ++requestNumber;
-        httpRequestLoggerConsumer.accept("About to invoke: " + Constants.SHEET_LIST + " | Sheets Request # " + finalRequestNumber);
+        httpRequestLoggerConsumer.accept("About to invoke: " + Constants.SHEET_LIST_VERSION + " | Version Request # " + finalRequestNumber);
 
-        // שליחת בקשה אסינכרונית לשרת כדי לקבל את רשימת הגיליונות
-        HttpClientUtil.runAsync(Constants.SHEET_LIST, new Callback() {
+        // שליחת בקשה אסינכרונית לשרת לקבלת גרסת רשימת הגיליונות
+        HttpClientUtil.runAsync(Constants.SHEET_LIST_VERSION, new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                httpRequestLoggerConsumer.accept("Sheets Request # " + finalRequestNumber + " | Ended with failure...");
+                httpRequestLoggerConsumer.accept("Version Request # " + finalRequestNumber + " | Ended with failure...");
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String jsonArrayOfSheets = response.body().string();
-                httpRequestLoggerConsumer.accept("Sheets Request # " + finalRequestNumber + " | Response: " + jsonArrayOfSheets);
+                try (response) { // נשתמש ב-try-with-resources כדי לסגור את התגובה אוטומטית
+                    String versionResponse = response.body().string();
+                    int serverVersion = Integer.parseInt(versionResponse.trim());
+                    httpRequestLoggerConsumer.accept("Version Request # " + finalRequestNumber + " | Server Version: " + serverVersion);
 
-                // המרת התשובה המתקבלת מ-JSON לרשימת אובייקטי SheetInfoDto
-                SheetInfoDto[] sheetArray = GSON_INSTANCE.fromJson(jsonArrayOfSheets, SheetInfoDto[].class);
+                    // בדיקה אם יש עדכון חדש
+                    if (serverVersion != listVersionNum) {
+                        // עדכון גרסת הלקוח לגירסת השרת
+                        listVersionNum = serverVersion;
+                        fetchSheetList(finalRequestNumber);
+                    }
+                }
+            }
+        });
+    }
 
-                Platform.runLater(() -> {
-                    sheetListConsumer.accept(List.of(sheetArray));  // עדכון הרשימה עם SheetInfoDto
-                });
+    // שליחת בקשה לקבלת רשימת הגיליונות אם הגרסה שונה
+    private void fetchSheetList(int requestNumber) {
+        httpRequestLoggerConsumer.accept("About to invoke: " + Constants.SHEET_LIST + " | Sheets Request # " + requestNumber);
+
+        HttpClientUtil.runAsync(Constants.SHEET_LIST, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                httpRequestLoggerConsumer.accept("Sheets Request # " + requestNumber + " | Ended with failure...");
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (response) { // שימוש ב-try-with-resources לסגירה אוטומטית
+                    String jsonArrayOfSheets = response.body().string();
+                    httpRequestLoggerConsumer.accept("Sheets Request # " + requestNumber + " | Response: " + jsonArrayOfSheets);
+
+                    // המרת התשובה המתקבלת מ-JSON לרשימת אובייקטי SheetInfoDto
+                    SheetInfoDto[] sheetArray = GSON_INSTANCE.fromJson(jsonArrayOfSheets, SheetInfoDto[].class);
+
+                    Platform.runLater(() -> {
+                        sheetListConsumer.accept(List.of(sheetArray));  // עדכון הרשימה עם SheetInfoDto
+                    });
+                }
             }
         });
     }

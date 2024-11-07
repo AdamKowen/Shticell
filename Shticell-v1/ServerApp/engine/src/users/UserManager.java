@@ -19,6 +19,7 @@ public class UserManager {
 
     private final HashMap<String, User> usersSet;
     private PermissionManager permissionManager;
+    private int sheetListVersion = 1;
 
 
     public UserManager() {
@@ -83,6 +84,7 @@ public class UserManager {
     // עדכון הרשאה למשתמש קיים עבור גיליון
     public void updatePermission(String sheetName, String username, PermissionType newType) {
         permissionManager.updatePermission(sheetName, username, newType);
+        updateSheetListVersion();
     }
 
     // בדיקה אם למשתמש יש הרשאת עריכה
@@ -93,6 +95,15 @@ public class UserManager {
     // בדיקה אם למשתמש יש הרשאת צפייה
     public boolean hasViewPermission(String sheetName, String username) {
         return permissionManager.hasViewPermission(sheetName, username);
+    }
+
+    // updating the version if there is a new one
+    public void updateSheetListVersion() {
+        sheetListVersion++;
+    }
+
+    public int getUpdateSheetListVersion() {
+        return sheetListVersion;
     }
 
 }

@@ -571,7 +571,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
 
 
-        public void setAccountCommands(AccountCommands chatRoomMainController) {
+    public void setAccountCommands(AccountCommands chatRoomMainController) {
         this.accountCommands = chatRoomMainController;
     }
 
