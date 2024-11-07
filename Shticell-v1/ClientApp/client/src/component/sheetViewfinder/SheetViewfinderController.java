@@ -244,7 +244,7 @@ public class SheetViewfinderController {
     private void initialize() {
 
 
-
+//
 
         // Listener לשינויי הבחירה של התא
         sheetComponentController.selectedCellProperty().addListener((observable, oldLabel, newLabel) -> {
