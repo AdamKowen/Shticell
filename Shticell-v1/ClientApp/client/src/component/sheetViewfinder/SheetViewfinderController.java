@@ -7,8 +7,12 @@ import dto.SheetDto;
 import dto.SheetDtoImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -87,6 +91,14 @@ public class SheetViewfinderController {
 
     @FXML
     private ToggleButton darkModeToggle;
+
+
+    @FXML
+    private ToggleButton responsiveToggle;
+
+    // תכונה בוליאנית שמייצגת את מצב הרספונסיביות
+    private BooleanProperty isResponsive = new SimpleBooleanProperty(false);
+
 
 
     @FXML
@@ -232,14 +244,18 @@ public class SheetViewfinderController {
     private void initialize() {
 
 
+
+
         // Listener לשינויי הבחירה של התא
         sheetComponentController.selectedCellProperty().addListener((observable, oldLabel, newLabel) -> {
             if (newLabel != null) {
-                // עדכון תיבת הטקסט עם הערך של התא הנבחר
-                cellInputContentTextField.setText(sheetComponentController.getSelectedCoordinateOriginalValue());
 
                 // הצגת הקואורדינטות של התא הנבחר
                 selectedCoordinate = sheetComponentController.getSelectedCoordinate();
+
+                // עדכון תיבת הטקסט עם הערך של התא הנבחר
+                cellInputContentTextField.setText(sheetComponentController.getSelectedCoordinateOriginalValue());
+
                 selectedCellLabel.setText("Selected cell: " + selectedCoordinate);
                 LastUpdate.setText("Last Update: Version " + sheetComponentController.getLastUpdatedVersion());
                 lastUserUpdatedLabel.setText("By User: " + sheetComponentController.getLastUserUpdatedCell());
@@ -269,6 +285,10 @@ public class SheetViewfinderController {
                     cellInputContentTextField.positionCaret(cellInputContentTextField.getText().length()); // ממקם את הסמן בסוף
                     cellInputContentTextField.selectRange(cellInputContentTextField.getText().length(), cellInputContentTextField.getText().length()); // מסיר את הסימון
                 });
+
+
+
+
 
             } else {
                 cellInputContentTextField.setText("");
@@ -309,7 +329,7 @@ public class SheetViewfinderController {
                 LastUpdate.setText("");
                 lastUserUpdatedLabel.setText("");
 
-
+                selectedCoordinate = null; // check if not making problems!!!!!!!!!!!
 
             } else {
                 selectedCellLabel.setText("No range selected");
@@ -463,6 +483,49 @@ public class SheetViewfinderController {
         LastUpdate.setText("");
         lastUserUpdatedLabel.setText("");
         //setControlsDisabledAppStart(true);
+
+
+
+
+
+        // קישור ה-ToggleButton לתכונה הבוליאנית
+        responsiveToggle.selectedProperty().bindBidirectional(isResponsive);
+
+        // מאזין לשינויים בערך של isResponsive
+        isResponsive.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                System.out.println("Responsive mode is ON");
+                updateValueButton.setVisible(false);
+                // קוד להפעלת מצב רספונסיבי
+            } else {
+                System.out.println("Responsive mode is OFF");
+                updateValueButton.setVisible(true);
+                // קוד לכיבוי מצב רספונסיבי
+            }
+        });
+
+
+
+// Listener לשינויים בטקסט של cellInputContentTextField
+        cellInputContentTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            // בדיקה אם יש תא מסומן (שים כאן את התנאי המתאים שלך)
+            if (selectedCoordinate != null && isResponsiveMode()) { // נניח שיש לך משתנה selectedCoordinate שמייצג את התא הנבחר
+                // קבלת הטקסט מהתיבה
+
+                try {
+                    // הגדרת פרמטרים לבקשת העדכון
+                    String coordinate = coordinateToString(selectedCoordinate); // המרה למחרוזת של הקואורדינטה (לדוגמה: "A1")
+                    int currentSheetVersion = sheetComponentController.getCurrentSheetVersion(); // קבלת גרסת הגיליון הנוכחית
+
+                    // יצירת הבקשה לעדכון התא
+                    sendUpdateRequest(coordinate, newValue, currentSheetVersion);
+
+                } catch (Exception e) {
+                    cellUpdateError.setText(e.getMessage());
+                }
+            }
+        });
+
 
     }
 
@@ -1811,9 +1874,15 @@ public class SheetViewfinderController {
     private void handleVersionCheck(boolean isUpdated) {
         if (!isUpdated) {
             Platform.runLater(() -> {
-                updateValueButton.setText("Refresh");  // שינוי טקסט הכפתור
-                updateValueButton.setDisable(false);
-                setUpdatingControlsDisabled(true);
+                if (isResponsiveMode())
+                {
+                    refreshSheet();
+                }
+                else {
+                    updateValueButton.setText("Refresh");  // שינוי טקסט הכפתור
+                    updateValueButton.setDisable(false);
+                    setUpdatingControlsDisabled(true);
+                }
             });
         }
     }
@@ -1828,6 +1897,11 @@ public class SheetViewfinderController {
     }
 
 
+
+    // פונקציה שתוכל להשתמש בה כדי לקבל את המצב הנוכחי
+    public boolean isResponsiveMode() {
+        return isResponsive.get();
+    }
 
 
 
