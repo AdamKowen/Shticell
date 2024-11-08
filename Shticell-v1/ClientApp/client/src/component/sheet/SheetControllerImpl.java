@@ -612,6 +612,11 @@ public class SheetControllerImpl implements SheetController {
         }
 
         sheetGridPane.setGridLinesVisible(true); // הצגת קווי ההפרדה
+
+
+        if (startCoordinate!= null && endCoordinate!= null) {
+            highlightSelectedRange(endCoordinate, endCoordinate);
+        }
     }
 
 

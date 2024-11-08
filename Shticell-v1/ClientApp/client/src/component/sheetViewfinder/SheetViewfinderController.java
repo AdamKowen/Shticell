@@ -22,10 +22,7 @@ import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -505,7 +502,7 @@ public class SheetViewfinderController {
         });
 
 
-
+/*
 // Listener לשינויים בטקסט של cellInputContentTextField
         cellInputContentTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             // בדיקה אם יש תא מסומן (שים כאן את התנאי המתאים שלך)
@@ -525,6 +522,31 @@ public class SheetViewfinderController {
                 }
             }
         });
+
+ */
+
+
+        // מאזין רק לאירועי הקלדה במקלדת עבור TextField
+        cellInputContentTextField.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
+            // בדיקה אם יש תא מסומן (שים כאן את התנאי המתאים שלך)
+            if (selectedCoordinate != null && isResponsiveMode()) { // נניח שיש לך משתנה selectedCoordinate שמייצג את התא הנבחר
+                // קבלת הטקסט מהתיבה לאחר כל הקלדה
+                String newValue = cellInputContentTextField.getText();
+
+                try {
+                    // הגדרת פרמטרים לבקשת העדכון
+                    String coordinate = coordinateToString(selectedCoordinate); // המרה למחרוזת של הקואורדינטה (לדוגמה: "A1")
+                    int currentSheetVersion = sheetComponentController.getCurrentSheetVersion(); // קבלת גרסת הגיליון הנוכחית
+
+                    // יצירת הבקשה לעדכון התא
+                    sendUpdateRequest(coordinate, newValue, currentSheetVersion);
+
+                } catch (Exception e) {
+                    cellUpdateError.setText(e.getMessage());
+                }
+            }
+        });
+
 
 
     }
