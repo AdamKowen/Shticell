@@ -363,7 +363,7 @@
     -fx-text-alignment: CENTER; /* מרכז את הטקסט בתוך התא */
 }
 
-#premmisionStatus{
+#labelForStatus{
     -fx-text-fill: #ffffff; /* צבע טקסט */
     -fx-font-size: 15px;
 }

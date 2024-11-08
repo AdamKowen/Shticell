@@ -7,7 +7,7 @@ public class Constants {
     // global constants
     public final static String LINE_SEPARATOR = System.getProperty("line.separator");
     public final static String JHON_DOE = "<Anonymous>";
-    public final static int REFRESH_RATE = 500;
+    public final static int REFRESH_RATE = 250;
     public final static String CHAT_LINE_FORMATTING = "%tH:%tM:%tS | %.10s: %s%n";
 
     // fxml locations
@@ -55,6 +55,11 @@ public class Constants {
     public final static String UPLOAD_SHEET_URL = FULL_SERVER_PATH + "/uploadSheet";
 
     public final static String SHEET_LIST_VERSION = FULL_SERVER_PATH + "/getSheetListVersion";
+
+
+    public final static String REQUEST_URL = FULL_SERVER_PATH + "/userPendingRequestStatus";
+
+
 
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();

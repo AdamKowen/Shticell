@@ -254,7 +254,7 @@
                                                 <Font size="36.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="premmisionStatus" alignment="CENTER" contentDisplay="CENTER" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                                          <Label fx:id="labelForStatus" alignment="CENTER" contentDisplay="CENTER" text=" " textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
                                        </children>
                                     </GridPane>
                                  </center>

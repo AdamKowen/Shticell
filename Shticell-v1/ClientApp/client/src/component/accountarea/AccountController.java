@@ -6,7 +6,6 @@ import component.api.HttpStatusUpdate;
 import component.chatarea.ChatAreaController;
 import component.commands.CommandsController;
 import component.main.AppMainController;
-import component.sheetViewfinder.SheetViewfinderController;
 import component.users.UsersListController;
 import dto.PermissionDTO;
 import dto.SheetInfoDto;
@@ -17,9 +16,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
@@ -34,20 +30,15 @@ import util.http.HttpClientUtil;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.List;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import javafx.scene.input.MouseEvent;
-import utils.SessionUtils;
 
-import static util.Constants.REFRESH_RATE;
-import static util.Constants.UPLOAD_SHEET_URL;
+import static util.Constants.*;
 
 public class AccountController implements Closeable, HttpStatusUpdate, AccountCommands {
 
@@ -87,6 +78,8 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     @FXML
     private TableColumn<SheetInfoDto, String> accessColumn;  // עמודת הרשאות
 
+    @FXML
+    private Label labelForStatus;
 
     @FXML
     private Label selectedSheetNameLabel;  // תווית שם הגיליון שנבחר
@@ -117,8 +110,6 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     @FXML
     private TableColumn<PermissionDTO, String> statusCol;  // עמודת סטטוס בטבלת ההרשאות, כ-String
 
-    @FXML
-    private Label premmisionStatus;  // תווית סטטוס ההרשאה עבור המשתמש
 
     @FXML
     private Button acceptButton;  // כפתור לאישור הרשאה
@@ -140,6 +131,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
     @FXML
     public void initialize() {
+        labelForStatus.setText("");
         usersListComponentController.setHttpStatusUpdate(this);
         accountCommands = this;
         usersListComponentController.autoUpdatesProperty().bind(actionCommandsComponentController.autoUpdatesProperty());
@@ -203,13 +195,14 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
                         case "no access":
                             sheetPremmisionTable.setVisible(false);
-                            premmisionStatus.setText("Request Pending Approval");
+                            userRequestStatus();
                             openSheetViewfinder.setDisable(true);
                             break;
                     }
 
                     Platform.runLater(() -> sheetTableView.getSelectionModel().clearSelection());
                 }
+
             }
         });
 
@@ -265,6 +258,53 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         }
     }
 
+
+
+
+    public void userRequestStatus() {
+        final Gson gson = new Gson();
+        // יצירת בקשת GET עם OkHttp
+        Request request = new Request.Builder()
+                .url(REQUEST_URL)
+                .get()
+                .build();
+
+        // קריאה אסינכרונית בעזרת HttpClientUtil והגדרת Callback
+        HttpClientUtil.runAsync(request, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> labelForStatus.setText("Error: " + e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "";
+
+                    Platform.runLater(() -> {
+                        if (response.isSuccessful()) {
+                            if (responseBodyString.isEmpty()) {
+                                labelForStatus.setText("No pending requests.");
+                            } else {
+                                // ניתוח ה-JSON לתצוגה ברורה
+                                Type listType = new TypeToken<List<Map<String, String>>>(){}.getType();
+                                List<Map<String, String>> requests = gson.fromJson(responseBodyString, listType);
+
+                                StringBuilder displayText = new StringBuilder("Pending Requests:\n");
+                                for (Map<String, String> request : requests) {
+                                    displayText.append("").append(request.get("requestedPermission"))
+                                            .append(" -  Status: ").append(request.get("status")).append("\n");
+                                }
+                                labelForStatus.setText(displayText.toString());
+                            }
+                        } else {
+                            labelForStatus.setText("Server error: " + responseBodyString);
+                        }
+                    });
+                }
+            }
+        });
+    }
     // קריאה לפונקציה עבור סוגי בקשות שונים:
     @FXML
     private void requestWriterAccess() {
