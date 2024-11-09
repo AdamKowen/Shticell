@@ -50,12 +50,12 @@
     /* מעבר לינארי לרקע */
     /* מעבר לינארי לרקע */
 
-    -fx-background-color: rgba(255, 255, 255, 0.2); /* צבע הרקע עם שקיפות */
+    -fx-background-color: rgba(195, 195, 195, 0.2); /* צבע הרקע עם שקיפות */
     -fx-background-radius: 40px; /* עיגול פינות של הרקע */
-    -fx-border-color: linear-gradient(to bottom, rgb(241, 240, 240), transparent); /* צבע הגבול */
+    -fx-border-color: linear-gradient(to bottom, rgb(205, 205, 205), rgb(85, 106, 106)); /* צבע הגבול */
     -fx-border-width: 1.5; /* רוחב הגבול */
     -fx-border-radius: 40px; /* עיגול פינות של הגבול */
-    -fx-effect: dropshadow(gaussian, rgb(130, 151, 151), 60, 0.0, 20, 20); /* אפקט צל */
+    -fx-effect: dropshadow(gaussian, rgb(0, 0, 0), 60, 0.0, 20, 20); /* אפקט צל */
     -fx-transition: background-color 0.3s ease, -fx-text-fill 0.3s ease;
 }
 
@@ -210,7 +210,7 @@
 
 
 .titled-pane > .content {
-    -fx-background-color: #0a3f3f; /* צבע בהיר */
+    -fx-background-color: #072b2b; /* צבע בהיר */
     -fx-padding: 0; /* ריווח פנימי */
     -fx-background-radius: 10; /* פינות מעוגלות */
     -fx-border-color: transparent;
@@ -399,7 +399,7 @@
     -fx-border-color: linear-gradient(to bottom, rgba(241, 240, 240, 0.55), transparent); /* צבע הגבול */
     -fx-border-width: 1; /* רוחב הגבול */
     -fx-border-radius: 30px; /* עיגול פינות של הגבול */
-    -fx-effect: dropshadow(gaussian, rgb(63, 85, 85), 60, 0.0, 30, 50); /* אפקט צל */
+    -fx-effect: dropshadow(gaussian, rgb(63, 85, 85), 60, 0.0, 5, 5); /* אפקט צל */
     -fx-transition: background-color 0.3s ease, -fx-text-fill 0.3s ease;
 }
 

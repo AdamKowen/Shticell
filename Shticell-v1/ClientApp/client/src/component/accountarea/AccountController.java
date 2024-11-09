@@ -1034,6 +1034,12 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
             }
         }
     }
+
+
+
+    public void setDarkMode(boolean darkMode) {
+        darkModeToggle.setSelected(darkMode);
+    }
 }
 
 

@@ -2021,4 +2021,9 @@ public class SheetViewfinderController {
 
 
 
+    public void setDarkMode(boolean darkMode) {
+        darkModeToggle.setSelected(darkMode);
+    }
+
+
 }

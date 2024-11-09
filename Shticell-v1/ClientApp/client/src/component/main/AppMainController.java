@@ -199,6 +199,8 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
 
     public void setDarkMode(boolean darkMode) {
         this.darkMode = darkMode;
+        accountAreaController.setDarkMode(darkMode);
+        viewfinderController.setDarkMode(darkMode);
         applyTheme(); // קריאה לפונקציה שתעדכן את העיצוב לפי המצב
     }
 
