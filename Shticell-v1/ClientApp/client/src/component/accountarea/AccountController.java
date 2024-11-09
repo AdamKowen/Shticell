@@ -118,6 +118,14 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     private Button rejectButton;  // כפתור לדחיית הרשאה
 
     @FXML
+    private Button requestReaderButton;
+
+    @FXML
+    private Button requestWriterButton;
+
+
+
+    @FXML
     private Button openSheetViewfinder;  // כפתור לדחיית הרשאה
 
     @FXML
@@ -131,6 +139,12 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
     @FXML
     public void initialize() {
+
+        allButtonsDisbled();
+
+
+
+
         labelForStatus.setText("");
         usersListComponentController.setHttpStatusUpdate(this);
         accountCommands = this;
@@ -173,30 +187,47 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
                             statusCol.setVisible(true);
                             acceptButton.setDisable(true);
                             rejectButton.setDisable(true);
+                            requestWriterButton.setDisable(true);
+                            requestReaderButton.setDisable(true);
                             loadPermissionsForOwner(selectedSheet.getSheetName());
                             readerUser = false;
+                            openSheetViewfinder.setDisable(false);
+                            labelForStatus.setVisible(false);
                             break;
                         case "write":
                             sheetPremmisionTable.setVisible(true);
                             statusCol.setVisible(false);
                             acceptButton.setDisable(true);
                             rejectButton.setDisable(true);
+                            requestWriterButton.setDisable(true);
+                            requestReaderButton.setDisable(true);
                             loadPermissionsForEditorOrViewer(selectedSheet.getSheetName());
                             readerUser = false;
+                            openSheetViewfinder.setDisable(false);
+                            labelForStatus.setVisible(false);
                             break;
                         case "read":
                             sheetPremmisionTable.setVisible(true);
                             statusCol.setVisible(false);
                             acceptButton.setDisable(true);
                             rejectButton.setDisable(true);
+                            requestWriterButton.setDisable(false);
+                            requestReaderButton.setDisable(true);
                             loadPermissionsForEditorOrViewer(selectedSheet.getSheetName());
                             readerUser = true;
+                            openSheetViewfinder.setDisable(false);
+                            labelForStatus.setVisible(false);
                             break;
 
                         case "no access":
                             sheetPremmisionTable.setVisible(false);
+                            requestWriterButton.setDisable(false);
+                            requestReaderButton.setDisable(false);
+                            acceptButton.setDisable(true);
+                            rejectButton.setDisable(true);
                             userRequestStatus();
                             openSheetViewfinder.setDisable(true);
+                            labelForStatus.setVisible(true);
                             break;
                     }
 
@@ -228,6 +259,13 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
     }
 
+    private void allButtonsDisbled(){
+        openSheetViewfinder.setDisable(true);
+        acceptButton.setDisable(true);
+        rejectButton.setDisable(true);
+        requestReaderButton.setDisable(true);
+        requestWriterButton.setDisable(true);
+    }
 
     @FXML
     private void requestPermissionAccess(String permissionType) {

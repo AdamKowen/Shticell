@@ -396,6 +396,44 @@
 }
 
 
+
+/* הגדרה כללית של צבע שקוף לכותרות העמודות */
+.table-view .column-header-background {
+    -fx-background-color: transparent; /* הגדרה של שקיפות */
+}
+
+/* הגדרה של צבע שקוף לכותרות הספציפיות */
+.table-view .column-header {
+    -fx-background-color: transparent; /* הגדרה של שקיפות לכותרות עצמן */
+}
+
+
+
+
+
+
+
+/* הגדרת שקיפות מלאה לכל רקע הכותרת */
+.table-view .column-header-background {
+    -fx-background-color: transparent; /* שקיפות לרקע הכותרת */
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent; /* שקיפות לכל כותרת עמודה */
+}
+
+/* שקיפות לתווית הכותרת עצמה */
+.table-view .column-header .label {
+    -fx-background-color: transparent; /* שקיפות לתווית */
+}
+
+/* עיצוב רקע למילוי חלל ריק בעמודות */
+.table-view .filler {
+    -fx-background-color: transparent; /* שקיפות מלאה לחללים ריקים */
+}
+
+
+
 /* הסרת סימון כחול סביב אלמנטים */
 * {
     -fx-focus-color: transparent;
