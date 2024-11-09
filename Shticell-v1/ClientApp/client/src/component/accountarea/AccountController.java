@@ -18,6 +18,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -54,7 +55,11 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     @FXML private ChatAreaController chatAreaComponentController;
     private List<PermissionDTO> currentPermissions = new ArrayList<>();
 
+    @FXML
+    private ToggleButton darkModeToggle; // כפתור להחלפת מצב dark mode
 
+    @FXML
+    BorderPane mainPane;
 
     private AppMainController chatAppMainController;
 
@@ -98,7 +103,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
 
 
-
+    private AppMainController appMainController;
 
 
 
@@ -134,8 +139,6 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
     @FXML
     private Label selectedUserName;  // תווית שם המשתמש הנבחר בטבלת ההרשאות
-
-
 
 
 
@@ -336,7 +339,10 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         });
 
 
-
+        // אתחול הכפתור לפי ערך ברירת המחדל (אם לא ניתן appMainController עדיין)
+        if (appMainController != null) {
+            darkModeToggle.setSelected(appMainController.isDarkMode());
+        }
 
 
     }
@@ -580,6 +586,13 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
     public void setChatAppMainController(AppMainController chatAppMainController) {
         this.chatAppMainController = chatAppMainController;
+        // התאמת המצב של Toggle Button לפי מצב darkMode
+        darkModeToggle.setSelected(chatAppMainController.isDarkMode());
+
+        // מאזין לשינויים בכפתור
+        darkModeToggle.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            chatAppMainController.setDarkMode(newValue); // עדכון מצב darkMode ב-AppMainController
+        });
     }
 
     @Override
@@ -997,8 +1010,30 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
 
 
+    public void setAppMainController(AppMainController appMainControll) {
+        this.appMainController = appMainControll;
+
+        // התאמת המצב של Toggle Button לפי מצב darkMode
+        darkModeToggle.setSelected(appMainController.isDarkMode());
+
+        // מאזין לשינויים בכפתור
+        darkModeToggle.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            appMainController.setDarkMode(newValue); // עדכון מצב darkMode ב-AppMainController
+        });
+    }
 
 
+
+    public void applyTheme(boolean darkMode) {
+        if (mainPane != null) {
+            mainPane.getStylesheets().clear();
+            if (darkMode) {
+                mainPane.getStylesheets().add(getClass().getResource("/component/accountarea/account-area-darkmode.css").toExternalForm());
+            } else {
+                mainPane.getStylesheets().add(getClass().getResource("/component/accountarea/account-area.css").toExternalForm());
+            }
+        }
+    }
 }
 
 

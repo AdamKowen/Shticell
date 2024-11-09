@@ -207,6 +207,8 @@ public class SheetViewfinderController {
     private VBox topPane;
 
 
+    @FXML
+    private BorderPane sheetViewfinderRootPane;
 
 
 
@@ -463,23 +465,6 @@ public class SheetViewfinderController {
 
 
 
-        // מאזין שיופעל כאשר ה־ToggleButton יתווסף ל־Scene
-        darkModeToggle.sceneProperty().addListener((obs, oldScene, newScene) -> {
-            if (newScene != null) { // לוודא שה־Scene כבר קיים
-                // מאזין להחלפת העיצוב במצב כהה/בהיר
-                darkModeToggle.selectedProperty().addListener((obsSelected, oldVal, newVal) -> {
-                    if (newVal) {
-                        // מצב כהה
-                        newScene.getStylesheets().clear();
-                        newScene.getStylesheets().add(getClass().getResource("/stylesDarkMode.css").toExternalForm());
-                    } else {
-                        // מצב בהיר
-                        newScene.getStylesheets().clear();
-                        newScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-                    }
-                });
-            }
-        });
 
 
         initializeTableColumns();
@@ -508,6 +493,13 @@ public class SheetViewfinderController {
                 updateValueButton.setVisible(true);
                 // קוד לכיבוי מצב רספונסיבי
             }
+        });
+
+
+
+        // מאזין לשינויים בכפתור
+        darkModeToggle.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            appMainController.setDarkMode(newValue); // עדכון מצב darkMode ב-AppMainController
         });
 
 
@@ -1740,6 +1732,14 @@ public class SheetViewfinderController {
 
     public void setAppMainController(AppMainController appMainControll) {
         this.appMainController = appMainControll;
+
+        // התאמת המצב של Toggle Button לפי מצב darkMode
+        darkModeToggle.setSelected(appMainController.isDarkMode());
+
+        // מאזין לשינויים בכפתור
+        darkModeToggle.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            appMainController.setDarkMode(newValue); // עדכון מצב darkMode ב-AppMainController
+        });
     }
 
     public void setSheet(String sheetName) {
@@ -2006,6 +2006,19 @@ public class SheetViewfinderController {
             }
         });
     }
+
+
+    public void applyTheme(boolean darkMode) {
+        if (sheetViewfinderRootPane != null) {
+            sheetViewfinderRootPane.getStylesheets().clear();
+            if (darkMode) {
+                sheetViewfinderRootPane.getStylesheets().add(getClass().getResource("/component/sheetViewfinder/stylesDarkMode.css").toExternalForm());
+            } else {
+                sheetViewfinderRootPane.getStylesheets().add(getClass().getResource("/component/sheetViewfinder/styles.css").toExternalForm());
+            }
+        }
+    }
+
 
 
 }

@@ -16,6 +16,7 @@ import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -28,6 +29,9 @@ import java.net.URL;
 import static util.Constants.*;
 
 public class AppMainController implements Closeable, HttpStatusUpdate {
+
+
+    private boolean darkMode = false; // מצב ברירת מחדל
 
     @FXML private Parent httpStatusComponent;
     @FXML private StatusController httpStatusComponentController;
@@ -111,6 +115,7 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
             accountAreaComponent = fxmlLoader.load();
             accountAreaController = fxmlLoader.getController();
             accountAreaController.setChatAppMainController(this);
+            accountAreaController.setAppMainController(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -181,5 +186,51 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
         mainBorderPane.setCenter(accountAreaComponent);  // חזרה למסך ה-account
         viewfinderController.setInActive();
     }
+
+
+
+
+
+
+
+    public boolean isDarkMode() {
+        return darkMode;
+    }
+
+    public void setDarkMode(boolean darkMode) {
+        this.darkMode = darkMode;
+        applyTheme(); // קריאה לפונקציה שתעדכן את העיצוב לפי המצב
+    }
+
+
+
+
+
+    public void applyTheme() {
+
+        mainBorderPane.getStylesheets().clear();
+        if (darkMode) {
+            mainBorderPane.getStylesheets().add(getClass().getResource("/component/main/app-main-darkmode.css").toExternalForm());
+        } else {
+            mainBorderPane.getStylesheets().add(getClass().getResource("/component/main/app-main.css").toExternalForm());
+        }
+
+        // קריאה לפונקציית applyTheme בכל קונטרולר שצריך
+
+        if (logicController != null) {
+            logicController.applyTheme(darkMode);
+        }
+        if (accountAreaController != null) {
+            accountAreaController.applyTheme(darkMode);
+        }
+
+        if (viewfinderController != null) {
+            viewfinderController.applyTheme(darkMode);
+        }
+        // הוסף קונטרולרים נוספים אם צריך
+    }
+
+
+
 
 }

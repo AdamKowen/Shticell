@@ -549,7 +549,7 @@
 
 /* עיצוב ToggleButton כסוויץ' */
 .toggle-button {
-    -fx-background-color: #b8b8b8; /* רקע הכפתור */
+    -fx-background-color: #292929; /* רקע הכפתור */
     -fx-background-radius: 15px; /* פינות מעוגלות */
     -fx-padding: 0 1px 2px 2px;  /* ריווח פנימי */
 
@@ -569,6 +569,10 @@
     -fx-alignment: center-right; /* הזזת הכפתור הקטן לצד ימין */
 }
 
+
+#sheetViewfinderRootPane{
+    -fx-background-color: #1E1E1E; /* רקע ירוק כאשר הכפתור במצב מופעל */
+}
 
 
 

@@ -1,0 +1,79 @@
+
+/* רקע כללי */
+.root {
+    -fx-background-color: #d6d6d6; /* רקע בהיר */
+    -fx-transition: background-color 0.3s ease, -fx-text-fill 0.3s ease;
+}
+
+
+/* עיצוב הכפתורים */
+.button {
+    -fx-background-color: #563f46; /* צבע כהה יותר */
+    -fx-text-fill: #FFFFFF; /* טקסט לבן */
+    -fx-font-weight: normal;
+    -fx-background-radius: 30; /* פינות מעוגלות */
+    -fx-padding: 7; /* ריווח פנימי */
+
+    /* התאמה ל-JavaFX */
+    -fx-background-color: rgba(255, 255, 255, 0.3); /* צבע הרקע עם שקיפות */
+    -fx-border-width: 1px; /* רוחב הגבול */
+    -fx-border-radius: 30; /* עיגול פינות של הגבול */
+    -fx-border-color: linear-gradient(to bottom, rgb(241, 240, 240), transparent); /* צבע הגבול */
+    -fx-effect: dropshadow(gaussian, rgba(248, 247, 247, 0.14), 10, 0.0, 0, 4); /* אפקט צל */
+    -fx-transition: background-color 0.3s ease, -fx-text-fill 0.3s ease;
+}
+
+
+
+
+.button:hover {
+    -fx-background-color: rgba(248, 248, 248, 0.5); /* צבע הרקע עם שקיפות */
+    -fx-border-color: linear-gradient(to top, rgba(16, 64, 53, 0.07), rgba(246, 246, 246, 0.65)); /* צבע הגבול */
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.14), 8, 0.0, 0, 4); /* אפקט צל */
+}
+
+.button:pressed {
+    -fx-background-color: #bddfdf; /* צבע כהה יותר */
+}
+
+
+.error-label {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: BOLD;
+    -fx-font-size: 12px;
+}
+
+.main-action-button {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 20px;
+    -fx-font-weight: NORMAL;
+}
+
+
+.text-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #ffffff;
+    -fx-border-radius: 30;
+    -fx-background-radius: 30;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+
+}
+
+#quit-button {
+    -fx-text-fill: #e4f3f3;
+    -fx-font-weight: NORMAL;
+    -fx-background-color: rgba(255, 255, 255, 0.1); /* צבע הרקע עם שקיפות */
+    -fx-border-color: linear-gradient(to bottom, rgb(218, 218, 218), rgb(174, 207, 207)); /* צבע הגבול */
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.14), 8, 0.0, 0, 4); /* אפקט צל */
+}
+
+#quit-button:hover{
+    -fx-background-color: rgba(248, 248, 248, 0.3); /* צבע הרקע עם שקיפות */
+    -fx-border-color: linear-gradient(to top, rgba(175, 214, 206, 0.07), rgba(246, 246, 246, 0.65)); /* צבע הגבול */
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.14), 8, 0.0, 0, 4); /* אפקט צל */
+}
+
+.label{
+    -fx-text-fill: #ffffff;
+}

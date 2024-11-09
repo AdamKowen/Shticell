@@ -1,6 +1,7 @@
 package component.login;
 
 import component.main.AppMainController;
+import javafx.scene.layout.GridPane;
 import util.Constants;
 import util.http.HttpClientUtil;
 import javafx.application.Platform;
@@ -18,6 +19,10 @@ import okhttp3.*;
 import java.io.IOException;
 
 public class LoginController {
+
+
+    @FXML
+    public GridPane mainPane;
 
     @FXML
     public TextField userNameTextField;
@@ -102,5 +107,20 @@ public class LoginController {
 
     public void setChatAppMainController(AppMainController chatAppMainController) {
         this.chatAppMainController = chatAppMainController;
+    }
+
+
+
+
+
+    public void applyTheme(boolean darkMode) {
+        if (mainPane != null) {
+            mainPane.getStylesheets().clear();
+            if (darkMode) {
+                mainPane.getStylesheets().add(getClass().getResource("/component/login/login-darkmode.css").toExternalForm());
+            } else {
+                mainPane.getStylesheets().add(getClass().getResource("/component/login/login.css").toExternalForm());
+            }
+        }
     }
 }
