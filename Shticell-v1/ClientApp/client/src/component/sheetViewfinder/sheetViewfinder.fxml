@@ -360,7 +360,7 @@
                                              <VBox.margin>
                                                 <Insets top="5.0" />
                                              </VBox.margin></Button>
-                                          <Button fx:id="emptySheetAndResetButton" maxWidth="130.0" mnemonicParsing="false" text="Empty List and Reset">
+                                          <Button fx:id="emptySheetAndResetButton" maxWidth="130.0" mnemonicParsing="false" onAction="#resetDynamicAnalysis" prefHeight="44.0" prefWidth="130.0" text="Empty List &amp; Reset">
                                              <VBox.margin>
                                                 <Insets top="10.0" />
                                              </VBox.margin></Button>

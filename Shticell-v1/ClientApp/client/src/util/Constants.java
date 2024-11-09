@@ -60,6 +60,10 @@ public class Constants {
     public final static String REQUEST_URL = FULL_SERVER_PATH + "/userPendingRequestStatus";
 
 
+    public final static String RESET_DYNAMIC_ANALYSIS_URL = FULL_SERVER_PATH + "/resetDynamicAnalysis";
+
+
+
 
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();

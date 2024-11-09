@@ -35,6 +35,13 @@ import util.http.HttpClientUtil;
 import utils.JSONUtils;
 
 
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -1926,129 +1933,40 @@ public class SheetViewfinderController {
     }
 
 
+    public void resetDynamicAnalysis() {
+        String url = RESET_DYNAMIC_ANALYSIS_URL; // כתובת הסרבלט
 
+        // יצירת בקשת POST לסרבלט
+        Request request = new Request.Builder()
+                .url(url)
+                .post(RequestBody.create("", null)) // בקשת POST ריקה
+                .build();
 
+        // קריאה לסרבלט באמצעות HttpClientUtil
+        HttpClientUtil.runAsync(request, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    dynamicAnalysisErrorMassage.setText("Error: " + e.getMessage()); // הצגת הודעת שגיאה במקרה של כשל
+                });
+            }
 
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Platform.runLater(() -> {
+                    if (response.isSuccessful()) {
+                        // ניקוי הטבלה רק אם הבקשה הצליחה
+                        sliderTable.getItems().clear();
+                        refreshSheet();
 
-
-
-
-
-
-
-    // keep until loading is complete! so we can use the loading progress
-    /*
-    @FXML
-    void loadButtonActionListener(ActionEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select File");
-
-        // Adding a filter to allow only XML files (optional)
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
-
-        File file = fileChooser.showOpenDialog(null);
-
-        if (file != null) {
-            // Create a Task to load the file in the background
-            Task<Void> loadFileTask = new Task<Void>() {
-                @Override
-                protected Void call() {
-                    try {
-                        // הצגת ה-ProgressBar כשהטעינה מתחילה
-                        Platform.runLater(() -> {
-                            taskProgressBar.setVisible(true); // הופך את ה-progress bar לגלוי
-                            fileNameLabel.setText("Loading: Starting file load...");
-                        });
-
-                        // עדכון הדרגתי של הטעינה
-                        smoothProgressUpdate(0.0, 0.2, 250); // עדכון ל-20%
-
-                        // טעינת הקובץ
-                        sheetComponentController.loadSheetFromFile(file.getPath());
-                        Platform.runLater(() -> fileNameLabel.setText("Loading: File loaded successfully."));
-                        smoothProgressUpdate(0.2, 0.4, 250); // עדכון ל-40%
-
-                        // איפוס המיון
-                        sheetComponentController.resetSorting();
-                        Platform.runLater(() -> fileNameLabel.setText("Loading: Resetting sorting..."));
-                        smoothProgressUpdate(0.4, 0.6, 250); // עדכון ל-60%
-
-                        // טעינת הגיליון הנוכחי
-                        Platform.runLater(() -> {
-                            fileNameLabel.setText("Loading: Updating sheet view...");
-                            sheetComponentController.loadSheetCurrent();
-                            sheetVersionController.updateSheet(sheetComponentController.getVersionDto(1));
-
-                            // עדכון ComboBox וה-Label
-                            fileNameLabel.setText("Loading: Populating version list...");
-                            versionComboBox.getItems().clear();
-                            List<Integer> versions = sheetComponentController.getVersionList();
-
-                            for (int i = 0; i < versions.size(); i++) {
-                                int versionNumber = i + 1;
-                                int changes = versions.get(i);
-                                String versionText = "Version " + versionNumber + " - " + changes + " changes";
-                                versionComboBox.getItems().add(versionText);
-                            }
-
-                            listOfRanges.getItems().addAll(sheetComponentController.getRanges().keySet());
-
-                            // הסרת הסיומת ".xml" משם הקובץ
-                            String fileNameWithoutExtension = file.getName().replaceAll("\\.xml$", "");
-
-                            // הצגת הטקסט של הקובץ שנבחר לאחר כל העדכונים
-                            fileNameLabel.setText("Selected file: " + fileNameWithoutExtension);
-                        });
-
-                        // סימולציה של סיום הטעינה
-                        smoothProgressUpdate(0.6, 1.0, 250);
-                        Platform.runLater(() -> {
-                            taskProgressBar.setVisible(false); // מסתיר את ה-progress bar לאחר סיום הטעינה
-                        });
-
-                        setControlsDisabledAppStart(false);
-
-                    } catch (Exception e) {
-                        Platform.runLater(() -> {
-                            fileNameLabel.setText("An error occurred: " + e.getMessage());
-                            taskProgressBar.setVisible(false); // מסתיר את ה-progress bar במקרה של שגיאה
-                        });
-                        e.printStackTrace();
+                    } else {
+                        // הצגת הודעת כשל בתווית dynamicAnalysisErrorMassage
+                        dynamicAnalysisErrorMassage.setText("Failed to reset sliders: " + response.message());
                     }
-                    return null;
-                }
-
-
-
-                // פונקציה לעדכון ההתקדמות דרך ה-Task עצמו
-                private void smoothProgressUpdate(double startProgress, double endProgress, int durationMillis) throws InterruptedException {
-                    int steps = 50; // מספר הצעדים ליצירת אנימציה חלקה
-                    double increment = (endProgress - startProgress) / steps;
-                    int stepDuration = durationMillis / steps;
-
-                    for (int i = 0; i <= steps; i++) {
-                        double progress = startProgress + (increment * i);
-                        updateProgress(progress, 1); // עדכון ה-Task עצמו
-                        Thread.sleep(stepDuration); // עיכוב קצר בין כל עדכון כדי ליצור אפקט של אנימציה חלקה
-                    }
-                }
-            };
-
-
-
-            // Bind the progress bar to the task's progress
-            taskProgressBar.progressProperty().bind(loadFileTask.progressProperty());
-
-            // Start the task in a new thread
-            Thread thread = new Thread(loadFileTask);
-            thread.setDaemon(true);
-            thread.start();
-        } else {
-            // Display an error message if no file is selected
-            fileNameLabel.setText("No file selected or an error occurred.");
-        }
+                });
+            }
+        });
     }
-     */
 
 
 }

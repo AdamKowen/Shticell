@@ -88,4 +88,5 @@ public interface SheetEngine {
 
     void passSheetPermission(String passSheetName, SheetEngine usersEngine, String permission);
 
+    void resetTempSheet();
 }

@@ -477,6 +477,14 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
     }
 
 
+
+
+    public void resetTempSheet()
+    {
+        temporarySheet = null;
+    }
+
+
 }
 
 
