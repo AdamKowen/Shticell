@@ -69,6 +69,8 @@ public class SheetViewfinderController {
 
     private boolean readerMode = false;
 
+    private boolean dynamicMode = false;
+
 
     @FXML
     private Button LoadButton;
@@ -1347,6 +1349,11 @@ public class SheetViewfinderController {
         // מאזינים להתחלת ונעילת אינטראקציה על הסליידר
         newSlider.setOnMousePressed(event -> {
             isUserAction[0] = true;
+            dynamicMode = true;
+            cellInputContentTextField.setVisible(false);
+            updateValueButton.setVisible(false);
+            setInActive(); // stopping automatic updating so it doesnt interfere with dynamic mode
+            cellInputContentTextField.setDisable(true);
             excludedSlider = newSlider; // הגדרת הסליידר כ-excluded כשהמשתמש מתחיל להזיז
         });
 
@@ -1524,7 +1531,17 @@ public class SheetViewfinderController {
 
 
     private void setControlsDisabledVersionMode(boolean disabled) {
-        cellInputContentTextField.setDisable(disabled);
+
+        if (disabled == false)
+        {
+            if (dynamicMode == false) //brings back the text field only if not in dynamic mode
+            {
+                cellInputContentTextField.setDisable(disabled);
+            }
+        }
+        else {
+            cellInputContentTextField.setDisable(disabled);
+        }
         alignmentBox.setDisable(disabled);
         rowHeightSlider.setDisable(disabled);
         colWidthSlider.setDisable(disabled);
@@ -1958,7 +1975,16 @@ public class SheetViewfinderController {
                         // ניקוי הטבלה רק אם הבקשה הצליחה
                         sliderTable.getItems().clear();
                         refreshSheet();
-
+                        dynamicMode = false;
+                        setActive();
+                        if (!readerMode)
+                        {
+                            cellInputContentTextField.setDisable(false);
+                        }
+                        if (isResponsiveMode() == false)
+                        {
+                            updateValueButton.setVisible(true);
+                        }
                     } else {
                         // הצגת הודעת כשל בתווית dynamicAnalysisErrorMassage
                         dynamicAnalysisErrorMassage.setText("Failed to reset sliders: " + response.message());
