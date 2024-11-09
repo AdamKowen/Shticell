@@ -411,8 +411,6 @@
 
 
 
-
-
 /* הגדרת שקיפות מלאה לכל רקע הכותרת */
 .table-view .column-header-background {
     -fx-background-color: transparent; /* שקיפות לרקע הכותרת */
