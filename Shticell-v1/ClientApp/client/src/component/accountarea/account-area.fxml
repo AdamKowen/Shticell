@@ -241,8 +241,8 @@
                                           <TableView fx:id="sheetPremmisionTable" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                             <columns>
                                               <TableColumn fx:id="permissionUserCol" minWidth="69.0" prefWidth="73.0" resizable="false" text="User" />
-                                              <TableColumn fx:id="permissionCol" minWidth="85.0" prefWidth="104.0" resizable="false" text="Permission" />
-                                                <TableColumn fx:id="statusCol" minWidth="48.0" prefWidth="70.0" resizable="false" text="Status" />
+                                              <TableColumn fx:id="permissionCol" minWidth="85.0" prefWidth="88.0" resizable="false" text="Permission" />
+                                                <TableColumn fx:id="statusCol" minWidth="48.0" prefWidth="86.0" resizable="false" text="Status" />
                                             </columns>
                                              <columnResizePolicy>
                                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

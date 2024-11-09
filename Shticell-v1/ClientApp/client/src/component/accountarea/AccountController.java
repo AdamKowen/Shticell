@@ -30,12 +30,12 @@ import util.http.HttpClientUtil;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
+
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.function.Consumer;
+
 import javafx.scene.input.MouseEvent;
 
 import static util.Constants.*;
@@ -52,12 +52,16 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     @FXML private CommandsController actionCommandsComponentController;
     @FXML private GridPane chatAreaComponent;
     @FXML private ChatAreaController chatAreaComponentController;
+    private List<PermissionDTO> currentPermissions = new ArrayList<>();
+
 
 
     private AppMainController chatAppMainController;
 
     private Timer timer;  // משתנה שיחזיק את ה-Timer
     private TimerTask sheetListRefresher;  // משתנה שיחזיק את ה-TimerTask
+    private Timer permissionTimer;
+    private TimerTask permissionListRefresher;
 
 
     @FXML
@@ -163,6 +167,11 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         permissionCol.setCellValueFactory(new PropertyValueFactory<>("permission"));
         statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
 
+
+
+
+
+        /*
 // מאזין ללחיצה על שורה בטבלה - לחיצה אחת במקום לחיצה כפולה
         sheetTableView.setOnMouseClicked((MouseEvent event) -> {
             if (event.getClickCount() == 1) { // שינוי ללחיצה אחת
@@ -237,6 +246,75 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
             }
         });
 
+         */
+
+
+        sheetTableView.setOnMouseClicked((MouseEvent event) -> {
+            if (event.getClickCount() == 1) {
+                SheetInfoDto selectedSheet = sheetTableView.getSelectionModel().getSelectedItem();
+                if (selectedSheet != null) {
+                    selectedSheetName = selectedSheet.getSheetName();
+                    selectedSheetNameLabel.setText(selectedSheetName);
+
+                    String userAccess = selectedSheet.getAccess();
+
+                    // עצירת רענון קודם
+                    stopPermissionListRefresher();
+
+                    switch (userAccess) {
+                        case "owner":
+                            sheetPremmisionTable.setVisible(true);
+                            statusCol.setVisible(true);
+                            acceptButton.setDisable(true);
+                            rejectButton.setDisable(true);
+                            requestWriterButton.setDisable(true);
+                            requestReaderButton.setDisable(true);
+                            readerUser = false;
+                            openSheetViewfinder.setDisable(false);
+                            labelForStatus.setVisible(false);
+
+                            // התחלת רענון הרשאות לבעלים
+                            startPermissionListRefresher(selectedSheetName, true);
+                            break;
+                        case "write":
+                        case "read":
+                            sheetPremmisionTable.setVisible(true);
+                            statusCol.setVisible(false);
+                            acceptButton.setDisable(true);
+                            rejectButton.setDisable(true);
+                            requestWriterButton.setDisable("read".equals(userAccess));
+                            requestReaderButton.setDisable(true);
+                            readerUser = "read".equals(userAccess);
+                            openSheetViewfinder.setDisable(false);
+                            labelForStatus.setVisible(false);
+
+                            // התחלת רענון הרשאות לעורך/קורא
+                            startPermissionListRefresher(selectedSheetName, false);
+                            break;
+                        default:
+                            sheetPremmisionTable.setVisible(false);
+                            requestWriterButton.setDisable(false);
+                            requestReaderButton.setDisable(false);
+                            acceptButton.setDisable(true);
+                            rejectButton.setDisable(true);
+                            userRequestStatus();
+                            openSheetViewfinder.setDisable(true);
+                            labelForStatus.setVisible(true);
+
+                            // עצירת רענון הרשאות
+                            stopPermissionListRefresher();
+                            break;
+                    }
+
+                    Platform.runLater(() -> sheetTableView.getSelectionModel().clearSelection());
+                }
+            }
+        });
+
+
+
+
+
 // מאזין ללחיצה על שורה בטבלה - לחיצה אחת במקום לחיצה כפולה
         sheetPremmisionTable.setOnMouseClicked((MouseEvent event) -> {
             if (event.getClickCount() == 1) { // שינוי ללחיצה אחת
@@ -256,6 +334,10 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
                 }
             }
         });
+
+
+
+
 
     }
 
@@ -492,6 +574,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         try {
             usersListComponentController.close();
             stopSheetListRefresher();  // הפסקת העדכונים האוטומטיים
+            stopPermissionListRefresher(); // הפסקת רענון ההרשאות
         } catch (Exception ignored) {}
     }
 
@@ -795,6 +878,123 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
             }
         });
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // התחלת רענון הרשאות
+    private void startPermissionListRefresher(String sheetName, boolean isOwner) {
+        stopPermissionListRefresher(); // מפסיקים רענון קודם אם יש
+
+        // בחירת פונקציית עדכון מתאימה לפי סוג המשתמש
+        Consumer<List<PermissionDTO>> updatePermissionTable = isOwner
+                ? this::updatePermissionsForOwner
+                : this::updatePermissionsForEditorOrViewer;
+
+        permissionListRefresher = new PermissionListRefresher(
+                sheetName,
+                this::logHttpRequest,
+                updatePermissionTable
+        );
+        permissionTimer = new Timer();
+        permissionTimer.schedule(permissionListRefresher, 0, Constants.REFRESH_RATE);
+    }
+
+    // הפסקת רענון הרשאות
+    private void stopPermissionListRefresher() {
+        if (permissionListRefresher != null && permissionTimer != null) {
+            permissionListRefresher.cancel();
+            permissionTimer.cancel();
+            permissionTimer.purge();
+            permissionListRefresher = null;
+            permissionTimer = null;
+        }
+    }
+
+
+/*
+    // עדכון טבלת הרשאות לבעלים
+    private void updatePermissionsForOwner(List<PermissionDTO> permissionList) {
+        Platform.runLater(() -> {
+            ObservableList<PermissionDTO> permissions = FXCollections.observableArrayList(permissionList);
+            sheetPremmisionTable.setItems(permissions);
+            statusCol.setVisible(true); // הצגת עמודת הסטטוס לבעלים
+        });
+    }
+
+    // עדכון טבלת הרשאות לעורך או קורא
+    private void updatePermissionsForEditorOrViewer(List<PermissionDTO> permissionList) {
+        Platform.runLater(() -> {
+            ObservableList<PermissionDTO> approvedPermissions = FXCollections.observableArrayList();
+            for (PermissionDTO permission : permissionList) {
+                if (!"pending".equalsIgnoreCase(permission.getStatus())) {
+                    approvedPermissions.add(permission);
+                }
+            }
+            sheetPremmisionTable.setItems(approvedPermissions);
+            statusCol.setVisible(false); // הסתרת עמודת הסטטוס
+        });
+    }
+
+ */
+
+    // עדכון טבלת הרשאות לבעלים, רק אם הרשימה השתנתה
+    private void updatePermissionsForOwner(List<PermissionDTO> permissionList) {
+        if (!isPermissionsListEqual(currentPermissions, permissionList)) {
+            currentPermissions = new ArrayList<>(permissionList); // עדכון הרשימה הקיימת
+
+            Platform.runLater(() -> {
+                ObservableList<PermissionDTO> permissions = FXCollections.observableArrayList(permissionList);
+                sheetPremmisionTable.setItems(permissions);
+                statusCol.setVisible(true); // הצגת עמודת הסטטוס לבעלים
+            });
+        }
+    }
+
+    // עדכון טבלת הרשאות לעורך או קורא, רק אם הרשימה השתנתה
+    private void updatePermissionsForEditorOrViewer(List<PermissionDTO> permissionList) {
+        // סינון בקשות ממתינות
+        List<PermissionDTO> filteredPermissions = permissionList.stream()
+                .filter(permission -> !"pending".equalsIgnoreCase(permission.getStatus()))
+                .toList();
+
+        if (!isPermissionsListEqual(currentPermissions, filteredPermissions)) {
+            currentPermissions = new ArrayList<>(filteredPermissions); // עדכון הרשימה הקיימת
+
+            Platform.runLater(() -> {
+                ObservableList<PermissionDTO> approvedPermissions = FXCollections.observableArrayList(filteredPermissions);
+                sheetPremmisionTable.setItems(approvedPermissions);
+                statusCol.setVisible(false); // הסתרת עמודת הסטטוס
+            });
+        }
+    }
+
+
+    private boolean isPermissionsListEqual(List<PermissionDTO> list1, List<PermissionDTO> list2) {
+        if (list1.size() != list2.size()) {
+            return false;
+        }
+        for (int i = 0; i < list1.size(); i++) {
+            PermissionDTO p1 = list1.get(i);
+            PermissionDTO p2 = list2.get(i);
+            if (!p1.getUsername().equals(p2.getUsername()) ||
+                    !p1.getPermission().equals(p2.getPermission()) ||
+                    !p1.getStatus().equals(p2.getStatus())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
 
 
