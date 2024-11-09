@@ -647,7 +647,15 @@ public class SheetViewfinderController {
 
 
     private void setUpdatingControlsDisabled(boolean disabled) {
-        cellInputContentTextField.setDisable(disabled);
+
+        if(disabled == false)
+        {
+            if(dynamicMode == false)
+                cellInputContentTextField.setDisable(disabled);
+        }
+        else {
+            cellInputContentTextField.setDisable(disabled);
+        }
         alignmentBox.setDisable(disabled);
         addOrDeleteRange.setDisable(disabled);
         backgroundPicker.setDisable(disabled);
@@ -670,7 +678,13 @@ public class SheetViewfinderController {
     private void disableEditingElements(boolean isReaderMode) {
         alignmentBox.setDisable(isReaderMode);
         rangeNameTextBox.setDisable(isReaderMode);
-        cellInputContentTextField.setDisable(isReaderMode);
+        if (isReaderMode == false) {
+            if(dynamicMode == false)
+                cellInputContentTextField.setDisable(isReaderMode);
+        }
+        else {
+            cellInputContentTextField.setDisable(isReaderMode);
+        }
         updateValueButton.setDisable(isReaderMode);
         addOrDeleteRange.setDisable(isReaderMode);
         backgroundPicker.setDisable(isReaderMode);
@@ -1350,7 +1364,6 @@ public class SheetViewfinderController {
         newSlider.setOnMousePressed(event -> {
             isUserAction[0] = true;
             dynamicMode = true;
-            cellInputContentTextField.setVisible(false);
             updateValueButton.setVisible(false);
             setInActive(); // stopping automatic updating so it doesnt interfere with dynamic mode
             cellInputContentTextField.setDisable(true);
@@ -1534,7 +1547,7 @@ public class SheetViewfinderController {
 
         if (disabled == false)
         {
-            if (dynamicMode == false) //brings back the text field only if not in dynamic mode
+            if (!dynamicMode) //brings back the text field only if not in dynamic mode
             {
                 cellInputContentTextField.setDisable(disabled);
             }
