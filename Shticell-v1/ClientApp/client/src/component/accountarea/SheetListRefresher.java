@@ -34,7 +34,7 @@ public class SheetListRefresher extends TimerTask {
         final int finalRequestNumber = ++requestNumber;
         httpRequestLoggerConsumer.accept("About to invoke: " + Constants.SHEET_LIST_VERSION + " | Version Request # " + finalRequestNumber);
 
-        // שליחת בקשה אסינכרונית לשרת לקבלת גרסת רשימת הגיליונות
+        // async request for new list of sheets
         HttpClientUtil.runAsync(Constants.SHEET_LIST_VERSION, new Callback() {
 
             @Override
@@ -44,14 +44,14 @@ public class SheetListRefresher extends TimerTask {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (response) { // נשתמש ב-try-with-resources כדי לסגור את התגובה אוטומטית
+                try (response) {
                     String versionResponse = response.body().string();
                     int serverVersion = Integer.parseInt(versionResponse.trim());
                     httpRequestLoggerConsumer.accept("Version Request # " + finalRequestNumber + " | Server Version: " + serverVersion);
 
-                    // בדיקה אם יש עדכון חדש
+                    // only if there is new version
                     if (serverVersion != listVersionNum) {
-                        // עדכון גרסת הלקוח לגירסת השרת
+                        //update according to version of server
                         listVersionNum = serverVersion;
                         fetchSheetList(finalRequestNumber);
                     }
@@ -60,7 +60,7 @@ public class SheetListRefresher extends TimerTask {
         });
     }
 
-    // שליחת בקשה לקבלת רשימת הגיליונות אם הגרסה שונה
+    // if there is a new version only then will ask for new list
     private void fetchSheetList(int requestNumber) {
         httpRequestLoggerConsumer.accept("About to invoke: " + Constants.SHEET_LIST + " | Sheets Request # " + requestNumber);
 
@@ -73,15 +73,15 @@ public class SheetListRefresher extends TimerTask {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (response) { // שימוש ב-try-with-resources לסגירה אוטומטית
+                try (response) {
                     String jsonArrayOfSheets = response.body().string();
                     httpRequestLoggerConsumer.accept("Sheets Request # " + requestNumber + " | Response: " + jsonArrayOfSheets);
 
-                    // המרת התשובה המתקבלת מ-JSON לרשימת אובייקטי SheetInfoDto
+                    // from json to sheetinfo
                     SheetInfoDto[] sheetArray = GSON_INSTANCE.fromJson(jsonArrayOfSheets, SheetInfoDto[].class);
 
                     Platform.runLater(() -> {
-                        sheetListConsumer.accept(List.of(sheetArray));  // עדכון הרשימה עם SheetInfoDto
+                        sheetListConsumer.accept(List.of(sheetArray));  // update with sheet info
                     });
                 }
             }

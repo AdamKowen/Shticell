@@ -46,9 +46,9 @@ public class PermissionListRefresher extends TimerTask {
                     String responseBody = response.body().string();
                     PermissionDTO[] permissionsArray = GSON_INSTANCE.fromJson(responseBody, PermissionDTO[].class);
 
-                    // חישוב hashCode של הרשימה החדשה
+                    // hash code new list
                     int newHash = List.of(permissionsArray).hashCode();
-                    if (newHash != lastListHash) { // עדכון רק אם הרשימה השתנתה
+                    if (newHash != lastListHash) { // will update only if list has been changed
                         lastListHash = newHash;
 
                         Platform.runLater(() -> permissionListConsumer.accept(List.of(permissionsArray)));

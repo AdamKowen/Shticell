@@ -43,7 +43,7 @@ import static util.Constants.*;
 
 public class AccountController implements Closeable, HttpStatusUpdate, AccountCommands {
 
-
+    // flag to indicate if user is a reader
     private boolean readerUser = false;
     public GridPane sheetCard;
     private AccountCommands accountCommands;
@@ -53,204 +53,64 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     @FXML private CommandsController actionCommandsComponentController;
     @FXML private GridPane chatAreaComponent;
     @FXML private ChatAreaController chatAreaComponentController;
+
     private List<PermissionDTO> currentPermissions = new ArrayList<>();
 
-    @FXML
-    private ToggleButton darkModeToggle; // כפתור להחלפת מצב dark mode
-
-    @FXML
-    BorderPane mainPane;
+    @FXML private ToggleButton darkModeToggle; // button to toggle dark mode
+    @FXML BorderPane mainPane;
 
     private AppMainController chatAppMainController;
-
-    private Timer timer;  // משתנה שיחזיק את ה-Timer
-    private TimerTask sheetListRefresher;  // משתנה שיחזיק את ה-TimerTask
+    private Timer timer;  // timer for sheet list refresher
+    private TimerTask sheetListRefresher;  // task for refreshing the sheet list
     private Timer permissionTimer;
     private TimerTask permissionListRefresher;
 
+    @FXML private TableView<SheetInfoDto> sheetTableView;
+    @FXML private TableColumn<SheetInfoDto, String> nameColumn;  // column for sheet name
+    @FXML private TableColumn<SheetInfoDto, Integer> rowsColumn;  // column for row count
+    @FXML private TableColumn<SheetInfoDto, Integer> columnsColumn;  // column for column count
+    @FXML private TableColumn<SheetInfoDto, String> ownerColumn;  // column for owner name
+    @FXML private TableColumn<SheetInfoDto, String> accessColumn;  // column for access permission
+    @FXML private Label labelForStatus;
+    @FXML private Label selectedSheetNameLabel;  // label for selected sheet name
+    @FXML private Label loadingStatusLabel;
 
-    @FXML
-    private TableView<SheetInfoDto> sheetTableView;
-
-    @FXML
-    private TableColumn<SheetInfoDto, String> nameColumn;  // עמודת שם הגיליון
-
-    @FXML
-    private TableColumn<SheetInfoDto, Integer> rowsColumn;  // עמודת שורות
-
-    @FXML
-    private TableColumn<SheetInfoDto, Integer> columnsColumn;  // עמודת עמודות
-
-    @FXML
-    private TableColumn<SheetInfoDto, String> ownerColumn;  // עמודת שם הבעלים
-
-    @FXML
-    private TableColumn<SheetInfoDto, String> accessColumn;  // עמודת הרשאות
-
-    @FXML
-    private Label labelForStatus;
-
-    @FXML
-    private Label selectedSheetNameLabel;  // תווית שם הגיליון שנבחר
-
-
-    @FXML
-    private Label loadingStatusLabel;
-
-    private String selectedSheetName = null;  // משתנה לשמירת שם הגיליון הנבחר
-
-    private String selectedUsername = null;  // משתנה לשמירת שם המשתמש שנבחר
-
-
+    private String selectedSheetName = null;  // variable to store the selected sheet name
+    private String selectedUsername = null;  // variable to store the selected username
 
     private AppMainController appMainController;
 
+    @FXML private TableView<PermissionDTO> sheetPremmisionTable;
+    @FXML private TableColumn<PermissionDTO, String> permissionUserCol;  // column for permission username
+    @FXML private TableColumn<PermissionDTO, String> permissionCol;  // column for permission type
+    @FXML private TableColumn<PermissionDTO, String> statusCol;  // column for status
 
-
-    @FXML
-    private TableView<PermissionDTO> sheetPremmisionTable;
-
-    @FXML
-    private TableColumn<PermissionDTO, String> permissionUserCol;  // עמודת שם המשתמש בטבלת ההרשאות, כ-String
-
-    @FXML
-    private TableColumn<PermissionDTO, String> permissionCol;  // עמודת סוג ההרשאה בטבלת ההרשאות, כ-String
-
-    @FXML
-    private TableColumn<PermissionDTO, String> statusCol;  // עמודת סטטוס בטבלת ההרשאות, כ-String
-
-
-    @FXML
-    private Button acceptButton;  // כפתור לאישור הרשאה
-
-    @FXML
-    private Button rejectButton;  // כפתור לדחיית הרשאה
-
-    @FXML
-    private Button requestReaderButton;
-
-    @FXML
-    private Button requestWriterButton;
-
-
-
-    @FXML
-    private Button openSheetViewfinder;  // כפתור לדחיית הרשאה
-
-    @FXML
-    private Label selectedUserName;  // תווית שם המשתמש הנבחר בטבלת ההרשאות
-
-
-
-
+    @FXML private Button acceptButton;  // button to accept permission
+    @FXML private Button rejectButton;  // button to reject permission
+    @FXML private Button requestReaderButton;
+    @FXML private Button requestWriterButton;
+    @FXML private Button openSheetViewfinder;  // button to open the viewfinder
+    @FXML private Label selectedUserName;  // label for selected username in the permission table
 
     @FXML
     public void initialize() {
-
         allButtonsDisbled();
-
-
-
 
         labelForStatus.setText("");
         usersListComponentController.setHttpStatusUpdate(this);
         accountCommands = this;
         usersListComponentController.autoUpdatesProperty().bind(actionCommandsComponentController.autoUpdatesProperty());
-        initTableColumns();  // אתחול העמודות בעת ההפעלה
-        //startSheetListRefresher();   // התחלת עדכון הטבלה כל 2 שניות (REFRESH_RATE)
+        initTableColumns();  // init columns at startup
+        // startSheetListRefresher();   // start table refresh every 2 seconds (REFRESH_RATE)
         sheetPremmisionTable.setVisible(false);
-
 
         chatAreaComponentController.autoUpdatesProperty().bind(actionCommandsComponentController.autoUpdatesProperty());
         usersListComponentController.autoUpdatesProperty().bind(actionCommandsComponentController.autoUpdatesProperty());
         chatAreaComponentController.startListRefresher();
 
-
         permissionUserCol.setCellValueFactory(new PropertyValueFactory<>("username"));
         permissionCol.setCellValueFactory(new PropertyValueFactory<>("permission"));
         statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
-
-
-
-
-
-        /*
-// מאזין ללחיצה על שורה בטבלה - לחיצה אחת במקום לחיצה כפולה
-        sheetTableView.setOnMouseClicked((MouseEvent event) -> {
-            if (event.getClickCount() == 1) { // שינוי ללחיצה אחת
-                SheetInfoDto selectedSheet = sheetTableView.getSelectionModel().getSelectedItem();
-                if (selectedSheet != null) {
-                    selectedSheetName = selectedSheet.getSheetName();  // שמירת שם הגיליון הנבחר
-                    System.out.println("Selected sheet: " + selectedSheetName);  // הדפסת שם הגיליון שנבחר
-
-                    // עדכון תווית שם הגיליון בכרטיסייה
-                    selectedSheetNameLabel.setText(selectedSheetName);
-
-                    // בקשת הרשאות למשתמש הנוכחי
-                    String userAccess = selectedSheet.getAccess();
-
-                    // עדכון מצב הכפתור של צפייה בגיליון
-                    openSheetViewfinder.setDisable(!("owner".equals(userAccess) || "write".equals(userAccess) || "read".equals(userAccess)));
-
-                    // קביעה מה להציג בהתאם לסוג ההרשאה
-                    switch (userAccess) {
-                        case "owner":
-                            sheetPremmisionTable.setVisible(true);
-                            statusCol.setVisible(true);
-                            acceptButton.setDisable(true);
-                            rejectButton.setDisable(true);
-                            requestWriterButton.setDisable(true);
-                            requestReaderButton.setDisable(true);
-                            loadPermissionsForOwner(selectedSheet.getSheetName());
-                            readerUser = false;
-                            openSheetViewfinder.setDisable(false);
-                            labelForStatus.setVisible(false);
-                            break;
-                        case "write":
-                            sheetPremmisionTable.setVisible(true);
-                            statusCol.setVisible(false);
-                            acceptButton.setDisable(true);
-                            rejectButton.setDisable(true);
-                            requestWriterButton.setDisable(true);
-                            requestReaderButton.setDisable(true);
-                            loadPermissionsForEditorOrViewer(selectedSheet.getSheetName());
-                            readerUser = false;
-                            openSheetViewfinder.setDisable(false);
-                            labelForStatus.setVisible(false);
-                            break;
-                        case "read":
-                            sheetPremmisionTable.setVisible(true);
-                            statusCol.setVisible(false);
-                            acceptButton.setDisable(true);
-                            rejectButton.setDisable(true);
-                            requestWriterButton.setDisable(false);
-                            requestReaderButton.setDisable(true);
-                            loadPermissionsForEditorOrViewer(selectedSheet.getSheetName());
-                            readerUser = true;
-                            openSheetViewfinder.setDisable(false);
-                            labelForStatus.setVisible(false);
-                            break;
-
-                        case "no access":
-                            sheetPremmisionTable.setVisible(false);
-                            requestWriterButton.setDisable(false);
-                            requestReaderButton.setDisable(false);
-                            acceptButton.setDisable(true);
-                            rejectButton.setDisable(true);
-                            userRequestStatus();
-                            openSheetViewfinder.setDisable(true);
-                            labelForStatus.setVisible(true);
-                            break;
-                    }
-
-                    Platform.runLater(() -> sheetTableView.getSelectionModel().clearSelection());
-                }
-
-            }
-        });
-
-         */
-
 
         sheetTableView.setOnMouseClicked((MouseEvent event) -> {
             if (event.getClickCount() == 1) {
@@ -261,7 +121,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
                     String userAccess = selectedSheet.getAccess();
 
-                    // עצירת רענון קודם
+                    // stop previous refresher
                     stopPermissionListRefresher();
 
                     switch (userAccess) {
@@ -276,7 +136,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
                             openSheetViewfinder.setDisable(false);
                             labelForStatus.setVisible(false);
 
-                            // התחלת רענון הרשאות לבעלים
+                            // start permission refresher for owner
                             startPermissionListRefresher(selectedSheetName, true);
                             break;
                         case "write":
@@ -291,7 +151,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
                             openSheetViewfinder.setDisable(false);
                             labelForStatus.setVisible(false);
 
-                            // התחלת רענון הרשאות לעורך/קורא
+                            // start permission refresher for editor/viewer
                             startPermissionListRefresher(selectedSheetName, false);
                             break;
                         default:
@@ -304,30 +164,25 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
                             openSheetViewfinder.setDisable(true);
                             labelForStatus.setVisible(true);
 
-                            // עצירת רענון הרשאות
+                            // stop permission refresher
                             stopPermissionListRefresher();
                             break;
                     }
-
                     Platform.runLater(() -> sheetTableView.getSelectionModel().clearSelection());
                 }
             }
         });
 
-
-
-
-
-// מאזין ללחיצה על שורה בטבלה - לחיצה אחת במקום לחיצה כפולה
+        // listener for single click on permission table row instead of double click
         sheetPremmisionTable.setOnMouseClicked((MouseEvent event) -> {
-            if (event.getClickCount() == 1) { // שינוי ללחיצה אחת
+            if (event.getClickCount() == 1) { // change to single click
                 PermissionDTO selectedPermission = sheetPremmisionTable.getSelectionModel().getSelectedItem();
                 if (selectedPermission != null) {
                     selectedUserName.setText(selectedPermission.getUsername());
                     selectedUsername = selectedPermission.getUsername();
 
-                    // קביעת האם הכפתורים יושבתו בהתאם לסטטוס
-                    boolean isPending = "Pending".equals(selectedPermission.getStatus());
+                    // set buttons enabled based on status
+                    boolean isPending = "pending".equals(selectedPermission.getStatus());
                     acceptButton.setDisable(!isPending);
                     rejectButton.setDisable(!isPending);
                 } else {
@@ -338,13 +193,10 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
             }
         });
 
-
-        // אתחול הכפתור לפי ערך ברירת המחדל (אם לא ניתן appMainController עדיין)
+        // init dark mode toggle if appMainController is already set
         if (appMainController != null) {
             darkModeToggle.setSelected(appMainController.isDarkMode());
         }
-
-
     }
 
     private void allButtonsDisbled(){
@@ -372,7 +224,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
             HttpClientUtil.runAsync(request, new Callback() {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    Platform.runLater(() -> updateHttpLine("Error sending " + permissionType + " request: " + e.getMessage()));
+                    Platform.runLater(() -> updateHttpLine("error sending " + permissionType + " request: " + e.getMessage()));
                 }
 
                 @Override
@@ -384,54 +236,51 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         }
     }
 
-
-
-
     public void userRequestStatus() {
         final Gson gson = new Gson();
-        // יצירת בקשת GET עם OkHttp
+        // creating a get request with okhttp
         Request request = new Request.Builder()
                 .url(REQUEST_URL)
                 .get()
                 .build();
 
-        // קריאה אסינכרונית בעזרת HttpClientUtil והגדרת Callback
+        // async call using HttpClientUtil with a callback
         HttpClientUtil.runAsync(request, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> labelForStatus.setText("Error: " + e.getMessage()));
+                Platform.runLater(() -> labelForStatus.setText("error: " + e.getMessage()));
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     String responseBodyString = responseBody != null ? responseBody.string() : "";
-
                     Platform.runLater(() -> {
                         if (response.isSuccessful()) {
                             if (responseBodyString.isEmpty()) {
-                                labelForStatus.setText("No pending requests.");
+                                labelForStatus.setText("no pending requests.");
                             } else {
-                                // ניתוח ה-JSON לתצוגה ברורה
+                                // parse json for a clear display
                                 Type listType = new TypeToken<List<Map<String, String>>>(){}.getType();
                                 List<Map<String, String>> requests = gson.fromJson(responseBodyString, listType);
 
-                                StringBuilder displayText = new StringBuilder("Pending Requests:\n");
+                                StringBuilder displayText = new StringBuilder("pending requests:\n");
                                 for (Map<String, String> request : requests) {
                                     displayText.append("").append(request.get("requestedPermission"))
-                                            .append(" -  Status: ").append(request.get("status")).append("\n");
+                                            .append(" -  status: ").append(request.get("status")).append("\n");
                                 }
                                 labelForStatus.setText(displayText.toString());
                             }
                         } else {
-                            labelForStatus.setText("Server error: " + responseBodyString);
+                            labelForStatus.setText("server error: " + responseBodyString);
                         }
                     });
                 }
             }
         });
     }
-    // קריאה לפונקציה עבור סוגי בקשות שונים:
+
+    // call for different types of permission requests:
     @FXML
     private void requestWriterAccess() {
         requestPermissionAccess("WRITER");
@@ -441,13 +290,14 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     private void requestReaderAccess() {
         requestPermissionAccess("READER");
     }
+
     @FXML
     private void acceptRequest() {
         if (selectedSheetName != null && selectedUsername != null) {
-            String url = Constants.APPROVAL_REQUEST_URL; // נתיב לסרבלט החדש
-            System.out.println("URL to Servlet: " + url);
-            System.out.println("Selected Sheet Name: " + selectedSheetName);
-            System.out.println("Selected Username: " + selectedUsername);
+            String url = Constants.APPROVAL_REQUEST_URL; // url to the new servlet
+            System.out.println("url to servlet: " + url);
+            System.out.println("selected sheet name: " + selectedSheetName);
+            System.out.println("selected username: " + selectedUsername);
 
             RequestBody body = new FormBody.Builder()
                     .add("username", selectedUsername)
@@ -457,16 +307,16 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
             Request request = new Request.Builder()
                     .url(url)
-                    .post(body) // שימוש ב-POST עבור בקשה פשוטה
+                    .post(body) // using post for a simple request
                     .build();
 
-            System.out.println("Sending HTTP request...");
+            System.out.println("sending http request...");
 
             HttpClientUtil.runAsync(request, new Callback() {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     Platform.runLater(() -> {
-                        String errorMessage = "Error accepting request: " + e.getMessage();
+                        String errorMessage = "error accepting request: " + e.getMessage();
                         System.out.println(errorMessage);
                         updateHttpLine(errorMessage);
                     });
@@ -474,29 +324,28 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    String responseBody = response.body() != null ? response.body().string() : "No response body";
+                    String responseBody = response.body() != null ? response.body().string() : "no response body";
                     Platform.runLater(() -> {
-                        System.out.println("Response Code: " + response.code());
-                        System.out.println("Response Message: " + response.message());
-                        System.out.println("Response Body: " + responseBody);
-                        updateHttpLine("Request accepted: " + response.message());
+                        System.out.println("response code: " + response.code());
+                        System.out.println("response message: " + response.message());
+                        System.out.println("response body: " + responseBody);
+                        updateHttpLine("request accepted: " + response.message());
                     });
                     response.close();
                 }
             });
         } else {
-            System.out.println("Either selectedSheetName or selectedUsername is null");
+            System.out.println("either selectedSheetName or selectedUsername is null");
         }
     }
-
 
     @FXML
     private void rejectRequest() {
         if (selectedSheetName != null && selectedUsername != null) {
-            String url = Constants.APPROVAL_REQUEST_URL; // נתיב לסרבלט החדש
-            System.out.println("URL to Servlet: " + url);
-            System.out.println("Selected Sheet Name: " + selectedSheetName);
-            System.out.println("Selected Username: " + selectedUsername);
+            String url = Constants.APPROVAL_REQUEST_URL; // url to the new servlet
+            System.out.println("url to servlet: " + url);
+            System.out.println("selected sheet name: " + selectedSheetName);
+            System.out.println("selected username: " + selectedUsername);
 
             RequestBody body = new FormBody.Builder()
                     .add("username", selectedUsername)
@@ -506,16 +355,16 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
             Request request = new Request.Builder()
                     .url(url)
-                    .post(body) // שימוש ב-POST עבור בקשה פשוטה
+                    .post(body) // using post for a simple request
                     .build();
 
-            System.out.println("Sending HTTP request...");
+            System.out.println("sending http request...");
 
             HttpClientUtil.runAsync(request, new Callback() {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     Platform.runLater(() -> {
-                        String errorMessage = "Error rejecting request: " + e.getMessage();
+                        String errorMessage = "error rejecting request: " + e.getMessage();
                         System.out.println(errorMessage);
                         updateHttpLine(errorMessage);
                     });
@@ -523,23 +372,20 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    String responseBody = response.body() != null ? response.body().string() : "No response body";
+                    String responseBody = response.body() != null ? response.body().string() : "no response body";
                     Platform.runLater(() -> {
-                        System.out.println("Response Code: " + response.code());
-                        System.out.println("Response Message: " + response.message());
-                        System.out.println("Response Body: " + responseBody);
-                        updateHttpLine("Request rejected: " + response.message());
+                        System.out.println("response code: " + response.code());
+                        System.out.println("response message: " + response.message());
+                        System.out.println("response body: " + responseBody);
+                        updateHttpLine("request rejected: " + response.message());
                     });
                     response.close();
                 }
             });
         } else {
-            System.out.println("Either selectedSheetName or selectedUsername is null");
+            System.out.println("either selectedSheetName or selectedUsername is null");
         }
     }
-
-
-
 
     @FXML
     void logoutClicked(ActionEvent event) {
@@ -547,7 +393,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         HttpClientUtil.runAsync(Constants.LOGOUT, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                accountCommands.updateHttpLine("Logout request ended with failure...:(");
+                accountCommands.updateHttpLine("logout request ended with failure...:(");
             }
 
             @Override
@@ -559,7 +405,6 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
             }
         });
     }
-
 
     @Override
     public void updateHttpLine(String line) {
@@ -573,25 +418,25 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
     public void setActive() {
         usersListComponentController.startListRefresher();
-        startSheetListRefresher();  // התחלת עדכון הטבלה כאן
+        startSheetListRefresher();  // start updating the table here
     }
 
     public void setInActive() {
         try {
             usersListComponentController.close();
-            stopSheetListRefresher();  // הפסקת העדכונים האוטומטיים
-            stopPermissionListRefresher(); // הפסקת רענון ההרשאות
+            stopSheetListRefresher();  // stop auto updates
+            stopPermissionListRefresher(); // stop permission refresher
         } catch (Exception ignored) {}
     }
 
     public void setChatAppMainController(AppMainController chatAppMainController) {
         this.chatAppMainController = chatAppMainController;
-        // התאמת המצב של Toggle Button לפי מצב darkMode
+        // set toggle button state based on dark mode
         darkModeToggle.setSelected(chatAppMainController.isDarkMode());
 
-        // מאזין לשינויים בכפתור
+        // listener for toggle changes
         darkModeToggle.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            chatAppMainController.setDarkMode(newValue); // עדכון מצב darkMode ב-AppMainController
+            chatAppMainController.setDarkMode(newValue); // update dark mode in app main controller
         });
     }
 
@@ -600,66 +445,54 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         chatAppMainController.switchToLogin();
     }
 
-
-
-
     @FXML
     void loadSheetClicked(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select File");
+        fileChooser.setTitle("select file");
 
-        // Adding a filter to allow only XML files (optional)
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+        // adding a filter to allow only xml files (optional)
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml files", "*.xml"));
 
         File file = fileChooser.showOpenDialog(null);
 
         if (file != null) {
             try {
-                // שליחת הקובץ לשרת
+                // send file to server
                 uploadFileToServer(file);
             } catch (IOException e) {
                 e.printStackTrace();
-                // הצגת הודעת שגיאה ל-7 שניות
+                // show error message for 7 seconds
                 showTemporaryMessage(loadingStatusLabel, e.getMessage(), 7);
             }
         } else {
-            // הצגת הודעה על חוסר קובץ ל-7 שניות
-            showTemporaryMessage(loadingStatusLabel, "No file selected or an error occurred.", 7);
+            // show message for no file selected for 7 seconds
+            showTemporaryMessage(loadingStatusLabel, "no file selected or an error occurred.", 7);
         }
     }
 
-    // פונקציה שתציג הודעה לזמן מוגבל
+    // function to display a message for a limited time
     private void showTemporaryMessage(Label label, String message, int seconds) {
         label.setText(message);
-
-        // יצירת Timeline שיאפס את ההודעה לאחר X שניות
+        // create timeline to reset the message after x seconds
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.seconds(seconds),
                 event -> label.setText("")));
-        timeline.setCycleCount(1); // פועל רק פעם אחת
+        timeline.setCycleCount(1); // runs only once
         timeline.play();
     }
 
-
-
-
-
     @FXML
-    // פעולה לפתיחת ה-Viewfinder
+    // action to open the viewfinder
     public void openSheetViewfinder() {
         if (selectedSheetName != null) {
-            chatAppMainController.switchToViewfinder(selectedSheetName, readerUser);  // מעבר ל-viewfinder
+            chatAppMainController.switchToViewfinder(selectedSheetName, readerUser);  // switch to viewfinder
         } else {
-            System.out.println("No sheet selected");
+            System.out.println("no sheet selected");
         }
     }
 
-
-    /*
-
     private void uploadFileToServer(File file) throws IOException {
-
-        String finalUrl = UPLOAD_SHEET_URL;  // משתמש באותו BASE_URL כמו שאר הקוד
+        String finalUrl = UPLOAD_SHEET_URL;  // using same base url as the rest of the code
 
         RequestBody body = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -669,54 +502,10 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
 
         Request request = new Request.Builder()
                 .url(finalUrl)
-                .post(body)  // משתמש ב-POST במקום GET
+                .post(body)  // using post instead of get
                 .build();
 
-        // משתמש באותו HTTP_CLIENT עם אותו CookieManager
-        HttpClientUtil.runAsync(request, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        loadingStatusLabel.setText("Error during file upload: " + e.getMessage())
-                );
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
-                    String responseBodyString = responseBody != null ? responseBody.string() : "No response body";
-                    Platform.runLater(() -> {
-                        if (response.isSuccessful()) {
-                            //loadingStatusLabel.setText("Success: " + responseBodyString);
-                        } else {
-                            loadingStatusLabel.setText( responseBodyString );
-                        }
-                    });
-                }
-            }
-        });
-    }
-
-
-     */
-
-
-    private void uploadFileToServer(File file) throws IOException {
-
-        String finalUrl = UPLOAD_SHEET_URL;  // משתמש באותו BASE_URL כמו שאר הקוד
-
-        RequestBody body = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("file", file.getName(),
-                        RequestBody.create(file, MediaType.parse("application/xml")))
-                .build();
-
-        Request request = new Request.Builder()
-                .url(finalUrl)
-                .post(body)  // משתמש ב-POST במקום GET
-                .build();
-
-        // משתמש באותו HTTP_CLIENT עם אותו CookieManager
+        // using the same http client with the same cookie manager
         HttpClientUtil.runAsync(request, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -728,13 +517,13 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
-                    String responseBodyString = responseBody != null ? responseBody.string() : "No response body";
+                    String responseBodyString = responseBody != null ? responseBody.string() : "no response body";
                     Platform.runLater(() -> {
                         if (response.isSuccessful()) {
-                            // הצגת הודעת הצלחה למשך 7 שניות
-                            //showTemporaryMessage(loadingStatusLabel, "Upload succeeded", 4);
+                            // show success message for 7 seconds
+                            //showTemporaryMessage(loadingStatusLabel, "upload succeeded", 4);
                         } else {
-                            // הצגת הודעת שגיאה מהשרת למשך 7 שניות
+                            // show server error message for 7 seconds
                             showTemporaryMessage(loadingStatusLabel, responseBodyString, 4);
                         }
                     });
@@ -743,24 +532,19 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         });
     }
 
-
-
     public void setAccountCommands(AccountCommands chatRoomMainController) {
         this.accountCommands = chatRoomMainController;
     }
-
-
 
     private void initTableColumns() {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("sheetName"));
         rowsColumn.setCellValueFactory(new PropertyValueFactory<>("numberOfRows"));
         columnsColumn.setCellValueFactory(new PropertyValueFactory<>("numberOfColumns"));
         ownerColumn.setCellValueFactory(new PropertyValueFactory<>("ownerName"));
-        accessColumn.setCellValueFactory(new PropertyValueFactory<>("access"));  // קישור עמודת הרשאות לשדה access
+        accessColumn.setCellValueFactory(new PropertyValueFactory<>("access"));  // link access column to field access
     }
 
-
-    // הפונקציה שמתחילה את הרענון המחזורי של רשימת הגיליונות
+    // function to start the periodic refresher for the sheet list
     private void startSheetListRefresher() {
         sheetListRefresher = new component.accountarea.SheetListRefresher(
                 this::logHttpRequest,
@@ -769,7 +553,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         timer.schedule(sheetListRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
 
-    // עדכון הטבלה עם הנתונים החדשים
+    // update the table with new data
     private void updateSheetTable(List<SheetInfoDto> sheetInfoDtoList) {
         Platform.runLater(() -> {
             ObservableList<SheetInfoDto> data = FXCollections.observableArrayList(sheetInfoDtoList);
@@ -777,33 +561,30 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         });
     }
 
-    // לוג הבקשה לשרת
+    // log the http request (for debugging/tracking)
     private void logHttpRequest(String logMessage) {
-        System.out.println(logMessage);  // יכול לשמש למעקב אחר בקשות
+        System.out.println(logMessage);  // can be used to track requests
     }
 
-
-
     private void displaySheetDetails(SheetInfoDto selectedSheet) {
-        // הצגת שם הגיליון הנבחר
+        // show the selected sheet name
         selectedSheetNameLabel.setText(selectedSheet.getSheetName());
 
-        // בדיקה אם המשתמש הוא הבעלים של הגיליון
+        // check if user is the owner of the sheet
         if (selectedSheet.getAccess().equals("owner")) {
-            // אם המשתמש הוא הבעלים - מציגים את כל המשתתפים כולל פנדינג
+            // if owner, load all permissions including pending
             loadPermissionsForOwner(selectedSheet.getSheetName());
         } else {
-            // אם המשתמש הוא בעל הרשאת עריכה או קריאה
+            // if user has write or read access
             if ("write".equals(selectedSheet.getAccess()) || "read".equals(selectedSheet.getAccess())) {
                 loadPermissionsForEditorOrViewer(selectedSheet.getSheetName());
             } else {
-                // אם אין למשתמש הרשאה
+                // if no permission
                 sheetPremmisionTable.setVisible(false);
                 //checkPendingRequestStatus(selectedSheet.getSheetName());
             }
         }
     }
-
 
     private void stopSheetListRefresher() {
         if (sheetListRefresher != null && timer != null) {
@@ -816,18 +597,18 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
     }
 
     private void loadPermissionsForOwner(String sheetName) {
-        // URL של ה-Servlet כולל שם הגיליון כפרמטר
+        // url of the servlet with sheet name as parameter
         String url = Constants.SHEET_PERMISSION_URL + sheetName;
         Request request = new Request.Builder()
                 .url(url)
                 .get()
                 .build();
 
-        // ביצוע בקשה אסינכרונית
+        // perform async request
         HttpClientUtil.runAsync(request, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> updateHttpLine("Error fetching permissions for owner: " + e.getMessage()));
+                Platform.runLater(() -> updateHttpLine("error fetching permissions for owner: " + e.getMessage()));
             }
 
             @Override
@@ -841,17 +622,15 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
                     Platform.runLater(() -> {
                         ObservableList<PermissionDTO> permissions = FXCollections.observableArrayList(permissionList);
                         sheetPremmisionTable.setItems(permissions);
-                        statusCol.setVisible(true); // הצגת עמודת הסטטוס לבעלים
+                        statusCol.setVisible(true); // show status column for owner
                     });
                 } else {
-                    Platform.runLater(() -> updateHttpLine("Error fetching permissions for owner: " + response.code()));
+                    Platform.runLater(() -> updateHttpLine("error fetching permissions for owner: " + response.code()));
                 }
-                response.close();  // סגירת ה-Response למניעת דליפות
+                response.close();  // close response to avoid leaks
             }
         });
     }
-
-
 
     private void loadPermissionsForEditorOrViewer(String sheetName) {
         String url = Constants.SHEET_PERMISSION_URL + sheetName;
@@ -863,7 +642,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         HttpClientUtil.runAsync(request, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> updateHttpLine("Error fetching permissions for viewer/editor: " + e.getMessage()));
+                Platform.runLater(() -> updateHttpLine("error fetching permissions for viewer/editor: " + e.getMessage()));
             }
 
             @Override
@@ -882,33 +661,21 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
                             }
                         }
                         sheetPremmisionTable.setItems(approvedPermissions);
-                        statusCol.setVisible(false); // הסתרת עמודת הסטטוס
+                        statusCol.setVisible(false); // hide status column
                     });
                 } else {
-                    Platform.runLater(() -> updateHttpLine("Error fetching permissions for viewer/editor: " + response.code()));
+                    Platform.runLater(() -> updateHttpLine("error fetching permissions for viewer/editor: " + response.code()));
                 }
-                response.close();  // סגירת ה-Response למניעת דליפות
+                response.close();  // close response to avoid leaks
             }
         });
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-    // התחלת רענון הרשאות
+    // start permission refresher
     private void startPermissionListRefresher(String sheetName, boolean isOwner) {
-        stopPermissionListRefresher(); // מפסיקים רענון קודם אם יש
+        stopPermissionListRefresher(); // stop previous refresher if any
 
-        // בחירת פונקציית עדכון מתאימה לפי סוג המשתמש
+        // choose update function based on user type
         Consumer<List<PermissionDTO>> updatePermissionTable = isOwner
                 ? this::updatePermissionsForOwner
                 : this::updatePermissionsForEditorOrViewer;
@@ -922,7 +689,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         permissionTimer.schedule(permissionListRefresher, 0, Constants.REFRESH_RATE);
     }
 
-    // הפסקת רענון הרשאות
+    // stop permission refresher
     private void stopPermissionListRefresher() {
         if (permissionListRefresher != null && permissionTimer != null) {
             permissionListRefresher.cancel();
@@ -933,64 +700,36 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         }
     }
 
-
-/*
-    // עדכון טבלת הרשאות לבעלים
-    private void updatePermissionsForOwner(List<PermissionDTO> permissionList) {
-        Platform.runLater(() -> {
-            ObservableList<PermissionDTO> permissions = FXCollections.observableArrayList(permissionList);
-            sheetPremmisionTable.setItems(permissions);
-            statusCol.setVisible(true); // הצגת עמודת הסטטוס לבעלים
-        });
-    }
-
-    // עדכון טבלת הרשאות לעורך או קורא
-    private void updatePermissionsForEditorOrViewer(List<PermissionDTO> permissionList) {
-        Platform.runLater(() -> {
-            ObservableList<PermissionDTO> approvedPermissions = FXCollections.observableArrayList();
-            for (PermissionDTO permission : permissionList) {
-                if (!"pending".equalsIgnoreCase(permission.getStatus())) {
-                    approvedPermissions.add(permission);
-                }
-            }
-            sheetPremmisionTable.setItems(approvedPermissions);
-            statusCol.setVisible(false); // הסתרת עמודת הסטטוס
-        });
-    }
-
- */
-
-    // עדכון טבלת הרשאות לבעלים, רק אם הרשימה השתנתה
+    // update permission table for owner, only if list has changed
     private void updatePermissionsForOwner(List<PermissionDTO> permissionList) {
         if (!isPermissionsListEqual(currentPermissions, permissionList)) {
-            currentPermissions = new ArrayList<>(permissionList); // עדכון הרשימה הקיימת
+            currentPermissions = new ArrayList<>(permissionList); // update current list
 
             Platform.runLater(() -> {
                 ObservableList<PermissionDTO> permissions = FXCollections.observableArrayList(permissionList);
                 sheetPremmisionTable.setItems(permissions);
-                statusCol.setVisible(true); // הצגת עמודת הסטטוס לבעלים
+                statusCol.setVisible(true); // show status column for owner
             });
         }
     }
 
-    // עדכון טבלת הרשאות לעורך או קורא, רק אם הרשימה השתנתה
+    // update permission table for editor/viewer, only if list has changed
     private void updatePermissionsForEditorOrViewer(List<PermissionDTO> permissionList) {
-        // סינון בקשות ממתינות
+        // filter out pending requests
         List<PermissionDTO> filteredPermissions = permissionList.stream()
                 .filter(permission -> !"pending".equalsIgnoreCase(permission.getStatus()))
                 .toList();
 
         if (!isPermissionsListEqual(currentPermissions, filteredPermissions)) {
-            currentPermissions = new ArrayList<>(filteredPermissions); // עדכון הרשימה הקיימת
+            currentPermissions = new ArrayList<>(filteredPermissions); // update current list
 
             Platform.runLater(() -> {
                 ObservableList<PermissionDTO> approvedPermissions = FXCollections.observableArrayList(filteredPermissions);
                 sheetPremmisionTable.setItems(approvedPermissions);
-                statusCol.setVisible(false); // הסתרת עמודת הסטטוס
+                statusCol.setVisible(false); // hide status column
             });
         }
     }
-
 
     private boolean isPermissionsListEqual(List<PermissionDTO> list1, List<PermissionDTO> list2) {
         if (list1.size() != list2.size()) {
@@ -1008,21 +747,17 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         return true;
     }
 
-
-
     public void setAppMainController(AppMainController appMainControll) {
         this.appMainController = appMainControll;
 
-        // התאמת המצב של Toggle Button לפי מצב darkMode
+        // set dark mode toggle state based on app main controller
         darkModeToggle.setSelected(appMainController.isDarkMode());
 
-        // מאזין לשינויים בכפתור
+        // listener for toggle changes
         darkModeToggle.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            appMainController.setDarkMode(newValue); // עדכון מצב darkMode ב-AppMainController
+            appMainController.setDarkMode(newValue); // update dark mode in app main controller
         });
     }
-
-
 
     public void applyTheme(boolean darkMode) {
         if (mainPane != null) {
@@ -1035,13 +770,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
         }
     }
 
-
-
     public void setDarkMode(boolean darkMode) {
         darkModeToggle.setSelected(darkMode);
     }
 }
-
-
-
-
