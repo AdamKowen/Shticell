@@ -49,7 +49,6 @@ public class ChatAreaRefresher extends TimerTask {
                 .build()
                 .toString();
 
-        //httpRequestLoggerConsumer.accept("About to invoke: " + finalUrl + " | Chat Request # " + finalRequestNumber);
 
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
@@ -62,14 +61,11 @@ public class ChatAreaRefresher extends TimerTask {
                 try {
                     if (response.isSuccessful()) {
                         String rawBody = response.body().string();
-                        //httpRequestLoggerConsumer.accept("Response of Chat Request # " + finalRequestNumber + ": " + rawBody);
                         ChatLinesWithVersion chatLinesWithVersion = GSON_INSTANCE.fromJson(rawBody, ChatLinesWithVersion.class);
                         chatlinesConsumer.accept(chatLinesWithVersion);
-                    } else {
-                        //httpRequestLoggerConsumer.accept("Something went wrong with Request # " + finalRequestNumber + ". Code is " + response.code());
                     }
                 } finally {
-                    response.close(); // סגירת החיבור בכל מקרה
+                    response.close(); // closing the connection either way
                 }
             }
         });

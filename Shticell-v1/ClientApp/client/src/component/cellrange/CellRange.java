@@ -8,13 +8,13 @@ public class CellRange {
     private final Coordinate bottomRight;
 
     public CellRange(Coordinate start, Coordinate end) {
-        // קביעת הקואורדינטות השמאלית העליונה והימנית התחתונה של הריבוע
+        // sets the coordinates for a selected square range
         int startRow = Math.min(start.getRow(), end.getRow());
         int endRow = Math.max(start.getRow(), end.getRow());
         int startColumn = Math.min(start.getColumn(), end.getColumn());
         int endColumn = Math.max(start.getColumn(), end.getColumn());
 
-        // שמירה של הקואורדינטות הנכונות בפינות הריבוע
+        // saves the top left and bottom right
         this.topLeft = CoordinateCache.createCoordinate(startRow, startColumn);
         this.bottomRight = CoordinateCache.createCoordinate(endRow, endColumn);
     }

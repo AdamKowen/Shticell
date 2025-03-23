@@ -1,80 +1,80 @@
 
 
-/* עיצוב ToggleButton */
+
 .toggle-action-button {
     -fx-text-fill: #ffffff;
     -fx-font-size: 14px;
-    -fx-background-radius: 10px; /* פינות מעוגלות */
+    -fx-background-radius: 10px;
     -fx-background-color: #739a9a;
 }
 
 .toggle-action-button:selected {
-    -fx-background-color: #ffffff; /* צבע לבן כאשר לחוץ */
-    -fx-text-fill: #739a9a; /* טקסט בצבע #739a9a */
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #739a9a;
 }
 
-/* עיצוב Label של "Chat Version" */
+
 #chat-version-label {
     -fx-text-fill: #ffffff;
     -fx-font-size: 14px;
 }
 
-/* עיצוב TextArea להצגת היסטוריית הצ'אט */
+
 #mainChatLinesTextArea {
-    /* צבע כהה יותר */
+
     -fx-text-fill: #fafafa;
     -fx-font-weight: normal;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
     -fx-font-size: 15px;
-    -fx-control-inner-background: transparent; /* הסרת רקע פנימי */
-    /* מעבר לינארי לרקע */
-    /* מעבר לינארי לרקע */
+    -fx-control-inner-background: transparent;
 
-    -fx-background-color: rgba(255, 255, 255, 0.3); /* צבע הרקע עם שקיפות */
-    -fx-background-radius: 15px; /* עיגול פינות של הרקע */
-    -fx-border-color: linear-gradient(to bottom, rgba(241, 240, 240, 0.55), transparent); /* צבע הגבול */
-    -fx-border-width: 1; /* רוחב הגבול */
-    -fx-border-radius: 15px; /* עיגול פינות של הגבול */
+
+
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-background-radius: 15px;
+    -fx-border-color: linear-gradient(to bottom, rgba(241, 240, 240, 0.55), transparent);
+    -fx-border-width: 1;
+    -fx-border-radius: 15px;
 }
 
 #mainChatLinesTextArea .content, #chatLineTextArea .content {
-    -fx-background-color: transparent; /* הסרת רקע פנימי נוסף */
+    -fx-background-color: transparent;
 }
 
 #mainChatLinesTextArea .text-area, #chatLineTextArea .text-area {
-    -fx-background-color: transparent; /* הסרת צבע נוסף של text-area */
+    -fx-background-color: transparent;
 }
 
 #mainChatLinesTextArea .scroll-pane, #chatLineTextArea .scroll-pane {
-    -fx-background-color: transparent; /* הסרת רקע של scroll pane */
+    -fx-background-color: transparent;
 }
 
 #mainChatLinesTextArea .viewport, #chatLineTextArea .viewport {
-    -fx-background-color: transparent; /* הסרת רקע של viewport */
+    -fx-background-color: transparent;
 }
-/* עיצוב TextArea לשורת ההודעה */
+
 #chatLineTextArea {
-    /* צבע כהה יותר */
+
     -fx-text-fill: #fafafa;
     -fx-font-weight: normal;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
-    -fx-control-inner-background: transparent; /* הסרת רקע פנימי */
+    -fx-control-inner-background: transparent;
     -fx-font-size: 15px;
-    /* מעבר לינארי לרקע */
-    /* מעבר לינארי לרקע */
 
-    -fx-background-color: rgba(255, 255, 255, 0.3); /* צבע הרקע עם שקיפות */
-    -fx-background-radius: 15px; /* עיגול פינות של הרקע */
-    -fx-border-color: linear-gradient(to bottom, rgba(241, 240, 240, 0.55), transparent); /* צבע הגבול */
-    -fx-border-width: 1; /* רוחב הגבול */
-    -fx-border-radius: 15px; /* עיגול פינות של הגבול */
+
+
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-background-radius: 15px;
+    -fx-border-color: linear-gradient(to bottom, rgba(241, 240, 240, 0.55), transparent);
+    -fx-border-width: 1;
+    -fx-border-radius: 15px;
 }
 
 
-/* עיצוב GridPane שמחזיק את כל האלמנטים */
+/* grid pane that holds all of the elements*/
 .grid-pane {
-    -fx-background-color: #435c5c; /* צבע רקע */
-    -fx-padding: 5; /* מרווח פנימי */
+    -fx-background-color: #435c5c;
+    -fx-padding: 5;
 }

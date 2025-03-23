@@ -31,28 +31,21 @@ import static util.Constants.*;
 public class AppMainController implements Closeable, HttpStatusUpdate {
 
 
-    private boolean darkMode = false; // מצב ברירת מחדל
+    private boolean darkMode = false; // dark mode if off by defoult
 
     @FXML private Parent httpStatusComponent;
     @FXML private StatusController httpStatusComponentController;
-
 
     private GridPane loginComponent;
     private LoginController logicController;
 
     @FXML private BorderPane mainBorderPane;
 
-    //private Parent chatRoomComponent;
-    //private ChatRoomMainController chatRoomComponentController;
-    //@FXML private UsersListController usersListComponentController;
-
-
     private Parent accountAreaComponent;
     private AccountController accountAreaController;
 
     private Parent viewfinderComponent;
     private SheetViewfinderController viewfinderController;
-
 
     @FXML private AnchorPane mainPanel;
 
@@ -69,7 +62,6 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
         loadLoginPage();
         loadAccountPage();
         loadViewfinderPage();
-        //loadChatRoomPage();
     }
 
     public void updateUserName(String userName) {
@@ -99,7 +91,6 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
             logicController = fxmlLoader.getController();
             logicController.setChatAppMainController(this);
             mainBorderPane.setCenter(loginComponent); // Place in center
-            //setMainPanelTo(loginComponent);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -135,31 +126,14 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
         }
     }
 
-    /*
-    private void loadChatRoomPage() {
-        URL loginPageUrl = getClass().getResource(CHAT_ROOM_FXML_RESOURCE_LOCATION);
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(loginPageUrl);
-            chatRoomComponent = fxmlLoader.load();
-            chatRoomComponentController = fxmlLoader.getController();
-            chatRoomComponentController.setChatAppMainController(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-     */
-
 
 
     @Override
     public void updateHttpLine(String line) {
-        //httpStatusComponentController.addHttpStatusLine(line);
         System.out.println(line);
     }
 
     public void switchToChatRoom() {
-        //setMainPanelTo(accountAreaComponent);
         mainBorderPane.setCenter(accountAreaComponent); // Switch to account page
         accountAreaController.setActive();
     }
@@ -168,16 +142,15 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
         Platform.runLater(() -> {
             currentUserName.set(JHON_DOE);
             accountAreaController.setInActive();
-            //setMainPanelTo(loginComponent);
             mainBorderPane.setCenter(loginComponent); // Switch back to login page
         });
     }
 
 
     public void switchToViewfinder(String sheetName, boolean isReaderMode) {
-        viewfinderController.setSheet(sheetName);  // מעביר את שם הגיליון
-        viewfinderController.setReaderMode(isReaderMode);  // מעביר את מצב הקריאה
-        mainBorderPane.setCenter(viewfinderComponent);  // מחליף את התצוגה הראשית
+        viewfinderController.setSheet(sheetName);  // sends the sheet name
+        viewfinderController.setReaderMode(isReaderMode);  // changes to read mode
+        mainBorderPane.setCenter(viewfinderComponent);  // changes to viewfinder
     }
 
 
@@ -201,7 +174,7 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
         this.darkMode = darkMode;
         accountAreaController.setDarkMode(darkMode);
         viewfinderController.setDarkMode(darkMode);
-        applyTheme(); // קריאה לפונקציה שתעדכן את העיצוב לפי המצב
+        applyTheme(); // theme according to the mode
     }
 
 
@@ -217,8 +190,8 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
             mainBorderPane.getStylesheets().add(getClass().getResource("/component/main/app-main.css").toExternalForm());
         }
 
-        // קריאה לפונקציית applyTheme בכל קונטרולר שצריך
 
+        // apply dark mode across the system:
         if (logicController != null) {
             logicController.applyTheme(darkMode);
         }
@@ -229,10 +202,8 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
         if (viewfinderController != null) {
             viewfinderController.applyTheme(darkMode);
         }
-        // הוסף קונטרולרים נוספים אם צריך
+
     }
-
-
 
 
 }

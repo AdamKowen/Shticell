@@ -35,7 +35,7 @@ public class HttpClientUtil {
     }
 
 
-    // מתודה חדשה שתומכת בשליחת Request מותאם אישית
+    // costome request
     public static void runAsync(Request request, Callback callback) {
         Call call = HTTP_CLIENT.newCall(request);
         call.enqueue(callback);
