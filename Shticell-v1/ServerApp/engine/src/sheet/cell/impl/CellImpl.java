@@ -57,18 +57,15 @@ public class CellImpl implements Cell , Serializable {
 
     }
 
-
     @Override
     public EffectiveValue getEffectiveValue() {
         return effectiveValue;
     }
 
-
     @Override
     public Expression getExpression() {
         return FunctionParser.parseExpression(originalValue);
     }
-
 
     @Override
     public void calculateEffectiveValue(SheetReadActions sheet) {
@@ -98,7 +95,6 @@ public class CellImpl implements Cell , Serializable {
         effectiveValue = newCreatedValue;
     }
 
-
     @Override
     public boolean doesContainRef() {
         // build the expression object out of the original value...
@@ -108,7 +104,6 @@ public class CellImpl implements Cell , Serializable {
 
         return expression.doesContainRef();
     }
-
 
     @Override
     public int getVersion() {
@@ -124,7 +119,6 @@ public class CellImpl implements Cell , Serializable {
     public List<Coordinate> getInfluencedCells() {
         return influencingOn;
     }
-
 
     @Override
     public void addDependentCell(Coordinate cell) {

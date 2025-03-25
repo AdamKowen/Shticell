@@ -20,43 +20,29 @@ public class CoordinateCache {
         return coordinate;
     }
 
-
     public static Coordinate createCoordinateFromString(String trim) {
         try {
-            // חילוץ מספרים ואותיות מהקלט
-            String columnPart = trim.replaceAll("[^A-Z]", ""); // מוצא את כל האותיות
-            String rowPart = trim.replaceAll("[^0-9]", "");    // מוצא את כל המספרים
+            // finds numbers and letters
+            String columnPart = trim.replaceAll("[^A-Z]", ""); // finds all letters
+            String rowPart = trim.replaceAll("[^0-9]", "");    // finds all numbers
 
-            // בדיקה אם הקלט מכיל אותיות ומספרים
+            // checks if contains both letters and numbers
             if (columnPart.isEmpty() || rowPart.isEmpty()) {
-                return null; // החזר null אם הקלט לא תקין
+                return null; // return null if not valid
             }
 
-            // המרת האות לעמודה, לדוגמה: A=1, B=2, וכו'
+            // converts to num from letter
             int column = columnPart.charAt(0) - 'A' + 1;
 
-            // המרת מחרוזת השורה למספר
+            // turns the string num to int
             int row = Integer.parseInt(rowPart);
 
-            // שימוש במאגרת ליצירת קואורדינטה
+            // using cache to use existing coordinates
             return createCoordinate(row, column);
         } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
             return null;
         }
     }
-
-
-    /*
-    public static Coordinate createCoordinateFromString(String trim) {
-        try {
-            String[] parts = trim.split(":");
-            return createCoordinate(Integer.parseInt(parts[0]) - 'A', Integer.parseInt(parts[1])); //change from aviad check!!!
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
-
-     */
 
 }
 

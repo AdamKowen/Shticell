@@ -3,26 +3,25 @@ package sheet.cell.api;
 import java.io.Serializable;
 
 public class CellStyle implements Serializable {
-    private String backgroundColor; // יכול להיות null אם אין עיצוב
-    private String textColor;       // יכול להיות null אם אין עיצוב
+    private String backgroundColor; // null = no color
+    private String textColor;       // null = no color
     private TextAlignment alignment; // CENTER, LEFT, RIGHT
-    private boolean isWrapped;      // האם לבצע wrap
+    private boolean isWrapped;      // wrap
 
-    // Constructor ריק
+    // empty Constructor
     public CellStyle() {
-        setToDefault();         // ברירת מחדל ללא wrap
+        setToDefault();
     }
 
-    // פונקציה פנימית שמגדירה ערכי ברירת מחדל (בשימוש בקונסטרוקטור וב-resetToDefault)
+    // Sets default values - used in constructor and in reset functions
     public void setToDefault() {
-        this.backgroundColor = "#FFFFFF"; // לבן כרקע ברירת מחדל
-        this.textColor = "#000000";       // שחור כצבע טקסט ברירת מחדל
-        this.alignment = TextAlignment.LEFT; // יישור שמאלי כברירת מחדל
-        this.isWrapped = false;           // ברירת מחדל ללא wrap
+        this.backgroundColor = "#FFFFFF"; // white backgroung
+        this.textColor = "#000000";       // black text
+        this.alignment = TextAlignment.LEFT; // aligned left
+        this.isWrapped = false;           // no wrap
     }
 
-
-    // Getter and Setter עבור backgroundColor
+    //  backgroundColor
     public String getBackgroundColor() {
         return backgroundColor;
     }
@@ -31,7 +30,7 @@ public class CellStyle implements Serializable {
         this.backgroundColor = backgroundColor;
     }
 
-    // Getter and Setter עבור textColor
+    //  textColor
     public String getTextColor() {
         return this.textColor;
     }
@@ -40,27 +39,26 @@ public class CellStyle implements Serializable {
         this.textColor = textColor;
     }
 
-    // Getter עבור alignment שמחזיר את הערך כמחרוזת
+    // returns alignment as string
     public String getAlignment() {
         return alignment != null ? alignment.name() : null;
     }
 
-    // Setter עבור alignment שמקבל מחרוזת וממיר לערך Enum
+    // gets string sets as enum
     public void setAlignment(String alignment) {
         if (alignment != null) {
             try {
-                this.alignment = TextAlignment.valueOf(alignment.toUpperCase()); // המרה מ-String ל-Enum
+                this.alignment = TextAlignment.valueOf(alignment.toUpperCase()); // from string to enum
             } catch (IllegalArgumentException e) {
                 System.out.println("Invalid alignment value: " + alignment);
-                this.alignment = TextAlignment.LEFT; // ערך ברירת מחדל במקרה של ערך לא תקין
+                this.alignment = TextAlignment.LEFT; // default left
             }
         } else {
-            this.alignment = null; // אם המחרוזת היא null, הגדר את alignment ל-null
+            this.alignment = null; // if string is null
         }
     }
 
-
-    // Getter and Setter עבור isWrapped
+    //  isWrapped
     public boolean isWrapped() {
         return isWrapped;
     }

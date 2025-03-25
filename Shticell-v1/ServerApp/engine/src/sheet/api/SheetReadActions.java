@@ -31,10 +31,6 @@ public interface SheetReadActions {
     // Function to get the current state of the sheet
     Map<Coordinate, Cell> getSheet();
 
-    /*
-    List<Integer> countChangedCellsInAllVersions();
-
-     */
 
     SheetDto getVersionDto(int version);
 
@@ -42,8 +38,7 @@ public interface SheetReadActions {
 
     boolean isCellEmpty(Coordinate coordinate);
 
-
-     List<Cell> getCellsInRange(String name);
+    List<Cell> getCellsInRange(String name);
 
     Map<String, Range> getRanges();
 

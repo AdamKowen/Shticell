@@ -35,8 +35,7 @@ public class SheetImpl implements Sheet, Serializable {
 
 
     // Constructor
-    public SheetImpl(String name, int numOfColumns, int numOfRows, int columnUnits, int rowUnits, Map<Coordinate, Cell> cellsInSheet,Map<String, Range> rangesInSheet)
-    {
+    public SheetImpl(String name, int numOfColumns, int numOfRows, int columnUnits, int rowUnits, Map<Coordinate, Cell> cellsInSheet,Map<String, Range> rangesInSheet) {
         this.name = name;
         this.numOfColumns = numOfColumns;
         this.numOfRows = numOfRows;
@@ -63,7 +62,7 @@ public class SheetImpl implements Sheet, Serializable {
 
     @Override
     public Cell getCell(int row, int column) {
-        sheetLock.lock();  // נעילת תור
+        sheetLock.lock();  // locking access
         try {
             // checks if in range
             if (row < 1 || row > numOfRows || column < 1 || column > numOfColumns) {
@@ -83,18 +82,16 @@ public class SheetImpl implements Sheet, Serializable {
 
             return cell; // return cell
         } finally {
-            sheetLock.unlock();  // שחרור הנעילה
+            sheetLock.unlock();  // unlocking access
         }
     }
 
-
-    public void setCell(int row, int column, String value)
-    {
-        sheetLock.lock();  // נעילת תור
+    public void setCell(int row, int column, String value) {
+        sheetLock.lock();  // locking sheet
         try {
             cellsInSheet.get(CoordinateCache.createCoordinate(row,column)).setCellOriginalValue(value, this.version);
         } finally {
-            sheetLock.unlock();  // שחרור הנעילה
+            sheetLock.unlock();  // unlocking
         }
     }
 
@@ -226,7 +223,6 @@ public class SheetImpl implements Sheet, Serializable {
         }
     }
 
-
     @Override
     public Map<String, Range> getRanges() {
 
@@ -239,22 +235,21 @@ public class SheetImpl implements Sheet, Serializable {
 
     }
 
-
     @Override
     public void saveVersion() {
 
         sheetLock.lock();
         try {
-            updateVersion(); // עדכון מספר הגרסה
-            SheetDto newVersionSheet = new SheetDtoImpl(this); // יצירת ה-SheetDto של הגרסה הנוכחית
-            versionHistory.put(version, newVersionSheet); // שמירת הגרסה הנוכחית בגרסת ההיסטוריה
+            updateVersion(); // updating sheet version
+            SheetDto newVersionSheet = new SheetDtoImpl(this); // creating dto of current version for archiving
+            versionHistory.put(version, newVersionSheet); // saving the dto
 
-            // חישוב והוספת מספר השינויים בין הגרסה החדשה לבין הקודמת (אם זו לא הגרסה הראשונה)
+            // counting changes between versions
             if (version == 1) {
-                // אם זו הגרסה הראשונה, כל התאים נחשבים כמשתנים
+                // if it is the first version - all counted as new
                 numCellChangedHistory.add(newVersionSheet.getSheet().size());
             } else {
-                // השוואה מול הגרסה הקודמת (version - 1)
+                // comparing version with the previous one
                 SheetDto previousVersionSheet = versionHistory.get(version - 1);
                 int changedCellsCount = countChangedCells(previousVersionSheet, newVersionSheet);
                 numCellChangedHistory.add(changedCellsCount);
@@ -264,7 +259,7 @@ public class SheetImpl implements Sheet, Serializable {
         }
     }
 
-
+    //counting changes between versions of sheet
     private int countChangedCells(SheetDto previousVersion, SheetDto currentVersion) {
         sheetLock.lock();
         try {
@@ -278,19 +273,19 @@ public class SheetImpl implements Sheet, Serializable {
                 CellDto currentCell = entry.getValue();
                 CellDto previousCell = previousCells.get(coord);
 
-                // בדיקה אם הערך האפקטיבי השתנה או שהתא לא היה קיים קודם
+                // checks if effective value changes or there were no cell before
                 boolean valueChanged = previousCell == null ||
                         !currentCell.getValue().equals(previousCell.getValue()) ||
                         !currentCell.getOriginalValue().equals(previousCell.getOriginalValue());
 
-                // בדיקה אם יש שינוי במאפייני ה-style
+                // checks changes in style
                 boolean styleChanged = previousCell == null ||
                         (currentCell.getStyle() != null && previousCell.getStyle() != null &&
                                 (!currentCell.getStyle().getAlignment().equals(previousCell.getStyle().getAlignment()) ||
                                         !currentCell.getStyle().getBackgroundColor().equals(previousCell.getStyle().getBackgroundColor()) ||
                                         !currentCell.getStyle().getTextColor().equals(previousCell.getStyle().getTextColor())));
 
-                // אם יש שינוי בערך או ב-style, נגדיל את המונה
+                // if something changes we will count the change
                 if (valueChanged || styleChanged) {
                     changedCellsCount++;
                 }
@@ -301,8 +296,6 @@ public class SheetImpl implements Sheet, Serializable {
             sheetLock.unlock();
         }
     }
-
-
 
     @Override
     public SheetDto getVersionDto(int version)
@@ -315,40 +308,37 @@ public class SheetImpl implements Sheet, Serializable {
         int row = coordinate.getRow();
         int column = coordinate.getColumn();
 
-        // בדיקת טווחי השורה והעמודה של הקואורדינטה
+        // checks if in range
         return (row >= 1 && row <= numOfRows && column >= 1 && column <= numOfColumns);
     }
 
-
     @Override
-    public boolean isCellEmpty(Coordinate coordinate)
-    {
-        sheetLock.lock();  // נעילת תור
+    public boolean isCellEmpty(Coordinate coordinate) {
+        sheetLock.lock();
         try {
             Cell cell = getCell(coordinate);
-            // בדיקה אם התא קיים
+            // checks if cell exists
             if (cell == null) {
-                return true; // התא ריק או לא קיים
+                return true; // empty or not existent
             }
             return false;
         } finally {
-            sheetLock.unlock();  // שחרור הנעילה
+            sheetLock.unlock();
         }
     }
 
     public void addRange(String name, Range range) {
-        sheetLock.lock();  // נעילת תור
+        sheetLock.lock();
         try {
             if (ranges.containsKey(name)) {
                 throw new RuntimeException("Name already in use");
             }
             ranges.put(name, range);
         } finally {
-            sheetLock.unlock();  // שחרור הנעילה
+            sheetLock.unlock();
         }
 
     }
-
 
     public Range getRange(String name) {
         return ranges.get(name);
@@ -356,21 +346,20 @@ public class SheetImpl implements Sheet, Serializable {
 
     public void removeRange(String name) {
 
-        sheetLock.lock();  // נעילת תור
+        sheetLock.lock();
         try {
             if(!checkDeleteRange(name))
                 throw new RuntimeException("Range in active use");
 
             ranges.remove(name);
         } finally {
-            sheetLock.unlock();  // שחרור הנעילה
+            sheetLock.unlock();
         }
     }
 
-
     public boolean checkDeleteRange(String name) {
 
-        sheetLock.lock();  // נעילת תור
+        sheetLock.lock();
         try {
             String avgToFind="{AVERAGE,"+name+"}";
             String sumToFind="{SUM,"+name+"}";
@@ -382,16 +371,14 @@ public class SheetImpl implements Sheet, Serializable {
             }
             return true;
         } finally {
-            sheetLock.unlock();  // שחרור הנעילה
+            sheetLock.unlock();
         }
     }
-
-
 
     // Get all cells in the range (returns a list of cells)
     public List<Cell> getCellsInRange(String name) {
 
-        sheetLock.lock();  // נעילת תור
+        sheetLock.lock();  //locking
         try {
             Cell topLeft=getCellByString(ranges.get(name).getBoundaries().getFrom());
             Cell bottomRight= getCellByString(ranges.get(name).getBoundaries().getTo());
@@ -404,13 +391,13 @@ public class SheetImpl implements Sheet, Serializable {
             }
             return cells;
         } finally {
-            sheetLock.unlock();  // שחרור הנעילה
+            sheetLock.unlock();  // unlocking
         }
     }
 
     private Cell getCellByString(String s) {
 
-        sheetLock.lock();  // נעילת תור
+        sheetLock.lock();  // locking
         try {
 
             if (s == null || s.length() != 2) {
@@ -445,7 +432,7 @@ public class SheetImpl implements Sheet, Serializable {
             // Fetch and return the cell using the existing getCell method
             return getCell(row, column);
         } finally {
-            sheetLock.unlock();  // שחרור הנעילה
+            sheetLock.unlock();  // unlocking
         }
 
     }
@@ -460,22 +447,19 @@ public class SheetImpl implements Sheet, Serializable {
         return columnNumber;
     }
 
-
     public List<Integer> getNumCellChangedHistory() {
-        // מחזיר עותק של הרשימה כדי למנוע שינוי של הרשימה המקורית מחוץ למחלקה
+        // returns a copy of the list to avoid the list being changed
         return new ArrayList<>(numCellChangedHistory);
     }
 
-
-    public void initializaEmptyLists()
-    {
-        sheetLock.lock();  // נעילת תור
+    public void initializaEmptyLists() {
+        sheetLock.lock();  // locking
         try {
             versionHistory = new HashMap<>();
             numCellChangedHistory = new ArrayList<>();
             //ranges = new HashMap<>();
         } finally {
-            sheetLock.unlock();  // שחרור הנעילה
+            sheetLock.unlock();  // unlocking
         }
     }
 
