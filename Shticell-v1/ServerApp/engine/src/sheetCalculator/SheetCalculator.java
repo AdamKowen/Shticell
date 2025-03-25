@@ -9,10 +9,10 @@ public interface SheetCalculator {
 
 
     /**
-     * מחשב את סדר החישוב של התאים בגיליון באמצעות DFS
+     * calculates the order for calculation with DFS
      *
-     * @return רשימה של קואורדינטות בסדר החישוב הנכון
-     * @throws IllegalArgumentException אם מתגלה מעגל תלות בין תאים
+     * @return list of coordinated in order of calculation
+     * @throws IllegalArgumentException if a circle is detected
      */
     List<Cell> calculateEvaluationOrder() throws IllegalArgumentException;
 

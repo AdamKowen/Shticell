@@ -29,12 +29,6 @@ public interface SheetEngine {
 
     void updateCellValue(String cell, String newValue,String lastUserUpdated) throws Exception;
 
-
-    /*
-    List<Integer> getNumChangedCellsInAllVersions();
-
-     */
-
     SheetDto getVersionDto(int version);
 
     boolean isSheetLoaded();
@@ -59,6 +53,7 @@ public interface SheetEngine {
     HashMap<String, Sheet> getReaderFiles();
     HashMap<String, Sheet> getWriterFiles();
 
+
     void setMyFiles(HashMap<String, Sheet> myFiles);
     void setReaderFiles(HashMap<String, Sheet> readerFiles);
     void setWriterFiles(HashMap<String, Sheet> writerFiles);
@@ -81,9 +76,10 @@ public interface SheetEngine {
 
     String getCurrentSheetName();
 
-    // הוספת גליון לרשימת הגליונות לקריאה
+    // adds sheet to read
     void addSheetToRead(Sheet passSheet);
-    // הוספת גליון לרשימת הגליונות לכתיבה
+
+    // adds sheet to write
     void addSheetToWrite(Sheet passSheet);
 
     void passSheetPermission(String passSheetName, SheetEngine usersEngine, String permission);

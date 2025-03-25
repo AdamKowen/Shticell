@@ -31,29 +31,28 @@ public class SheetCalculatorImpl implements SheetCalculator {
 
         //clearing all influencing cells and Dependent cells lists
         for (Map.Entry<Coordinate, Cell> entry : cellsInSheet.entrySet()) {
-            Cell cell = entry.getValue(); // קבלת ה-Cell מהמפה
+            Cell cell = entry.getValue(); // gets cell from map
 
-            // קבלת רשימת ה-influenced cells וריקונה
+            // gets list of influenced cell and emptying it
             List<Coordinate> influencedCells = cell.getInfluencedCells();
-            influencedCells.clear(); // ריקון הרשימה
+            influencedCells.clear(); // empty
 
-            // קבלת רשימת ה-influenced cells וריקונה
+            // gets list of Dependent cell and emptying it
             List<Coordinate> DependentCells = cell.getDependentCells();
-            DependentCells.clear(); // ריקון הרשימה
+            DependentCells.clear(); // empty
         }
 
 
         //saving all the new dep lists, and inside also adds to the lists of influencing we just cleared
         for (Map.Entry<Coordinate, List<Coordinate>> entry : dependencyGraph.entrySet()) {
-            Coordinate coord = entry.getKey(); // המפתח: הקואורדינטה של התא התלוי
-            List<Coordinate> newDependentCells = entry.getValue(); // הערך: רשימת התאים שעליהם התא תלוי
+            Coordinate coord = entry.getKey(); // key - coordinate of curr cell
+            List<Coordinate> newDependentCells = entry.getValue(); // value - list of cells the cell depented on
 
-            // קבלת ה-Cell המתאים מהמפה cellsInSheet לפי הקואורדינטה
+            // gets cell according to coordinate
             Cell cell = cellsInSheet.get(coord);
             if (cell != null) {
                 cell.getDependentCells().clear();
                 cell.getDependentCells().addAll(newDependentCells);
-                //cell.setDependentCells(newDependentCells); // הגדרת רשימה חדשה עם התאים התלויים
             }
 
 

@@ -28,14 +28,11 @@ import java.util.Map;
 public class SheetEngineImpl implements sheetEngine.SheetEngine {
 
     private Sheet currentSheet;
-    private Sheet temporarySheet = null;
+    private Sheet temporarySheet = null; // for the slider functions in app
     private Loader loader;
     private HashMap<String, Sheet> MyFiles;
     private HashMap<String, Sheet> readerFiles;
     private HashMap<String, Sheet> writerFiles;
-
-
-
 
 
     public SheetEngineImpl() {
@@ -43,10 +40,9 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         this.MyFiles = new HashMap<>();
         this.readerFiles = new HashMap<>();
         this.writerFiles = new HashMap<>();
-        // this.nameofowner = name;
     }
 
-    // טעינת גיליון ישירות מתוך InputStream
+    // loading sheet directly from InputStream
     public void loadSheetFromXML(InputStream inputStream) throws ParserConfigurationException, IOException, SheetLoadingException, SAXException {
         currentSheet = loader.loadSheetFromXML(inputStream);
         recalculateSheet();
@@ -121,15 +117,6 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         }
     }
 
-/*
-    @Override
-    public List<Integer> getNumChangedCellsInAllVersions()
-    {
-        return currentSheet.countChangedCellsInAllVersions();
-    }
-
-*/
-
 
     @Override
     public SheetDto getVersionDto(int version)
@@ -165,7 +152,7 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         try {
             currentSheet.removeRange(str);
         } catch (Exception e) {
-            // העברת החריגה הלאה
+            // passing exception forwards
             throw e;
         }
     }
@@ -175,21 +162,19 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         try {
             currentSheet.addRange(str, new RangeImpl(new Boundaries(from, to), str));
         } catch (Exception e) {
-            // העברת החריגה הלאה
+            // passing exception forwards
             throw e;
         }
     }
 
 
     @Override
-   public Map<String, List<String>> getUniqueValuesInRange(List<Integer> rows, List<String> columns)
-    {
+   public Map<String, List<String>> getUniqueValuesInRange(List<Integer> rows, List<String> columns) {
         SheetDto sheetDto = getCurrentSheetDTO();
         return sheetDto.getUniqueValuesInRange(rows,columns);
     }
 
-    public void setBackgrountColor(String cell, String color)
-    {
+    public void setBackgrountColor(String cell, String color) {
         Coordinate coordinate =  CoordinateCache.createCoordinateFromString(cell);
         if (coordinate == null) {
             throw new IllegalArgumentException("Could not create coordinate from string: " + cell);
@@ -202,9 +187,7 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         }
     }
 
-
-    public void setFontColor(String cell, String color)
-    {
+    public void setFontColor(String cell, String color) {
         Coordinate coordinate =  CoordinateCache.createCoordinateFromString(cell);
         if (coordinate == null) {
             throw new IllegalArgumentException("Could not create coordinate from string: " + cell);
@@ -217,9 +200,7 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         }
     }
 
-
-    public void setAlignment(String cell, String Ali)
-    {
+    public void setAlignment(String cell, String Ali) {
         Coordinate coordinate =  CoordinateCache.createCoordinateFromString(cell);
         if (coordinate == null) {
             throw new IllegalArgumentException("Could not create coordinate from string: " + cell);
@@ -232,9 +213,7 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         }
     }
 
-
-    public void resetStyle(String cell)
-    {
+    public void resetStyle(String cell) {
         Coordinate coordinate =  CoordinateCache.createCoordinateFromString(cell);
         if (coordinate == null) {
             throw new IllegalArgumentException("Could not create coordinate from string: " + cell);
@@ -271,34 +250,31 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         this.writerFiles = writerFiles;
     }
 
-
     public boolean setCurrentSheet(String sheetName) {
         Sheet selectedSheet = null;
 
-        // חיפוש בגיליונות שלך
+        // search in users sheets
         if (MyFiles.containsKey(sheetName)) {
             selectedSheet = MyFiles.get(sheetName);
         }
-        // חיפוש בגיליונות שאתה רק קורא
+        // search in read sheets
         else if (readerFiles.containsKey(sheetName)) {
             selectedSheet = readerFiles.get(sheetName);
         }
-        // חיפוש בגיליונות שאתה יכול לערוך
+        // search in write sheets
         else if (writerFiles.containsKey(sheetName)) {
             selectedSheet = writerFiles.get(sheetName);
         }
 
-        // אם לא נמצא הגיליון - החזר false
+        // if wasn't found - false
         if (selectedSheet == null) {
             return false;
         }
 
-        // הגדרת הגיליון הנוכחי
+        // setting current sheet
         this.currentSheet = selectedSheet;
         return true;
     }
-
-
 
     @Override
     public int getCurrentSheetVersion()
@@ -306,11 +282,9 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         return currentSheet.getVersion();
     }
 
-
-
     public void updateCellsStyle(List<String> columns, List<Integer> rows, String styleType, String styleValue) {
 
-        int newVersion = currentSheet.getVersion() + 1; // מוודא שהעדכון נחשב כגרסה אחת
+        int newVersion = currentSheet.getVersion() + 1; // makes sure the version will be set to next version
 
         for (int row : rows) {
             for (String column : columns) {
@@ -318,9 +292,9 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
                 Coordinate coordinate = CoordinateCache.createCoordinateFromString(cellReference);
                 Cell currentCell = currentSheet.getCell(coordinate);
 
-                // אם התא לא קיים, ניצור תא חדש עם ערך ריק
+                // if cell does not exist create a new one
                 if (currentCell == null) {
-                    currentCell = new CellImpl(coordinate.getRow(), coordinate.getColumn(), "", newVersion); // יצירת תא ריק
+                    currentCell = new CellImpl(coordinate.getRow(), coordinate.getColumn(), "", newVersion); // creating empty sheet
                     currentCell.calculateEffectiveValue(currentSheet);
                     currentSheet.setCell(coordinate, currentCell);
                 }
@@ -346,10 +320,8 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
             }
         }
 
-        currentSheet.saveVersion(); // שמירת הגרסה החדשה
+        currentSheet.saveVersion(); // saving new version
     }
-
-
 
     public void createTemporarySheet() {
         if (temporarySheet == null) {
@@ -378,29 +350,23 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
 
     public void updateCellBasedOnSlider(String cellID, String value) throws Exception {
         if (temporarySheet == null) {
-            createTemporarySheet(); // יצירת העתק אם עוד לא קיים
+            createTemporarySheet(); // creating a copy if it does not exist yet
         }
-        updateCellValueTempSheet(cellID, value); // זריקת Exception אם מתרחשת שגיאה
+        updateCellValueTempSheet(cellID, value);
     }
-
-
 
     public SheetDto getTemporarySheetDTO() {
         if (temporarySheet == null) {
-            return getCurrentSheetDTO(); // במקרה שאין גיליון זמני, מחזיר את הגיליון האמיתי
+            return getCurrentSheetDTO(); // if there is no temp returns the actual sheet
         }
         temporarySheet.initializaEmptyLists();
-        return new SheetDtoImpl(temporarySheet); // יצירת SheetDto עבור הגיליון הזמני
+        return new SheetDtoImpl(temporarySheet); // dto for temp sheet
     }
-
 
     @Override
     public void recalculateTempSheet() {
         SheetCalculator evaluator = new SheetCalculatorImpl(temporarySheet);
-        //temporarySheet.saveVersion();
     }
-
-
 
     @Override
     public void updateCellValueTempSheet(String cell, String newValue) throws Exception {
@@ -421,20 +387,17 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
                 temporarySheet.setCell(coordinate, currCell);
                 recalculateTempSheet();
             } catch (Exception e) {
-                // אם יצירת התא או הוספתו נכשלת, נזרוק שגיאה למעלה
                 throw new Exception("Failed to update or create cell at coordinate: " + cell, e);
             }
         }
     }
-
 
     public String getCurrentSheetName()
     {
         return currentSheet.getName();
     }
 
-
-    // הוספת גליון לרשימת הגליונות לקריאה
+    // adds sheet to reading sheets
     public void addSheetToRead(Sheet passSheet) {
         if (passSheet != null && !readerFiles.containsKey(passSheet.getName())) {
             readerFiles.put(passSheet.getName(), passSheet);
@@ -442,7 +405,7 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         }
     }
 
-    // הוספת גליון לרשימת הגליונות לכתיבה
+    // adds sheet to writing sheets
     public void addSheetToWrite(Sheet passSheet) {
         if (passSheet != null && !writerFiles.containsKey(passSheet.getName())) {
             writerFiles.put(passSheet.getName(), passSheet);
@@ -450,21 +413,21 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
         }
     }
 
-    // פונקציה להעברת גליון למנוע של משתמש אחר לפי סוג ההרשאה
+    // transfers sheet to another user according to permission
     public void passSheetPermission(String passSheetName, SheetEngine usersEngine, String permission) {
         if (usersEngine == null || passSheetName == null || permission == null) {
             System.out.println("Invalid parameters for passing sheet permission.");
             return;
         }
 
-        // בדיקה אם הגליון קיים ב-MyFiles של המשתמש הנוכחי
+        // checks if exists in users files
         Sheet passSheet = MyFiles.get(passSheetName);
         if (passSheet == null) {
             System.out.println("Sheet not found in MyFiles: " + passSheetName);
             return;
         }
 
-        // העברת הגליון לפי סוג ההרשאה
+        // passing the sheet
         if (permission.equalsIgnoreCase("reader")) {
             usersEngine.addSheetToRead(passSheet);
             System.out.println("Sheet " + passSheetName + " passed to " + usersEngine + " with read permission.");
@@ -475,8 +438,6 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
             System.out.println("Invalid permission type: " + permission);
         }
     }
-
-
 
 
     public void resetTempSheet()

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class User {
     private String username;
-    private List<String> sheets; // רשימת שמות הגיליונות שהמשתמש העלה
+    private List<String> sheets; // lists of sheet names in users data
     private SheetEngine sheetEngine;
 
     public User(String username) {
@@ -25,14 +25,14 @@ public class User {
         return sheets;
     }
 
-    // הוספת גיליון חדש למשתמש
+    // adding new sheet to users account
     public void addSheet(String sheetName) {
         if (!sheets.contains(sheetName)) {
             sheets.add(sheetName);
         }
     }
 
-    // בדיקה האם למשתמש יש הרשאה לגיליון מסוים
+    // checking if user has access to a certain sheet
     public boolean hasAccessToSheet(String sheetName) {
         return sheets.contains(sheetName);
     }
@@ -40,6 +40,7 @@ public class User {
     public SheetEngine getSheetEngine() {
         return sheetEngine;
     }
+
     public void setSheetEngine(SheetEngine sheetEngine) {
         this.sheetEngine = sheetEngine;
     }

@@ -182,7 +182,7 @@ public class AccountController implements Closeable, HttpStatusUpdate, AccountCo
                     selectedUsername = selectedPermission.getUsername();
 
                     // set buttons enabled based on status
-                    boolean isPending = "pending".equals(selectedPermission.getStatus());
+                    boolean isPending = "Pending".equals(selectedPermission.getStatus());
                     acceptButton.setDisable(!isPending);
                     rejectButton.setDisable(!isPending);
                 } else {

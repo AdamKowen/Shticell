@@ -21,7 +21,6 @@ public class UserManager {
     private PermissionManager permissionManager;
     private int sheetListVersion = 1;
 
-
     public UserManager() {
         usersSet = new HashMap<>();
         permissionManager = new PermissionManager();
@@ -51,22 +50,22 @@ public class UserManager {
         return permissionManager;
     }
 
-    /// המתודה מחזירה רשימה של SheetInfoDto לכל הגיליונות של המשתמשים/
+    /// sheet dto info of all the users/
     public List<SheetInfoDto> getAllSheetsInfo() {
         List<SheetInfoDto> sheetList = new ArrayList<>();
 
-        // מעבר על כל המשתמשים במערכת (ערכים במפת HashMap)
+        // run on all users in the system
         for (User user : usersSet.values()) {
             SheetEngine sheetEngine = user.getSheetEngine();
 
-            // מעבר על כל הגיליונות במפת HashMap של המשתמש
+            // run on al sheet of curr user
             for (Sheet sheet : sheetEngine.getMyFiles().values()) {
-                // יצירת SheetInfoDto עבור כל גיליון
+                // creating sheet dto info of users sheet
                 SheetInfoDto sheetInfo = new SheetInfoDto(
                         sheet.getName(),
                         sheet.getNumOfRows(),
                         sheet.getNumOfColumns(),
-                        user.getUsername()  // הבעלים של הגיליון
+                        user.getUsername()  // name of owner user
                 );
                 sheetList.add(sheetInfo);
             }
@@ -75,24 +74,24 @@ public class UserManager {
         return sheetList;
     }
 
-    // הוספת הרשאה למשתמש עבור גיליון
+    // adding permission
     public void addPermission(String sheetName, String username, PermissionType type) {
         SheetPermission permission = new SheetPermission(username, type);
         permissionManager.addPermission(sheetName, permission);
     }
 
-    // עדכון הרשאה למשתמש קיים עבור גיליון
+    // updating permission
     public void updatePermission(String sheetName, String username, PermissionType newType) {
         permissionManager.updatePermission(sheetName, username, newType);
         updateSheetListVersion();
     }
 
-    // בדיקה אם למשתמש יש הרשאת עריכה
+    // check if user has edit access
     public boolean hasEditPermission(String sheetName, String username) {
         return permissionManager.hasEditPermission(sheetName, username);
     }
 
-    // בדיקה אם למשתמש יש הרשאת צפייה
+    // check if user has view access
     public boolean hasViewPermission(String sheetName, String username) {
         return permissionManager.hasViewPermission(sheetName, username);
     }
