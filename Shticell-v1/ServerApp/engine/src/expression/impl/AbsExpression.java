@@ -32,7 +32,6 @@ public class AbsExpression implements Expression {
         return new EffectiveValueImpl(CellType.NUMERIC, result);
     }
 
-
     @Override
     public CellType getFunctionResultType() {
         return CellType.NUMERIC;
@@ -42,7 +41,6 @@ public class AbsExpression implements Expression {
     public Boolean doesContainRef(){
         return arg.doesContainRef();
     }
-
 
     @Override
     public void collectDependencies(List<Coordinate> dependencies)

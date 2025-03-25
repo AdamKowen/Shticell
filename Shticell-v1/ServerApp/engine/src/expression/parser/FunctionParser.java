@@ -349,8 +349,7 @@ public enum FunctionParser {
             // all is good. create the relevant function instance
             return new PowExpression(left, right);
         }
-    }
-    ,
+    },
     TIMES {
         @Override
         public Expression parse(List<String> arguments) {
@@ -385,14 +384,8 @@ public enum FunctionParser {
             return new SubExpression(source, startIndex, endIndex);
         }
     }
-
-
-
-
-
-
     ;
-    //
+
     abstract public Expression parse(List<String> arguments);
 
     public static Expression parseExpression(String input) {
@@ -408,7 +401,7 @@ public enum FunctionParser {
             //remove the first element from the array
             topLevelParts.remove(0);
 
-            // בדיקה אם שם הפונקציה קיים
+            // checks if name of function exists
             if (!functionExists(functionName)) {
                 throw new IllegalArgumentException("Function name '" + functionName + "' does not exist.");
             }
@@ -421,8 +414,7 @@ public enum FunctionParser {
         return FunctionParser.IDENTITY.parse(List.of(input.trim()));
     }
 
-
-    // פונקציה שבודקת אם הפונקציה קיימת ב-Enum
+    // checks if enum of function exists
     private static boolean functionExists(String functionName) {
         for (FunctionParser func : FunctionParser.values()) {
             if (func.name().equals(functionName)) {
@@ -460,16 +452,17 @@ public enum FunctionParser {
 
         return parts;
     }
+
     public static Coordinate createCoordinateFromString(String trim) {
         try {
-            // חילוץ מספרים ואותיות מהקלט
-            String columnPart = trim.replaceAll("[^A-Z]", ""); // מוצא את כל האותיות
-            String rowPart = trim.replaceAll("[^0-9]", "");    // מוצא את כל המספרים
+            // finds num and letters from string
+            String columnPart = trim.replaceAll("[^A-Z]", ""); // finds letters
+            String rowPart = trim.replaceAll("[^0-9]", "");    // finds numbers
 
-            // המרת האות לעמודה, לדוגמה: A=1, B=2, וכו'
+            // converts the letters to numbers
             int column = columnPart.charAt(0) - 'A' + 1;
 
-            // המרת מחרוזת השורה למספר
+            // string to num
             int row = Integer.parseInt(rowPart);
 
             return new CoordinateImpl(row, column);
@@ -482,7 +475,4 @@ public enum FunctionParser {
 
     }
 
-
-
 }
-//.

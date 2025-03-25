@@ -39,27 +39,6 @@ public class DivideExpression implements Expression {
     }
 
 
-    private Boolean checkValidation(EffectiveValue evalLeft, EffectiveValue evalRight)
-    {
-
-        if(!left.doesContainRef()) //doesn't contain REF and also NOT a string, func invalid
-        {
-            if (!evalLeft.getCellType().equals(CellType.NUMERIC))
-            {
-                return false;
-            }
-        }
-
-        if(!right.doesContainRef()) //doesn't contain REF and also NOT a string, func invalid
-        {
-            if (!evalRight.getCellType().equals(CellType.NUMERIC))
-            {
-                return false;
-            }
-        }
-
-        return true; //otherwise, the func is ok or undefined. but not invalid
-    }
 
     @Override
     public CellType getFunctionResultType() {

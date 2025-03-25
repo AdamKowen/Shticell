@@ -34,7 +34,6 @@ public class ModExpression implements Expression {
         return new EffectiveValueImpl(CellType.NUMERIC, result);
     }
 
-
     private Boolean checkValidation(EffectiveValue evalLeft, EffectiveValue evalRight)
     {
 
@@ -57,16 +56,10 @@ public class ModExpression implements Expression {
         return true; //otherwise, the func is ok or undefined. but not invalid
     }
 
-
-
-
-
     @Override
     public CellType getFunctionResultType() {
         return CellType.NUMERIC;
     }
-
-
 
     @Override
     public Boolean doesContainRef(){

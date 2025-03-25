@@ -24,7 +24,6 @@ public class UpperCaseExpression implements Expression {
 
         // more validations on the expected argument types
         if (!eval.getCellType().equals(CellType.STRING)) {
-           // throw new IllegalArgumentException("Invalid argument types for UPPER_CASE function. Expected STRING, but got " + arg.getFunctionResultType());
             return new EffectiveValueImpl(CellType.STRING, "!UNDEFINED!");
         }
 
@@ -36,12 +35,11 @@ public class UpperCaseExpression implements Expression {
     public CellType getFunctionResultType() {
         return CellType.STRING;
     }
+
     @Override
     public Boolean doesContainRef(){
         return e.doesContainRef();
     }
-
-
 
     @Override
     public void collectDependencies(List<Coordinate> dependencies)

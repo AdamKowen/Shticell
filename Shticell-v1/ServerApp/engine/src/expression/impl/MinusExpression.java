@@ -24,7 +24,7 @@ public class MinusExpression implements Expression {
         EffectiveValue leftValue = left.eval( sheet);
         EffectiveValue rightValue = right.eval( sheet);
 
-        // בדיקת סוגי הנתונים
+        // checks the type of data
         if (!leftValue.getCellType().equals(CellType.NUMERIC) || !rightValue.getCellType().equals(CellType.NUMERIC)) {
             return new EffectiveValueImpl(CellType.STRING, "NaN");
         }
@@ -32,30 +32,6 @@ public class MinusExpression implements Expression {
         double result = leftValue.extractValueWithExpectation(Double.class) - rightValue.extractValueWithExpectation(Double.class);
 
         return new EffectiveValueImpl(CellType.NUMERIC, result);
-    }
-
-
-
-    private Boolean checkValidation(EffectiveValue evalLeft, EffectiveValue evalRight)
-    {
-
-        if(!left.doesContainRef()) //doesn't contain REF and also NOT a string, func invalid
-        {
-            if (!evalLeft.getCellType().equals(CellType.NUMERIC))
-            {
-                return false;
-            }
-        }
-
-        if(!right.doesContainRef()) //doesn't contain REF and also NOT a string, func invalid
-        {
-            if (!evalRight.getCellType().equals(CellType.NUMERIC))
-            {
-                return false;
-            }
-        }
-
-        return true; //otherwise, the func is ok or undefined. but not invalid
     }
 
 

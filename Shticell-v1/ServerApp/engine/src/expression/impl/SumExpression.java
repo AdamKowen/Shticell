@@ -13,6 +13,7 @@ import sheet.range.api.Range;
 import java.util.List;
 
 public class SumExpression implements Expression {
+
     private final String rangeName;
 
     public SumExpression(String rangeName) {
@@ -84,8 +85,6 @@ public class SumExpression implements Expression {
 
         return new int[]{row, column};
     }
-
-
 
     @Override
     public CellType getFunctionResultType() {

@@ -24,7 +24,6 @@ public class PercentExpression implements Expression {
         // Validate argument types
         if ((!part.eval(sheet).getCellType().equals(CellType.NUMERIC) ) ||
                 (!whole.eval(sheet).getCellType().equals(CellType.NUMERIC) )) {
-            //throw new IllegalArgumentException("Invalid argument types for PERCENT function. Expected NUMERIC, but got " + part.getFunctionResultType() + " and " + whole.getFunctionResultType());
             return new EffectiveValueImpl(CellType.STRING, "NaN");
         }
 
@@ -41,12 +40,11 @@ public class PercentExpression implements Expression {
     public CellType getFunctionResultType() {
         return CellType.NUMERIC;
     }
+
     @Override
     public Boolean doesContainRef(){
         return part.doesContainRef() || whole.doesContainRef();
     }
-
-
 
     @Override
     public void collectDependencies(List<Coordinate> dependencies)

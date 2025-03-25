@@ -43,8 +43,6 @@ public class OrExpression implements Expression {
         return left.doesContainRef() || right.doesContainRef();
     }
 
-
-
     @Override
     public void collectDependencies(List<Coordinate> dependencies)
     {

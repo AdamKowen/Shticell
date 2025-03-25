@@ -39,42 +39,15 @@ public class PowExpression implements Expression {
         return new EffectiveValueImpl(CellType.NUMERIC, result);
     }
 
-
-    private Boolean checkValidation(EffectiveValue evalLeft, EffectiveValue evalRight)
-    {
-
-        if(!left.doesContainRef()) //doesn't contain REF and also NOT a string, func invalid
-        {
-            if (!evalLeft.getCellType().equals(CellType.NUMERIC))
-            {
-                return false;
-            }
-        }
-
-        if(!right.doesContainRef()) //doesn't contain REF and also NOT a string, func invalid
-        {
-            if (!evalRight.getCellType().equals(CellType.NUMERIC))
-            {
-                return false;
-            }
-        }
-
-        return true; //otherwise, the func is ok or undefined. but not invalid
-    }
-
-
-
     @Override
     public CellType getFunctionResultType() {
         return CellType.NUMERIC;
     }
 
-
     @Override
     public Boolean doesContainRef(){
         return left.doesContainRef() || right.doesContainRef();
     }
-
 
     @Override
     public void collectDependencies(List<Coordinate> dependencies)

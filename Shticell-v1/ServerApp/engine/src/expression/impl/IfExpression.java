@@ -55,12 +55,11 @@ public class IfExpression implements Expression {
         }
         return thenType;
     }
+
     @Override
     public Boolean doesContainRef(){
         return thenExpr.doesContainRef() || elseExpr.doesContainRef();
     }
-
-
 
     @Override
     public void collectDependencies(List<Coordinate> dependencies)

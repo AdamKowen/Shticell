@@ -55,19 +55,14 @@ public class RefExpression implements Expression {
         return CellType.UNKNOWN;
     }
 
-
     public Coordinate getRefValue() {
         return coordinate;
     }
-
-
 
     @Override
     public Boolean doesContainRef(){
         return true;
     }
-
-
 
     @Override
     public void collectDependencies(List<Coordinate> dependencies)
@@ -75,5 +70,4 @@ public class RefExpression implements Expression {
         dependencies.add(this.getRefValue());
     }
 
-////
 }

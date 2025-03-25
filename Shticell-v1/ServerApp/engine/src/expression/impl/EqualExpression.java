@@ -39,7 +39,6 @@ public class EqualExpression implements Expression {
     }
 
 
-
     @Override
     public void collectDependencies(List<Coordinate> dependencies)
     {

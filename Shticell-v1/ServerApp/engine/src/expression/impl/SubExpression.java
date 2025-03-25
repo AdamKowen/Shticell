@@ -22,14 +22,13 @@ public class SubExpression implements Expression {
         this.endIndex = endIndex;
     }
 
-
     @Override
     public EffectiveValue eval(SheetReadActions sheet) {
         EffectiveValue sourceEffectiveValue = source.eval(sheet);
         EffectiveValue startEffectiveValue = startIndex.eval(sheet);
         EffectiveValue finishEffectiveValue = endIndex.eval(sheet);
 
-        // בדיקת סוגי הנתונים
+        // checks all type of data if it valid
         if (!sourceEffectiveValue.getCellType().equals(CellType.STRING) || !startEffectiveValue.getCellType().equals(CellType.NUMERIC) || !finishEffectiveValue.getCellType().equals(CellType.NUMERIC))
         {
             return new EffectiveValueImpl(CellType.STRING, "!UNDEFINED!");
@@ -46,10 +45,10 @@ public class SubExpression implements Expression {
         int start = startD.intValue();
         int end = endD.intValue();
 
-        // בדיקה אם src מכילה את המחרוזת "!UNDEFINED!"
+        // check for "!UNDEFINED!" in the source
 
         if (src.equals("!UNDEFINED!") || src.equals("NaN")) {
-            // טיפול במקרה שבו המחרוזת היא "!UNDEFINED!"
+            // undefined if one value at least is undefined
             return new EffectiveValueImpl(CellType.STRING, "!UNDEFINED!");
         }
 
@@ -93,18 +92,15 @@ public class SubExpression implements Expression {
         return true; //otherwise, the func is ok or undefined. but not invalid
     }
 
-
     @Override
     public CellType getFunctionResultType() {
         return CellType.STRING;
     }
 
-
     @Override
     public Boolean doesContainRef(){
         return source.doesContainRef() || startIndex.doesContainRef() || endIndex.doesContainRef();
     }
-
 
     @Override
     public void collectDependencies(List<Coordinate> dependencies)

@@ -19,7 +19,6 @@ public class ConcatExpression implements Expression {
         this.right = valueRight;
     }
 
-
     @Override
     public EffectiveValue eval(SheetReadActions sheet) {
         EffectiveValue evalRight = right.eval(sheet);
@@ -33,37 +32,15 @@ public class ConcatExpression implements Expression {
         String strLeft = evalLeft.extractValueWithExpectation(String.class);
         String strRight = evalRight.extractValueWithExpectation(String.class);
 
-        // בדיקה אם src מכילה את המחרוזת "!UNDEFINED!"
+        // checks of string has "!UNDEFINED!"
         if (strLeft.equals("!UNDEFINED!") || strRight.equals("!UNDEFINED!") ||
         strLeft.equals("NaN") || strRight.equals("Nan")){
-            // טיפול במקרה שבו המחרוזת היא "!UNDEFINED!"
+            // if has "!UNDEFINED!" so the whole value is undefined
             return new EffectiveValueImpl(CellType.STRING, "!UNDEFINED!");
         }
 
         String stitchedResult = strLeft + strRight;
         return new EffectiveValueImpl(CellType.STRING, stitchedResult);
-    }
-
-    private Boolean checkValidation(EffectiveValue evalLeft, EffectiveValue evalRight)
-    {
-
-        if(!left.doesContainRef()) //doesn't contain REF and also NOT a string, func invalid
-        {
-            if (!evalLeft.getCellType().equals(CellType.STRING))
-            {
-                return false;
-            }
-        }
-
-        if(!right.doesContainRef()) //doesn't contain REF and also NOT a string, func invalid
-        {
-            if (!evalRight.getCellType().equals(CellType.STRING))
-            {
-                return false;
-            }
-        }
-
-        return true; //otherwise, the func is ok or undefined value. but not invalid
     }
 
     @Override

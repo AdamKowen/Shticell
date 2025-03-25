@@ -14,8 +14,10 @@ public interface Expression {
 
     CellType getFunctionResultType();
 
+    // checks if contains reference to another cell
     Boolean doesContainRef();
 
+    // collects dependencies in expression if detects an instance of RefExpression
     void collectDependencies(List<Coordinate> dependencies);
 
 }

@@ -19,7 +19,6 @@ public class PlusExpression implements Expression {
         this.right = right;
     }
 
-
     @Override
     public EffectiveValue eval(SheetReadActions sheet) {
 
@@ -27,12 +26,7 @@ public class PlusExpression implements Expression {
         EffectiveValue rightValue = right.eval(sheet);
 
         if (!leftValue.getCellType().equals(CellType.NUMERIC) || !rightValue.getCellType().equals(CellType.NUMERIC)) {
-            //if (checkValidation(leftValue, rightValue))
                 return new EffectiveValueImpl(CellType.STRING, "NaN");
-                 //else {
-
-                //throw new IllegalArgumentException("Invalid argument types for PLUS function. Expected NUMERIC, but got " + leftValue.getCellType() + " and " + rightValue.getCellType());
-            //}
         }
 
         double result = leftValue.extractValueWithExpectation(Double.class) + rightValue.extractValueWithExpectation(Double.class);
@@ -41,43 +35,15 @@ public class PlusExpression implements Expression {
 
     }
 
-// can delete:
-    /*
-    private Boolean checkValidation(EffectiveValue evalLeft, EffectiveValue evalRight)
-    {
-
-        if(!left.doesContainRef()) //doesn't contain REF and also NOT a string, func invalid
-        {
-            if (!evalLeft.getCellType().equals(CellType.NUMERIC))
-            {
-                return false;
-            }
-        }
-
-        if(!right.doesContainRef()) //doesn't contain REF and also NOT a string, func invalid
-        {
-            if (!evalRight.getCellType().equals(CellType.NUMERIC))
-            {
-                return false;
-            }
-        }
-
-        return true; //otherwise, the func is ok or undefined. but not invalid
-    }
-     */
-
     @Override
     public CellType getFunctionResultType() {
         return CellType.NUMERIC;
     }
 
-
     @Override
     public Boolean doesContainRef(){
         return left.doesContainRef() || right.doesContainRef();
     }
-
-
 
     @Override
     public void collectDependencies(List<Coordinate> dependencies)

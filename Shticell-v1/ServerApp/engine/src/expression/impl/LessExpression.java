@@ -28,7 +28,6 @@ public class LessExpression implements Expression {
         // Validate argument types
         if ((!leftValue.getCellType().equals(CellType.NUMERIC)) ||
                 (!rightValue.getCellType().equals(CellType.NUMERIC))) {
-            //throw new IllegalArgumentException("Invalid argument types for LESS function. Expected NUMERIC, but got " + left.getFunctionResultType() + " and " + right.getFunctionResultType());
             return new EffectiveValueImpl(CellType.STRING, "UNKNOWN");
         }
 
@@ -41,13 +40,10 @@ public class LessExpression implements Expression {
         return CellType.BOOLEAN;
     }
 
-
     @Override
     public Boolean doesContainRef(){
         return left.doesContainRef() || right.doesContainRef();
     }
-
-
 
     @Override
     public void collectDependencies(List<Coordinate> dependencies)
