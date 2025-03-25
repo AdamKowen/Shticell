@@ -30,7 +30,6 @@ public interface SheetDto {
     // Function to get the current state of the sheet
     public Map<Coordinate, CellDto> getSheet();
 
-
     List<Integer> sortRowsByColumns(List<Integer> rows, List<Character> columnChars);
 
     public List<Integer> resetSoretedOrder();

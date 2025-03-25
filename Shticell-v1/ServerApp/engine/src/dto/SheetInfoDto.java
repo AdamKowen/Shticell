@@ -13,7 +13,7 @@ public class SheetInfoDto {
         this.numberOfRows = numberOfRows;
         this.numberOfColumns = numberOfColumns;
         this.ownerName = ownerName;
-        this.access = "no access";  // ערך ברירת מחדל
+        this.access = "no access";  // default value
     }
 
     // Getters and Setters

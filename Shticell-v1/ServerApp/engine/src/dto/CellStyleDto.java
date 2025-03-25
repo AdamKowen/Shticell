@@ -5,11 +5,11 @@ import sheet.cell.api.CellStyle;
 public class CellStyleDto {
     private String backgroundColor;
     private String textColor;
-    private String alignment; // נשתמש במחרוזת ליישור במקום ב-Enum כדי לשמור על עצמאות הממשק
+    private String alignment; // aligmnemt as string to support transmition
     private boolean isWrapped;
 
 
-    // קונסטרוקטור מלא
+    // full contractor
     public CellStyleDto(CellStyle cellStyle) {
         this.backgroundColor = cellStyle.getBackgroundColor();
         this.textColor = cellStyle.getTextColor();
@@ -24,25 +24,18 @@ public class CellStyleDto {
         this.isWrapped = isWrapped;
     }
 
-
-    // Getter and Setter עבור backgroundColor
     public String getBackgroundColor() {
         return backgroundColor;
     }
 
-    // Getter and Setter עבור textColor
     public String getTextColor() {
         return textColor;
     }
 
-
-    // Getter and Setter עבור alignment
     public String getAlignment() {
         return alignment;
     }
 
-
-    // Getter and Setter עבור isWrapped
     public boolean isWrapped() {
         return isWrapped;
     }

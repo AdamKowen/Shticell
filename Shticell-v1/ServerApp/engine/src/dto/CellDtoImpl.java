@@ -71,11 +71,10 @@ public class CellDtoImpl implements CellDto {
         return lastUserUpdated;
     }
 
-
     public CellDtoImpl(Coordinate coordinate, String originalValue, EffectiveValue effectiveValue, int version, List<Coordinate> dependsOn, List<Coordinate> influencingOn, CellStyleDto style, String lastUserUpdated) {
         this.coordinate = coordinate;
         this.originalValue = originalValue;
-        this.effectiveValue = effectiveValue; // שמירת ה-EffectiveValue המקורי
+        this.effectiveValue = effectiveValue; // saving the original effective value
         this.version = version;
         this.dependsOn = new ArrayList<>(dependsOn);
         this.influencingOn = new ArrayList<>(influencingOn);

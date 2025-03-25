@@ -7,12 +7,9 @@ public interface CellDto {
     // Getters and Setters
     Coordinate getCoordinate();
 
-
     String getOriginalValue();
 
-
     String getValue();
-
 
     int getVersion();
 

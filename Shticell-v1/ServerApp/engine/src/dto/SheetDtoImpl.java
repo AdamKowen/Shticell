@@ -32,13 +32,13 @@ public class SheetDtoImpl implements SheetDto{
         Map<Coordinate, CellDto> currSheetToDto = new HashMap<>();
 
         for (Map.Entry<Coordinate, Cell> entry : currSheet.entrySet()) {
-            Coordinate coordinate = entry.getKey(); // מפתח (קואורדינטות התא)
-            Cell cell = entry.getValue(); // ערך (אובייקט תא)
+            Coordinate coordinate = entry.getKey(); // searches for coordinated
+            Cell cell = entry.getValue(); // gets cell
 
-            // יצירת CellDto מהאובייקט Cell
+            // creating cell dto
             CellDto cellDto = new CellDtoImpl(cell);
 
-            // הכנסת ה-CellDto למפה החדשה
+            // inserting dto to new map
             currSheetToDto.put(coordinate, cellDto);
         }
 
@@ -50,13 +50,13 @@ public class SheetDtoImpl implements SheetDto{
         Map<String, RangeDto> currRangesToDto = new HashMap<>();
 
         for (Map.Entry<String, Range> entry : currRanges.entrySet()) {
-            String name = entry.getKey(); // מפתח (name)
-            Range range = entry.getValue(); // ערך (range)
+            String name = entry.getKey(); // key - name
+            Range range = entry.getValue(); // value - range
 
-            // יצירת rangedto מהאובייקט range
+            // created range dto
             RangeDto rangeDto = new RangeDto(range);
 
-            // הכנסת ה-range למפה החדשה
+            // inserts to map
             currRangesToDto.put(name, rangeDto);
         }
 
@@ -124,37 +124,36 @@ public class SheetDtoImpl implements SheetDto{
     }
 
 
-
-    // פונקציה למיון השורות מתוך רשימת השורות שהתקבלה על פי העמודות הנבחרות
+    // function to sort rows according to col list
     public List<Integer> sortRowsByColumns(List<Integer> rows, List<Character> columnChars) {
-        // ממירים את ה-characters של העמודות למספרי אינדקסים
+        // char of cols to index
         List<Integer> columnIndices = convertColumnsToIndices(columnChars);
 
-        // שליפת השורות הרלוונטיות מהמפה על פי רשימת השורות שהתקבלה
+        // gets the rows in range
         Map<Integer, List<CellDto>> rowsInRange = getRowsInRange(rows);
 
-        // מיון השורות בטווח שנבחר בלבד
+        // sorting according to selected rows only
         List<Integer> sortedRowNumbers = sortRowsByGivenColumns(rowsInRange, columnIndices);
 
         return sortedRowNumbers;
     }
 
 
-    // ממיר רשימת עמודות מסוג char למספרי עמודות
+    // cols as chars to index
     private List<Integer> convertColumnsToIndices(List<Character> columnChars) {
         return columnChars.stream()
-                .map(c -> (int) c - 'A' + 1) // המרת כל עמודה לאינדקס מספרי (נניח ש-A מתחיל מ-0)
+                .map(c -> (int) c - 'A' + 1) // every col to num (starts from A=0)
                 .collect(Collectors.toList());
     }
 
-    // שליפת השורות מתוך רשימת השורות שהתקבלה
+    // returns the rows from sheet according to the list of wanted rows
     private Map<Integer, List<CellDto>> getRowsInRange(List<Integer> rows) {
         Map<Integer, List<CellDto>> rowsMap = new HashMap<>();
 
         for (int row : rows) {
             List<CellDto> cellsInRow = new ArrayList<>();
 
-            // שליפת כל התאים בשורה הנוכחית
+            // gets all the cells in current row
             for (int col = 1; col <= numOfColumns; col++) {
                 Coordinate coord = CoordinateCache.createCoordinate(row, col);
                 if (cellsInSheet.containsKey(coord)) {
@@ -171,66 +170,66 @@ public class SheetDtoImpl implements SheetDto{
 
     private List<Integer> sortRowsByGivenColumns(Map<Integer, List<CellDto>> rowsInRange, List<Integer> columnIndices) {
 
-        // מיון השורות שנמצאות בטווח שנבחר
+        // sorting rows from row list
         List<Integer> sortedRowNumbers = rowsInRange.keySet().stream()
                 .sorted((row1, row2) -> compareRowsByColumns(row1, row2, rowsInRange, columnIndices))
                 .collect(Collectors.toList());
 
-        // מחזירים רק את רשימת השורות שבטווח הממוינות
+        // returns the rows sorted
         return sortedRowNumbers;
     }
 
 
-    // פונקציה שמבצעת השוואה בין שתי שורות לפי עמודות נבחרות
+    // comapres two row in the order of list of cols
     private int compareRowsByColumns(int row1, int row2, Map<Integer, List<CellDto>> rowsInRange, List<Integer> columnIndices) {
-        // עבור כל עמודה שבחרנו, בודקים את הערכים שלה עבור כל שורה
+        //moving according the cols cell cy cell
         for (Integer columnIndex : columnIndices) {
             CellDto cell1 = getCellInRow(row1, columnIndex, rowsInRange);
             CellDto cell2 = getCellInRow(row2, columnIndex, rowsInRange);
 
-            // מבצעים השוואה בין הערכים המספריים (אם הם קיימים)
-            int comparison = compareCells(cell1, cell2);  // השוואה בכיוון הנכון (cell1 קודם)
+            // compares
+            int comparison = compareCells(cell1, cell2);
             if (comparison != 0) {
-                return comparison; // אם יש תוצאה חיובית, מחזירים אותה
+                return comparison; // if the return value has an answer (values differ) then returns -1 or 1 accordingly
             }
         }
-        return 0; // אם כל הערכים זהים, לא משנים את הסדר
+        return 0; // if all the values are the same so it wont change the order of rows - return 0
     }
 
 
-    // שליפת תא מסוים משורה לפי אינדקס העמודה
+    // gets cell in row according to col
     private CellDto getCellInRow(int row, int column, Map<Integer, List<CellDto>> rowsInRange) {
         List<CellDto> rowCells = rowsInRange.get(row);
 
-        // חיפוש התא לפי אינדקס העמודה
+        // looks for the index
         for (CellDto cell : rowCells) {
             if (cell.getCoordinate().getColumn() == column) {
                 return cell;
             }
         }
 
-        // אם לא מצאנו תא, מחזירים תא ריק (יכול להיות בהתאם לאיך שאתה מייצג תאים ריקים)
+        // returns null if cell wasnt found
         return null;
     }
 
 
-    // השוואה בין שני תאים על בסיס ערכים מספריים
+    // compares cells according to value
     private int compareCells(CellDto cell1, CellDto cell2) {
         if (cell1 == null && cell2 == null) {
-            return 0; // שני התאים ריקים, אין שינוי
+            return 0; // both empty - no change
         } else if (cell1 == null) {
-            return -1; // תא ריק נחשב כקטן
+            return -1; // cell 1 empty will be considered smaller than value
         } else if (cell2 == null) {
-            return 1;  // תא ריק נחשב כקטן
+            return 1;  // cell 2 empty will be favoring cell 1
         }
 
-        // מיון לפי ערכים מספריים, נתעלם ממחרוזות ומערכים לא מספריים
+        // according to num' ignores non numeric values
         try {
             double value1 = Double.parseDouble(cell1.getValue());
             double value2 = Double.parseDouble(cell2.getValue());
             return Double.compare(value1, value2);
         } catch (NumberFormatException e) {
-            return 0; // אם לא ניתן להמיר למספר, לא משנים את הסדר
+            return 0; // if not a number, cant be comapred
         }
     }
 
@@ -244,37 +243,36 @@ public class SheetDtoImpl implements SheetDto{
         return order;
     }
 
+
     public Map<String, RangeDto>  getRanges() {
         return ranges;
     }
 
 
-
-
-
+    // uses set to keep unique values
     public Map<String, List<String>> getUniqueValuesInRange(List<Integer> rows, List<String> columns) {
-        Map<String, Set<String>> uniqueValuesMap = new HashMap<>(); // נשתמש ב-Set כדי לשמור על ערכים ייחודיים
+        Map<String, Set<String>> uniqueValuesMap = new HashMap<>(); // uses set to keep unique values
 
-        // מעבר על כל השורות שהתקבלו ברשימה
+        // runs on all the rows in range
         for (int row : rows) {
-            // מעבר על כל העמודות בטווח שנבחר
+            // all cols on range
             for (String colName : columns) {
-                int col = convertColumnStringToNumber(colName); // המרת שם העמודה למספר אינדקס
+                int col = convertColumnStringToNumber(colName); // col name to index
 
-                Coordinate coordinate = CoordinateCache.createCoordinate(row, col); // יצירת הקואורדינטה עבור כל תא
+                Coordinate coordinate = CoordinateCache.createCoordinate(row, col); // coor for cell
                 CellDto cell = cellsInSheet.get(coordinate);
 
                 if (cell != null) {
                     String cellValue = cell.getValue();
 
-                    // הוספת הערך למפה של הערכים הייחודיים עבור העמודה
+                    // adding value
                     uniqueValuesMap.putIfAbsent(colName, new HashSet<>());
                     uniqueValuesMap.get(colName).add(cellValue);
                 }
             }
         }
 
-        // המרה ממפה של Sets למפה של Lists כדי להתאים למבנה הנתונים הנדרש
+        // converts set to list to get the desired resoult
         Map<String, List<String>> result = new HashMap<>();
         for (Map.Entry<String, Set<String>> entry : uniqueValuesMap.entrySet()) {
             result.put(entry.getKey(), new ArrayList<>(entry.getValue()));
@@ -283,7 +281,7 @@ public class SheetDtoImpl implements SheetDto{
         return result;
     }
 
-    // פונקציה המסייעת להמרת שם העמודה למספר
+    // col from string to num
     private int convertColumnStringToNumber(String columnString) {
         int columnNumber = 0;
         for (int i = 0; i < columnString.length(); i++) {
@@ -295,23 +293,7 @@ public class SheetDtoImpl implements SheetDto{
 
 
     public List<Integer> getNumCellChangedHistory() {
-        // מחזיר עותק של הרשימה כדי למנוע שינוי של הרשימה המקורית מחוץ למחלקה
         return numCellChangedHistory;
     }
-
-
-
-    // פונקציה המסייעת להמרת מספר עמודה לשם (למשל 1 -> "A", 2 -> "B")
-    private String convertColumnNumberToString(int columnNumber) {
-        StringBuilder columnName = new StringBuilder();
-        while (columnNumber > 0) {
-            int remainder = (columnNumber - 1) % 26;
-            columnName.insert(0, (char)(remainder + 'A'));
-            columnNumber = (columnNumber - 1) / 26;
-        }
-        return columnName.toString();
-    }
-
-
 
 }

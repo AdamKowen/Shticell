@@ -17,7 +17,6 @@ public class RangeDto {
         this.name = og.getName();
     }
 
-
     public BoundariesDto getBoundaries() {
         return boundaries;
     }
