@@ -49,38 +49,37 @@ public class SumExpression implements Expression {
     }
 
     private boolean isRangeInBoundaries(SheetReadActions sheet, String rangeName) {
-        // קבלת גבולות הטווח מהגיליון
+        // gets range from sheet
         Range range = sheet.getRanges().get(rangeName);
         if (range == null) {
-            // אם הטווח לא קיים, נחזיר false
+            // if doesnt exist return false
             return false;
         }
 
-        // קבלת גבולות הגיליון
+        // gets the num of rows and cols
         int maxRows = sheet.getNumOfRows();
         int maxColumns = sheet.getNumOfColumns();
 
-        // קבלת התאים הראשונים והאחרונים בטווח והמרה שלהם לקואורדינטות
+        // gets the edge coordinates
         int[] topLeftCoords = convertToCoordinates(range.getBoundaries().getFrom());
         int[] bottomRightCoords = convertToCoordinates(range.getBoundaries().getTo());
 
-        // בדיקת גבולות הטווח מול גבולות הגיליון
+        // checks the coordinates if in range
         return topLeftCoords[0] >= 0 && topLeftCoords[1] >= 0 &&
                 bottomRightCoords[0] < maxRows && bottomRightCoords[1] < maxColumns;
     }
 
-    // פונקציית עזר להמרת מחרוזת של תא לקואורדינטות (שורה ועמודה)
+    // conversion from string to coordinate
     private int[] convertToCoordinates(String cell) {
         int row = -1;
         int column = -1;
 
-        // בדיקה אם המחרוזת מתחילה עם מספר (לדוגמה "1A") או אות (לדוגמה "A1")
         if (Character.isDigit(cell.charAt(0))) {
-            row = Integer.parseInt(cell.substring(0, 1)) - 1;  // השורה (מתחילה מ-0)
-            column = cell.charAt(1) - 'A';                     // העמודה (A=0, B=1 וכו')
+            row = Integer.parseInt(cell.substring(0, 1)) - 1;
+            column = cell.charAt(1) - 'A';
         } else if (Character.isLetter(cell.charAt(0))) {
-            column = cell.charAt(0) - 'A';                     // העמודה (A=0, B=1 וכו')
-            row = Integer.parseInt(cell.substring(1)) - 1;     // השורה (מתחילה מ-0)
+            column = cell.charAt(0) - 'A';
+            row = Integer.parseInt(cell.substring(1)) - 1;
         }
 
         return new int[]{row, column};

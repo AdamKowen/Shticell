@@ -19,7 +19,6 @@ public class IdentityExpression implements Expression {
         this.type = type;
     }
 
-
     @Override
     public EffectiveValue eval(SheetReadActions sheet) {
         return new EffectiveValueImpl(type, value);

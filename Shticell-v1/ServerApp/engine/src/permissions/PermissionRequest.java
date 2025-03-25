@@ -10,7 +10,7 @@ public class PermissionRequest {
         this.requesterUsername = requesterUsername;
         this.sheetName = sheetName;
         this.requestedPermission = requestedPermission;
-        this.status = RequestStatus.PENDING;  // מצב התחלתי
+        this.status = RequestStatus.PENDING;  // default status
     }
 
     public RequestStatus getStatus() {
@@ -33,6 +33,5 @@ public class PermissionRequest {
         return requestedPermission;
     }
 
-    // Getters and Setters
 }
 

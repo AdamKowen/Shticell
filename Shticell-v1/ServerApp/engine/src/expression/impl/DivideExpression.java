@@ -38,20 +38,15 @@ public class DivideExpression implements Expression {
         return new EffectiveValueImpl(CellType.NUMERIC, result);
     }
 
-
-
     @Override
     public CellType getFunctionResultType() {
         return CellType.NUMERIC;
     }
 
-
     @Override
     public Boolean doesContainRef(){
         return left.doesContainRef() || right.doesContainRef();
     }
-
-
 
     @Override
     public void collectDependencies(List<Coordinate> dependencies)

@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PermissionManager {
-    private Map<String, List<SheetPermission>> permissions; // מיפוי שמות גיליונות לרשימות של הרשאות
+    private Map<String, List<SheetPermission>> permissions; // names of sheet with list of permission
     private List<PermissionRequest> requests = new ArrayList<>();
 
     public PermissionManager() {
@@ -17,17 +17,17 @@ public class PermissionManager {
         requests=new ArrayList<>();
     }
 
-    // הוספת בקשת הרשאה חדשה
+    // adds a new permission
     public void addPermissionRequest(PermissionRequest request) {
         requests.add(request);
     }
 
-    // קבלת רשימת בקשות
+    // gets list of requests
     public List<PermissionRequest> getPendingRequests() {
         return requests.stream().filter(r -> r.getStatus() == RequestStatus.PENDING).collect(Collectors.toList());
     }
 
-    // אישור או דחיית בקשה
+    // approve or reject a request
     public void updateRequestStatus(PermissionRequest request, RequestStatus newStatus) {
         request.setStatus(newStatus);
         if (newStatus == RequestStatus.APPROVED) {
@@ -36,16 +36,13 @@ public class PermissionManager {
         }
     }
 
-
-
-
-    // הוספת הרשאה חדשה למשתמש על גיליון
+    // adds the permission to sheet
     public void addPermission(String sheetName, SheetPermission permission) {
         permissions.computeIfAbsent(sheetName, k -> new ArrayList<>()).add(permission);
 
     }
 
-    // עדכון הרשאה קיימת
+    // update an existing permission
     public void updatePermission(String sheetName, String username, PermissionType newType) {
         List<SheetPermission> sheetPermissions = permissions.get(sheetName);
         if (sheetPermissions != null) {
@@ -58,7 +55,7 @@ public class PermissionManager {
         }
     }
 
-    // בדיקת הרשאה
+    // checks for the type of permission
     public PermissionType getPermissionType(String sheetName, String username) {
         List<SheetPermission> sheetPermissions = permissions.get(sheetName);
         if (sheetPermissions != null) {
@@ -70,7 +67,6 @@ public class PermissionManager {
         }
         return PermissionType.NONE;
     }
-
 
     public boolean hasEditPermission(String sheetName, String username) {
         PermissionType type = getPermissionType(sheetName, username);
@@ -89,13 +85,13 @@ public class PermissionManager {
     public List<PermissionDTO> getPermissionsForSheetDTO(String sheetName) {
         List<PermissionDTO> dtoList = new ArrayList<>();
 
-        // הוספת הרשאות
+        // adds permissions
         List<SheetPermission> sheetPermissions = permissions.getOrDefault(sheetName, new ArrayList<>());
         for (SheetPermission perm : sheetPermissions) {
             dtoList.add(new PermissionDTO(perm.getUsername(), perm.getType().toString(), "Granted"));
         }
 
-        // הוספת בקשות ממתינות
+        // adds requests
         for (PermissionRequest req : requests) {
             if (req.getSheetName().equals(sheetName) && req.getStatus() == RequestStatus.PENDING) {
                 dtoList.add(new PermissionDTO(req.getRequesterUsername(), req.getRequestedPermission().toString(), "Pending"));

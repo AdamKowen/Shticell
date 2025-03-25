@@ -69,38 +69,38 @@ public class AverageExpression implements Expression {
     }
 
     private boolean isRangeInBoundaries(SheetReadActions sheet, String rangeName) {
-        // קבלת גבולות הטווח מהגיליון
+        // getting ranges from the sheet
         Range range = sheet.getRanges().get(rangeName);
         if (range == null) {
-            // אם הטווח לא קיים, נחזיר false
+            //  if range doesnt exist return false
             return false;
         }
 
-        // קבלת גבולות הגיליון
+        // gets num of rows and cols
         int maxRows = sheet.getNumOfRows();
         int maxColumns = sheet.getNumOfColumns();
 
-        // קבלת התאים הראשונים והאחרונים בטווח והמרה שלהם לקואורדינטות
+        // gets the edge coordinates turns them into coordinates
         int[] topLeftCoords = convertToCoordinates(range.getBoundaries().getFrom());
         int[] bottomRightCoords = convertToCoordinates(range.getBoundaries().getTo());
 
-        // בדיקת גבולות הטווח מול גבולות הגיליון
+        // checks if ranges ok according to sheet
         return topLeftCoords[0] >= 0 && topLeftCoords[1] >= 0 &&
                 bottomRightCoords[0] < maxRows && bottomRightCoords[1] < maxColumns;
     }
 
-    // פונקציית עזר להמרת מחרוזת של תא לקואורדינטות (שורה ועמודה)
+    // converts string to coordinates
     private int[] convertToCoordinates(String cell) {
         int row = -1;
         int column = -1;
 
-        // בדיקה אם המחרוזת מתחילה עם מספר (לדוגמה "1A") או אות (לדוגמה "A1")
+        // checks if starts with letter or number
         if (Character.isDigit(cell.charAt(0))) {
-            row = Integer.parseInt(cell.substring(0, 1)) - 1;  // השורה (מתחילה מ-0)
-            column = cell.charAt(1) - 'A';                     // העמודה (A=0, B=1 וכו')
+            row = Integer.parseInt(cell.substring(0, 1)) - 1;  // roe (starts from 0)
+            column = cell.charAt(1) - 'A';                     // col
         } else if (Character.isLetter(cell.charAt(0))) {
-            column = cell.charAt(0) - 'A';                     // העמודה (A=0, B=1 וכו')
-            row = Integer.parseInt(cell.substring(1)) - 1;     // השורה (מתחילה מ-0)
+            column = cell.charAt(0) - 'A';                     // col
+            row = Integer.parseInt(cell.substring(1)) - 1;     // row (starts from 0)
         }
 
 
