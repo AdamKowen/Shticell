@@ -26,12 +26,12 @@ public class JSONUtils {
             .create();
 
 
-    // המרת אובייקט ל-JSON
+    // object to json
     public static String toJson(Object object) {
         return gson.toJson(object);
     }
 
-    // המרת JSON לאובייקט
+    // json to object
     public static <T> T fromJson(String json, Class<T> classOfT) {
         return gson.fromJson(json, classOfT);
     }

@@ -99,6 +99,7 @@ public class SheetEngineImpl implements sheetEngine.SheetEngine {
             String oldValue = currCell.getOriginalValue();
             if (!oldValue.equals(newValue)) { // Recalculate only if the value changed
                 currCell.setCellOriginalValue(newValue, currentSheet.getVersion() + 1);
+                currCell.setLastUserUpdated(currentUser);
                 recalculateSheet();
             }
         } else {
