@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 @WebServlet(name = "UpdateTemporarySheetServlet", urlPatterns = {"/updateTemporarySheet"})
 public class UpdateTemporarySheetServlet extends HttpServlet {
 
+    //updating temp sheet for dynamic analysis function
     @Override
     protected synchronized void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
@@ -39,6 +40,7 @@ public class UpdateTemporarySheetServlet extends HttpServlet {
             return;
         }
 
+        //getting new value from client
         double newValue;
         try {
             newValue = Double.parseDouble(newValueStr);
@@ -52,18 +54,18 @@ public class UpdateTemporarySheetServlet extends HttpServlet {
         SheetEngine sheetEngine = user.getSheetEngine();
 
         try {
-            // מנסה לעדכן את הערך בגליון הזמני
+            // trying to update the value on the temp sheet
             sheetEngine.updateCellBasedOnSlider(cellId, newValueStr);
 
-            // קבלת הגיליון הזמני כ-DTO
+            // getting temp sheet dto
             SheetDto temporarySheetDto = sheetEngine.getTemporarySheetDTO();
 
-            // המרה ל-JSON ושליחה ללקוח
+            // sending to client the updated temp sheet
             String jsonResponse = JSONUtils.toJson(temporarySheetDto);
             response.getWriter().print(jsonResponse);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
-            // במקרה של שגיאה בעדכון התא, החזרה ללקוח עם הודעת שגיאה מתאימה
+            // if a problem occurred update client side
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Failed to update cell: " + e.getMessage());
         }

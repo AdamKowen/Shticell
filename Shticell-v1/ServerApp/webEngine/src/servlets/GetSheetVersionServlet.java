@@ -20,11 +20,11 @@ public class GetSheetVersionServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // קביעת סוג התוכן ל-JSON
+        // sets the content type to json
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
-        // קבלת שם המשתמש מה-Session
+        // users session
         String username = SessionUtils.getUsername(req);
         if (username == null) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -32,7 +32,7 @@ public class GetSheetVersionServlet extends HttpServlet {
             return;
         }
 
-        // קבלת מספר הגרסה מהבקשה
+        // getting the version number from req
         String versionParam = req.getParameter("version");
         if (versionParam == null) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -49,11 +49,11 @@ public class GetSheetVersionServlet extends HttpServlet {
             return;
         }
 
-        // קבלת ה-SheetEngine של המשתמש
+        // gets sheet engine of user
         User user = ServletUtils.getUserManager(getServletContext()).getUser(username);
         SheetEngine sheetEngine = user.getSheetEngine();
 
-        // קבלת גרסה מסוימת כ-DTO
+        // gets DTO of req version
         SheetDto sheetVersionDto = sheetEngine.getVersionDto(version);
         if (sheetVersionDto == null) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -61,10 +61,10 @@ public class GetSheetVersionServlet extends HttpServlet {
             return;
         }
 
-        // המרת ה-SheetDto ל-JSON באמצעות JSONUtils
+        // SheetDto to Json using Jason utils
         String jsonResponse = JSONUtils.toJson(sheetVersionDto);
 
-        // שליחת התגובה בחזרה ללקוח
+        // sending the json back to client
         PrintWriter out = resp.getWriter();
         out.print(jsonResponse);
         out.flush();

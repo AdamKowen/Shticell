@@ -28,7 +28,7 @@ public class CellDtoAdapter extends TypeAdapter<CellDto> {
 
         out.name("originalValue").value(cellDto.getOriginalValue());
 
-        // משתמשים ב-getValue עבור הערך האפקטיבי
+        // get value returns the effective value of cell
         out.name("value").value(cellDto.getValue());
 
         out.name("version").value(cellDto.getVersion());
@@ -92,10 +92,10 @@ public class CellDtoAdapter extends TypeAdapter<CellDto> {
         }
         in.endObject();
 
-        // ניצור EffectiveValueImpl עבור הערך (כאן אנו מניחים שיש לך ערך CellType)
+        // creating effective value of string
         EffectiveValue effectiveValue = new EffectiveValueImpl(CellType.STRING, value);
 
-        // יצירת CellDtoImpl עם הערכים שנקראו
+        // creating cell dto with all collected data
         return new CellDtoImpl(coordinate, originalValue, effectiveValue, version, dependsOn, influencingOn, style, lastUserUpdated);
     }
 

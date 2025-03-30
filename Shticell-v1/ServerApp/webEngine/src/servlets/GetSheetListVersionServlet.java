@@ -13,13 +13,13 @@ import java.io.IOException;
 public class GetSheetListVersionServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // שליפת ה-UserManager מה-context
+        // user manager from the context of session
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
-        // קבלת מספר הגרסה העדכני של רשימת הגיליונות
+        // gets version of list
         int sheetListVersion = userManager.getUpdateSheetListVersion();
 
-        // שליחה כתגובה ללקוח
+        // sending the answer to client side
         response.setContentType("application/json");
         response.getWriter().write(String.valueOf(sheetListVersion));
     }

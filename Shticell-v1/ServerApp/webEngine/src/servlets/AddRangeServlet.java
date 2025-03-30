@@ -18,7 +18,7 @@ public class AddRangeServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // בדיקת התחברות משתמש
+        // checks users login information / session
         String username = SessionUtils.getUsername(req);
         if (username == null) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -26,7 +26,7 @@ public class AddRangeServlet extends HttpServlet {
             return;
         }
 
-        // קבלת הפרמטרים מהבקשה
+        // gets params from request
         String rangeName = req.getParameter("rangeName");
         String topLeft = req.getParameter("topLeft");
         String bottomRight = req.getParameter("bottomRight");
@@ -37,17 +37,17 @@ public class AddRangeServlet extends HttpServlet {
             return;
         }
 
-        // קבלת SheetEngine של המשתמש
+        // gets sheet engine of user
         User user = ServletUtils.getUserManager(getServletContext()).getUser(username);
         SheetEngine sheetEngine = user.getSheetEngine();
 
         try {
-            // הוספת הטווח
+            // adding the range
             sheetEngine.addRange(rangeName, topLeft, bottomRight);
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write("Range '" + rangeName + "' added successfully.");
         } catch (Exception e) {
-            // טיפול בשגיאה והצגת הודעת שגיאה
+            // error handeling
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write(e.getMessage());
         }

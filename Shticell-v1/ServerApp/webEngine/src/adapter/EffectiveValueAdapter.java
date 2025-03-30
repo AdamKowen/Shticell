@@ -39,4 +39,5 @@ public class EffectiveValueAdapter extends TypeAdapter<EffectiveValue> {
 
         return new EffectiveValueImpl(cellType, value);
     }
+
 }

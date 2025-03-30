@@ -32,19 +32,21 @@ public class PermissionRequestServlet extends HttpServlet {
         permissionManager = userManager.getPermissionManager();
     }
 
-    // שליחת בקשה חדשה
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String username = SessionUtils.getUsername(request);
+        String username = SessionUtils.getUsername(request); // gets user in session
         if (username == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Unauthorized: User not logged in");
             return;
         }
 
+        //gets the sheet name from req
         String sheetName = request.getParameter("sheetName");
         String requestedPermissionType = request.getParameter("type");
 
+        // check for valid req
         if (sheetName == null || requestedPermissionType == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("Missing parameters");
@@ -52,12 +54,14 @@ public class PermissionRequestServlet extends HttpServlet {
         }
 
         try {
+            //getting the permission type in enum from manager
             PermissionType permissionType = PermissionType.valueOf(requestedPermissionType.toUpperCase());
             PermissionRequest permissionRequest = new PermissionRequest(username, sheetName, permissionType);
-            permissionManager.addPermissionRequest(permissionRequest);
+            permissionManager.addPermissionRequest(permissionRequest); //adding permission
+
 
             response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().write("Permission request submitted successfully.");
+            response.getWriter().write("Permission request submitted successfully."); //sending validation to user
         } catch (IllegalArgumentException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("Invalid permission type");
@@ -67,7 +71,7 @@ public class PermissionRequestServlet extends HttpServlet {
         }
     }
 
-    // הצגת רשימת בקשות ממתינות לאישור
+    // list of request waiting for approval of sheet from req
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
@@ -80,14 +84,14 @@ public class PermissionRequestServlet extends HttpServlet {
         }
     }
 
-    // עדכון סטטוס בקשה (אישור או דחייה)
+    // updatinf request (approve of reject)
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String targetUsername = request.getParameter("username"); // המשתמש שעבורו נרצה לאשר את הבקשה
+        String targetUsername = request.getParameter("username"); // user name of the user we would like to approve his request
         String sheetName = request.getParameter("sheetName");
         String status = request.getParameter("status");
 
-        // בדיקה שכל הפרמטרים הנדרשים קיימים
+        // checks all params
         if (targetUsername == null || sheetName == null || status == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("Missing parameters: username, sheetName, or status");
@@ -95,14 +99,14 @@ public class PermissionRequestServlet extends HttpServlet {
         }
 
         try {
-            // המרת סטטוס הבקשה לסוג ה-Enum
+            // status of req to enum
             RequestStatus requestStatus = RequestStatus.valueOf(status.toUpperCase());
 
-            // מציאת הבקשה עבור המשתמש והגיליון הנכונים
+            // fining the correct rew for sheet and user
             PermissionRequest permissionRequest = findRequest(targetUsername, sheetName);
 
             if (permissionRequest != null) {
-                // עדכון הסטטוס של הבקשה
+                // updating req
                 permissionManager.updateRequestStatus(permissionRequest, requestStatus);
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write("Request status updated.");
@@ -119,7 +123,7 @@ public class PermissionRequestServlet extends HttpServlet {
         }
     }
 
-    // פונקציה למציאת בקשה על פי שם משתמש וגיליון
+    // finds req according to user and sheet
     private PermissionRequest findRequest(String username, String sheetName) {
         return permissionManager.getPendingRequests().stream()
                 .filter(req -> req.getRequesterUsername().equals(username) && req.getSheetName().equals(sheetName))

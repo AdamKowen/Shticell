@@ -35,7 +35,7 @@ public class ApprovalRequestServlet extends HttpServlet {
         String sheetName = request.getParameter("sheetName");
         String status = request.getParameter("status");
 
-        // בדיקה שכל הפרמטרים הנדרשים קיימים
+        // checks that all required params exist
         if (targetUsername == null || sheetName == null || status == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("Missing parameters: username, sheetName, or status");
@@ -43,14 +43,14 @@ public class ApprovalRequestServlet extends HttpServlet {
         }
 
         try {
-            // המרת הסטטוס ל-Enum
+            // status to enum
             RequestStatus requestStatus = RequestStatus.valueOf(status.toUpperCase());
 
-            // מציאת הבקשה לפי המשתמש והגיליון
+            // find the request according to user name and sheet name
             PermissionRequest permissionRequest = findRequest(targetUsername, sheetName);
 
             if (permissionRequest != null) {
-                // עדכון סטטוס הבקשה
+                // updates the request
                 permissionManager.updateRequestStatus(permissionRequest, requestStatus);
 
                 //user in session - approving request
@@ -83,7 +83,7 @@ public class ApprovalRequestServlet extends HttpServlet {
         }
     }
 
-    // פונקציה למציאת הבקשה לפי המשתמש והגיליון
+    // finds the request according to user name and sheet name
     private PermissionRequest findRequest(String username, String sheetName) {
         return permissionManager.getPendingRequests().stream()
                 .filter(req -> req.getRequesterUsername().equals(username) && req.getSheetName().equals(sheetName))

@@ -18,7 +18,7 @@ public class DeleteRangeServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // בדיקת התחברות משתמש
+        // checks users login
         String username = SessionUtils.getUsername(req);
         if (username == null) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -26,7 +26,7 @@ public class DeleteRangeServlet extends HttpServlet {
             return;
         }
 
-        // קבלת שם הטווח למחיקה
+        // range for deletion
         String rangeName = req.getParameter("rangeName");
 
         if (rangeName == null || rangeName.isEmpty()) {
@@ -35,17 +35,17 @@ public class DeleteRangeServlet extends HttpServlet {
             return;
         }
 
-        // קבלת SheetEngine של המשתמש
+        // sheet engine of user
         User user = ServletUtils.getUserManager(getServletContext()).getUser(username);
         SheetEngine sheetEngine = user.getSheetEngine();
 
         try {
-            // מחיקת הטווח
+            // deletes range
             sheetEngine.deleteRange(rangeName);
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write("Range '" + rangeName + "' deleted successfully.");
         } catch (Exception e) {
-            // טיפול בשגיאה והצגת הודעת שגיאה
+            // error handling
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write(e.getMessage());
         }

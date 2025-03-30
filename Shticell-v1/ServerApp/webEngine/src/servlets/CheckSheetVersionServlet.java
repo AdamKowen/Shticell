@@ -18,7 +18,7 @@ public class CheckSheetVersionServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // קבלת שם המשתמש מה-Session
+        // gets username fron session
         String username = SessionUtils.getUsername(req);
         if (username == null) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -26,7 +26,7 @@ public class CheckSheetVersionServlet extends HttpServlet {
             return;
         }
 
-        // קבלת גרסת הגיליון הנוכחית אצל המשתמש
+        // gets current version of users sheet (from client side)
         int clientSheetVersion;
         try {
             clientSheetVersion = Integer.parseInt(req.getParameter("sheetVersion"));
@@ -36,11 +36,11 @@ public class CheckSheetVersionServlet extends HttpServlet {
             return;
         }
 
-        // קבלת SheetEngine של המשתמש
+        // sheetengine of user
         User user = ServletUtils.getUserManager(getServletContext()).getUser(username);
         SheetEngine sheetEngine = user.getSheetEngine();
 
-        // בדיקה אם הגרסה של המשתמש תואמת לגרסה הנוכחית בשרת
+        // checks if the curr version matches (client side) the one in the server
         int currentSheetVersion = sheetEngine.getCurrentSheetVersion();
         if (clientSheetVersion == currentSheetVersion) {
             resp.setStatus(HttpServletResponse.SC_OK);

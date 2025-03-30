@@ -22,7 +22,7 @@ public class PermissionServlet extends HttpServlet {
     UserManager userManager = ServletUtils.getUserManager(getServletContext());
     private final Gson gson = new Gson();
 
-    // הוספת הרשאה חדשה
+    // adding new req
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String sheetName = request.getParameter("sheetName");
@@ -42,7 +42,7 @@ public class PermissionServlet extends HttpServlet {
         response.getWriter().println("Permission added successfully.");
     }
 
-    // עדכון הרשאה קיימת/
+    // updating an existing rew
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String[] pathInfo = request.getPathInfo().split("/");
@@ -69,7 +69,7 @@ public class PermissionServlet extends HttpServlet {
         response.getWriter().println("Permission updated successfully.");
     }
 
-    // קבלת כל ההרשאות לגיליון מסוים
+    // getting all req of sheet
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String[] pathInfo = request.getPathInfo().split("/");

@@ -18,39 +18,39 @@ import java.util.stream.Collectors;
 public class UserPendingRequestStatusServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // קבלת ה-UserManager מה-context
+        // user manager
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
-        // קבלת שם המשתמש מתוך הסשן
+        // getting user name from session
         String username = (String) request.getSession().getAttribute("username");
         if (username == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not logged in.");
             return;
         }
 
-        // קבלת המשתמש מתוך UserManager
+        // getting name from session
         User user = userManager.getUser(username);
         if (user == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "User not found.");
             return;
         }
 
-        // קבלת PermissionManager לקבלת הבקשות של המשתמש
+        // getting all req
         PermissionManager permissionManager = userManager.getPermissionManager();
 
-        // בדיקת בקשות הממתינות לאישור (או נדחו) עבור המשתמש
+        // collecting all pending req
         List<PermissionRequest> userRequests = permissionManager.getPendingRequests().stream()
                 .filter(req -> req.getRequesterUsername().equals(username))
                 .collect(Collectors.toList());
 
-        // אם אין בקשות למשתמש, מחזירים תגובה ריקה
+        // if there is none return empty
         if (userRequests.isEmpty()) {
             response.setContentType("application/json");
             response.getWriter().write(""); // מחרוזת ריקה
             return;
         }
 
-        // יצירת תגובת JSON עם המידע על כל הבקשות והסטטוסים שלהן
+        // bulding the json response
         StringBuilder jsonResponse = new StringBuilder("[");
         for (int i = 0; i < userRequests.size(); i++) {
             PermissionRequest req = userRequests.get(i);
@@ -64,7 +64,7 @@ public class UserPendingRequestStatusServlet extends HttpServlet {
         }
         jsonResponse.append("]");
 
-        // הגדרת סוג התוכן והחזרת התשובה ללקוח
+        // returning response to client
         response.setContentType("application/json");
         response.getWriter().write(jsonResponse.toString());
     }

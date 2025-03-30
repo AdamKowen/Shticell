@@ -19,11 +19,11 @@ import java.util.List;
 public class GetSheetsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // שליפת ה-UserManager וה-PermissionManager מה-context
+        // gets the user and the permission from context
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
         PermissionManager permissionManager = userManager.getPermissionManager();
 
-        // שליפת שם המשתמש מהסשן
+        // session user name
         String username = SessionUtils.getUsername(request);
         if (username == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -31,22 +31,22 @@ public class GetSheetsServlet extends HttpServlet {
             return;
         }
 
-        // שליפת כל המידע על הגיליונות
+        // list of all the sheets in the system
         List<SheetInfoDto> sheetList = userManager.getAllSheetsInfo();
 
-        // עדכון הרשאות עבור כל גיליון ברשימה
+        // insert all sheet with the owner name
         for (SheetInfoDto sheetInfo : sheetList) {
             String sheetName = sheetInfo.getSheetName();
             String ownerName = sheetInfo.getOwnerName();
 
-            // בדיקה האם המשתמש הוא הבעלים של הגיליון
+            // checks access info
             if (ownerName.equals(username)) {
                 sheetInfo.setAccess("owner");
             } else {
-                // קבלת סוג ההרשאה למשתמש על הגיליון הנוכחי
+                // gets permission type
                 PermissionType permissionType = permissionManager.getPermissionType(sheetName, username);
 
-                // קביעת ההרשאה לפי הסוג
+                // sets access according to permission type
                 switch (permissionType) {
                     case WRITER:
                         sheetInfo.setAccess("write");

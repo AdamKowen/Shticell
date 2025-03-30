@@ -28,18 +28,18 @@ public class UpdateCellsStyleServlet extends HttpServlet {
             return;
         }
 
-        // קבלת פרמטרים לבקשה
-        String styleType = req.getParameter("styleType"); // לדוגמה: "backgroundColor", "textColor", "alignment"
+        // params for request
+        String styleType = req.getParameter("styleType"); // "backgroundColor", "textColor", "alignment"
         String styleValue = req.getParameter("styleValue");
 
-        // בדיקה אם כל הפרמטרים התקבלו
+        // checks if everything was received
         if (styleType == null || styleValue == null) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write("Missing parameters");
             return;
         }
 
-        // קבלת רשימות השורות והעמודות כ-JSON
+        // lists of cols and rows as jason
         Gson gson = new Gson();
         List<String> columns = gson.fromJson(req.getParameter("columns"), new TypeToken<List<String>>(){}.getType());
         List<Integer> rows = gson.fromJson(req.getParameter("rows"), new TypeToken<List<Integer>>(){}.getType());
@@ -48,7 +48,7 @@ public class UpdateCellsStyleServlet extends HttpServlet {
         SheetEngine sheetEngine = user.getSheetEngine();
 
         try {
-            // עדכון הסטייל עבור כל תא במערך שהתקבל
+            // update style of every cell in lists
             sheetEngine.updateCellsStyle(columns, rows, styleType, styleValue);
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write("Style updated successfully for cell range.");

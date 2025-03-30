@@ -19,26 +19,26 @@ import java.util.List;
 public class SheetPermissionServlet extends HttpServlet {
 
 
-    // מקבל את כל ההרשאות והבקשות הממתינות עבור גיליון מסוים
+    // all permission of a certain sheet
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // קבלת שם הגיליון מהפרמטר
+        // getting sheet name from params
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
         PermissionManager permissionManager= userManager.getPermissionManager();
         Gson gson = new Gson();
         String sheetName = request.getParameter("sheetName");
 
-        // בדיקת תקינות של הפרמטר
+        // checks if valid params
         if (sheetName == null || sheetName.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println("Missing or empty sheetName parameter.");
             return;
         }
 
-        /// קבלת רשימת ההרשאות והבקשות מהמנהל
+        /// permission list from manager
         List<PermissionDTO> permissionList = permissionManager.getPermissionsForSheetDTO(sheetName);
 
-        // החזרת הנתונים כ-JSON
+        // return as jason
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         out.write(gson.toJson(permissionList));

@@ -18,7 +18,7 @@ public class ResetDynamicAnalysisServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // קבלת שם המשתמש מהסשן
+        // getting user name from session
         String username = SessionUtils.getUsername(req);
         if (username == null) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -26,7 +26,7 @@ public class ResetDynamicAnalysisServlet extends HttpServlet {
             return;
         }
 
-        // קבלת ה-User וה-SheetEngine
+        // getting users engine
         User user = ServletUtils.getUserManager(getServletContext()).getUser(username);
         if (user == null) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -36,10 +36,10 @@ public class ResetDynamicAnalysisServlet extends HttpServlet {
 
         SheetEngine sheetEngine = user.getSheetEngine();
 
-        // קריאה לפונקציה resetTempSheet
+        // resets temp sheet
         sheetEngine.resetTempSheet();
 
-        // החזרת תגובה מוצלחת
+        // responding with success if ok
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write("Dynamic analysis sliders reset successfully");
     }

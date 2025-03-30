@@ -14,11 +14,7 @@ import static constants.Constants.USERNAME;
 
 public class LoginServlet extends HttpServlet {
 
-    // urls that starts with forward slash '/' are considered absolute
-    // urls that doesn't start with forward slash '/' are considered relative to the place where this servlet request comes from
-    // you can use absolute paths, but then you need to build them from scratch, starting from the context path
-    // ( can be fetched from request.getContextPath() ) and then the 'absolute' path from it.
-    // Each method with it pros and cons...
+
     private final String CHAT_ROOM_URL = "../chatroom/chatroom.html";
     private final String SIGN_UP_URL = "../signup/signup.html";
     private final String LOGIN_ERROR_URL = "/pages/loginerror/login_attempt_after_error.jsp";  // must start with '/' since will be used in request dispatcher...
@@ -49,16 +45,10 @@ public class LoginServlet extends HttpServlet {
                 usernameFromParameter = usernameFromParameter.trim();
 
                 /*
-                One can ask why not enclose all the synchronizations inside the userManager object ?
-                Well, the atomic action we need to perform here includes both the question (isUserExists) and (potentially) the insertion
-                of a new user (addUser). These two actions needs to be considered atomic, and synchronizing only each one of them, solely, is not enough.
-                (of course there are other more sophisticated and performable means for that (atomic objects etc) but these are not in our scope)
 
                 The synchronized is on this instance (the servlet).
                 As the servlet is singleton - it is promised that all threads will be synchronized on the very same instance (crucial here)
 
-                A better code would be to perform only as little and as necessary things we need here inside the synchronized block and avoid
-                do here other not related actions (such as request dispatcher\redirection etc. this is shown here in that manner just to stress this issue
                  */
                 synchronized (this) {
                     if (userManager.isUserExists(usernameFromParameter)) {
@@ -67,8 +57,6 @@ public class LoginServlet extends HttpServlet {
                         // with a parameter that indicates that an error should be displayed
                         // the request dispatcher obtained from the servlet context is one that MUST get an absolute path (starting with'/')
                         // and is relative to the web app root
-                        // see this link for more details:
-                        // http://timjansen.github.io/jarfiller/guide/servlet25/requestdispatcher.xhtml
                         request.setAttribute(Constants.USER_NAME_ERROR, errorMessage);
                         getServletContext().getRequestDispatcher(LOGIN_ERROR_URL).forward(request, response);
                     }
@@ -92,7 +80,7 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
-// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -131,49 +119,3 @@ public class LoginServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 }
-
-
-
-
-/*
-package servlets;
-
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletResponse;
-import users.User;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import jakarta.servlet.http.HttpServletRequest;
-
-
-@WebServlet("/login")
-public class LoginServlet extends HttpServlet {
-
-    private Map<String, User> users = new HashMap<>();
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        // קריאת שם המשתמש מהבקשה
-        String username = request.getParameter("username");
-
-        // בדיקת תקינות השם והחזרת session ID
-        if (users.containsKey(username)) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("Username already exists.");
-        } else {
-            User user = new User(username);
-            users.put(username, user);
-            // חזרה עם ID של הסשן
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().write("User logged in successfully.");
-        }
-    }
-}
-
- */

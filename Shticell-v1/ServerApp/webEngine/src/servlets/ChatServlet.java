@@ -28,7 +28,6 @@ public class ChatServlet extends HttpServlet {
 
         /*/
         verify chat version given from the user is a valid number. if not it is considered an error and nothing is returned back
-        Obviously the UI should be ready for such a case and handle it properly
          */
         int chatVersion = ServletUtils.getIntParameter(request, Constants.CHAT_VERSION_PARAMETER);
         if (chatVersion == Constants.INT_PARAMETER_ERROR) {
@@ -37,7 +36,6 @@ public class ChatServlet extends HttpServlet {
 
         /*
         Synchronizing as minimum as I can to fetch only the relevant information from the chat manager and then only processing and sending this information onward
-        Note that the synchronization here is on the ServletContext, and the one that also synchronized on it is the chat servlet when adding new chat lines.
          */
         int chatManagerVersion = 0;
         List<SingleChatEntry> chatEntries;

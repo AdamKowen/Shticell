@@ -36,6 +36,6 @@ public class CoordinateAdapter extends TypeAdapter<Coordinate> {
         }
         in.endObject();
 
-        return new CoordinateImpl(row, column);  // יצירת CoordinateImpl
+        return new CoordinateImpl(row, column);  // CoordinateImpl for creating coordinate
     }
 }

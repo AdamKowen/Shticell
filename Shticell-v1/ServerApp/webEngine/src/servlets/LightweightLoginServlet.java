@@ -35,16 +35,10 @@ public class LightweightLoginServlet extends HttpServlet {
                 usernameFromParameter = usernameFromParameter.trim();
 
                 /*
-                One can ask why not enclose all the synchronizations inside the userManager object ?
-                Well, the atomic action we need to perform here includes both the question (isUserExists) and (potentially) the insertion
-                of a new user (addUser). These two actions needs to be considered atomic, and synchronizing only each one of them, solely, is not enough.
-                (of course there are other more sophisticated and performable means for that (atomic objects etc) but these are not in our scope)
 
                 The synchronized is on this instance (the servlet).
                 As the servlet is singleton - it is promised that all threads will be synchronized on the very same instance (crucial here)
 
-                A better code would be to perform only as little and as necessary things we need here inside the synchronized block and avoid
-                do here other not related actions (such as response setup. this is shown here in that manner just to stress this issue
                  */
                 synchronized (this) {
                     if (userManager.isUserExists(usernameFromParameter)) {
