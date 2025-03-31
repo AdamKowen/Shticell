@@ -17,12 +17,12 @@ public class UImodel {
     public UImodel() {
     }
 
-    // קבלת ה-StringProperty של תא לפי מיקום, אם התא לא קיים, נוצר חדש אוטומטית
+    // getting StringProperty of cell according to placement. if it doesnt exist, new one is created
     public StringProperty getCellProperty(Coordinate coordinate) {
         return cellProperties.computeIfAbsent(coordinate, k -> new SimpleStringProperty(""));
     }
 
-    // עדכון תא
+    // Updating cell
     public void updateCell(Coordinate coordinate, String value) {
         getCellProperty(coordinate).set(value);
     }
