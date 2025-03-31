@@ -148,6 +148,11 @@
                <content>
                   <fx:include fx:id="sheetVersion" source="../sheet/sheet.fxml" />
                </content></Tab>
+            <Tab text="  Chart  ">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </Tab>
         </tabs>
       </TabPane>
    </center>
@@ -370,6 +375,7 @@
                                  </content>
                               </ScrollPane>
                            </content></TitledPane>
+                        <TitledPane prefHeight="200.0" prefWidth="200.0" text="Chart" />
                       <TitledPane maxHeight="1.7976931348623157E308" prefWidth="150.0" text="Ranges">
                            <content>
                               <GridPane fx:id="hiddenItems" prefHeight="248.0" prefWidth="150.0">

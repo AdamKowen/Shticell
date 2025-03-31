@@ -24,130 +24,106 @@ import java.util.Map;
 public interface SheetController {
 
 
-    // שינוי יישור של התאים
-    void alignCells(Pos alignment);
-
-    // פעולה לסימון תאים (לדוגמה: לסמן תאים שתלויים אחד בשני)
-    void markCellsButtonActionListener(boolean isMarked);
-
-    // פעולה לשינוי צבע התאים
-    void toggleCellColor(boolean isSelected);
-
-    // עדכון תוכן של תא על פי קואורדינטה ותוכן חדש
-    void updateCellContent(Coordinate coordinate, String content);
-
-    // שינוי רוחב של עמודה מסוימת
-    void changeSecondColumnWidth(double width);
-
-    // שינוי גובה של שורה מסוימת
-    void changeSecondRowWidth(double width);
-
+    // Refresh a sheet update
     void updateSheet();
 
+    // Get the last updated version number of the sheet
     int getLastUpdatedVersion();
 
-    // החזרת הקואורדינטה של התא שנבחר
+    // Get the coordinate of the currently selected cell
     Coordinate getSelectedCoordinate();
 
-
-
-    // og text of cell
+    // Get the original (raw) text of the selected cell
     String getSelectedCoordinateOriginalValue();
 
-
-    // החזרת ה-Property של התא הנבחר
+    // Property for observing or binding the currently selected cell Label
     ObjectProperty<Label> selectedCellProperty();
 
-
-    void loadSheetFromFile(String filename) throws ParserConfigurationException, IOException, SheetLoadingException, SAXException;
-
-    void loadSheetVersion(int version);
-
+    // Load the latest/current version of the sheet
     void loadSheetCurrent();
 
-    SheetDto getVersionDto(int version);
-
+    // Sort rows in a given rectangular range using the specified column order
     void sortRowsInRange(Coordinate topLeft, Coordinate bottomRight, List<Character> colList);
 
+    // Cancel all sorting and revert to original row order
     void resetSorting();
 
-
+    // Property for the currently selected cell range (e.g. for filtering or styling)
     ObjectProperty<CellRange> selectedRangeProperty();
 
+    // Get all defined named ranges on the sheet
     Map<String, RangeDto> getRanges();
 
+    // Highlight a range associated with a function, by name
     void highlightFunctionRange(String rangeName);
 
-    //void deleteRange(String rangeName) throws Exception;
-
-    //void addRange(String rangeName) throws Exception;
-
+    // Get list of columns currently selected
     List<String> getSelectedColumns();
 
+    // Get a map of unique values for each column within a given range
     Map<String, List<String>> getUniqueValuesInRange(Coordinate topLeft, Coordinate bottomRight);
 
-
+    // Remove rows that contain a specific value in a specific column within the given range
     void removeRowsForValue(String columnName, String value, Coordinate topLeft, Coordinate bottomRight);
 
+    // Re-add rows that were previously filtered out
     void addRowsForValue(String columnName, String value, Coordinate topLeft, Coordinate bottomRight);
 
+    // Update the width of all columns
     void updateColWidth(double newWidth);
 
+    // Update the height of all rows
     void updateRowHeight(double newWidth);
 
-
-    // פונקציה לקבלת רוחב תא מסוים
+    // Get the width of a single cell
     double getCellWidth();
 
-    // פונקציה לקבלת גובה תא מסוים
-     double getCellHeight();
+    // Get the height of a single cell
+    double getCellHeight();
 
-    // פונקציה לקבלת ממוצע רוחב תאים בטווח
-     double getAverageCellWidth();
+    // Get the average width of cells in the current range or sheet
+    double getAverageCellWidth();
 
-    // פונקציה לקבלת ממוצע גובה תאים בטווח
-     double getAverageCellHeight();
+    // Get the average height of cells in the current range or sheet
+    double getAverageCellHeight();
 
-     void ChangeBackground(String colorHex);
-
-    void ChangeTextColor(String colorHex);
-
+    // Get the displayed grid position of a cell by its original coordinate
     Coordinate getDisplayedCellPosition(Coordinate originalCoord);
 
+    // Highlight dependencies of the currently selected cell (e.g. formula references)
     void highlightDependencies();
 
-    void ChangeAlignment(String Ali);
-
-    void resetStyle();
-
+    // Set read-only mode for the sheet (disable editing)
     void setReadOnly(boolean readOnly);
 
+    // Translate a displayed grid coordinate to the actual underlying data coordinate
     Coordinate actualCellPlacedOnGrid(Coordinate placeOnGrid);
 
-    void reSelect(String Topleft, String Bottomright)throws Exception;
+    // Reselect a range of cells given by their top-left and bottom-right string representation
+    void reSelect(String Topleft, String Bottomright) throws Exception;
 
-
-    //sets the dto of sheet to be displayed
+    // Set the sheet to be presented in the UI using a SheetDto
     void setPresentedSheet(SheetDto sheetDto);
 
-
+    // Get the version number of the currently displayed sheet
     int getCurrentSheetVersion();
 
+    // Get a list of all available versions of the sheet
     List<Integer> getVersionList();
 
+    // Get a list of row indices currently selected (for sorting, styling, etc.)
     List<Integer> getSelectedRows();
 
+    // Get the string representation of the current selection's top-left cell
+    String getTopLeft();
 
+    // Get the string representation of the current selection's bottom-right cell
+    String getBottomRight();
 
-    public String getTopLeft();
-
-    public String getBottomRight();
-
+    // Get the last cell that was updated by the user (as string coordinate)
     String getLastUserUpdatedCell();
 
+    // Get the displayed value of a cell given its string coordinate (e.g. "A1")
     String getCellValue(String cell);
+
 }
-
-
-
-
