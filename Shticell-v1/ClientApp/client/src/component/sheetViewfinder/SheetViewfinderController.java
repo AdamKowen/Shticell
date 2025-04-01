@@ -56,106 +56,65 @@ import static util.Constants.*;
 
 public class SheetViewfinderController {
 
+    // Main app controller:
+
     private AppMainController appMainController;
-    private Label selectedLabel = null;
+
+
+
+
+    // Main sheet controller:
+
+    @FXML private SheetController sheetComponentController;
+    @FXML private BorderPane sheetViewfinderRootPane;
+    private int currentSheetVersion;
+    private Timer versionCheckTimer; // updating sheet
+
+
+
+    // Previous version functionality:
+
+    @FXML private SheetController sheetVersionController;
+    @FXML private ComboBox<Object> versionComboBox;
+    @FXML private TabPane mainTabPane;
+    @FXML private Tab prevSheetTab;
+    @FXML private Tab currentSheetTab;
+
+
+
+
+    // Selection properties:
+
     private Coordinate selectedCoordinate = null;
-    private List<String> currentColsSelected;
-    private boolean isProgrammaticChange = false;
     private Coordinate topLeft;
     private Coordinate bottomRight;
-    private boolean responsiveMode = false;
-    private Timer versionCheckTimer;
-    private int currentSheetVersion;
+    private boolean isProgrammaticChange = false;
+
+
+
+    // Modes:
 
     private boolean readerMode = false;
-
     private boolean dynamicMode = false;
+    @FXML private ToggleButton darkModeToggle;
+    @FXML private ToggleButton responsiveToggle;
+    // responsive mode boolean property - connected to toggle
+    private BooleanProperty isResponsive = new SimpleBooleanProperty(false);
 
+
+
+
+
+    // Top toolbar:
 
     @FXML
-    private Button LoadButton;
+    private VBox topPane;
 
     @FXML
     private Label fileNameLabel;
 
     @FXML
-    private SheetController sheetComponentController;
-
-    @FXML
-    private SheetController sheetVersionController;
-
-    @FXML
-    private Button resetFiltersButton;
-
-    @FXML
-    private ComboBox<Object> versionComboBox;
-
-
-    @FXML
-    private ComboBox<Object> alignmentBox;
-
-
-    @FXML
-    private ToggleButton darkModeToggle;
-
-
-    @FXML
-    private ToggleButton responsiveToggle;
-
-    // תכונה בוליאנית שמייצגת את מצב הרספונסיביות
-    private BooleanProperty isResponsive = new SimpleBooleanProperty(false);
-
-
-
-    @FXML
-    private Accordion accordion;
-
-    @FXML
-    private Slider rowHeightSlider; // ה-Slider מה-FXML
-
-
-    @FXML
-    private Slider colWidthSlider; // ה-Slider מה-FXML
-
-
-    @FXML
-    private GridPane hiddenItems; // ה-GridPane שהוספת
-
-    @FXML
-    private TextField rangeNameTextBox;
-
-
-
-    @FXML
-    private TextField cellInputContentTextField;
-
-    @FXML
-    private TabPane columnTabPane;
-
-
-    @FXML
-    private TextField topLeftBox;
-
-    @FXML
-    private TextField bottomRightBox;
-
-
-    @FXML
-    private Button sort;
-
-    @FXML
-    private Button resetsort;
-
-
-    @FXML
-    private Button reSelect;
-
-    @FXML
     private Button updateValueButton;
-
-
-    @FXML
-    private Button addOrDeleteRange;
 
     @FXML
     private Label selectedCellLabel;
@@ -166,56 +125,65 @@ public class SheetViewfinderController {
     @FXML
     private Label LastUpdate;
 
-
     @FXML
     private Label lastUserUpdatedLabel;
 
 
-    @FXML
-    private Label rangeErrorMassage;
 
 
-    @FXML
-    private Label errorSelectMassage;
-    
 
-    @FXML
-    private ListView<String> colList; // ListView לרשימת העמודות
 
-    private String draggedItem;  // נשמור את האיבר הנגרר
 
+    // Accordion functionality:
 
     @FXML
-    private ListView<String> listOfRanges; // אותו שם שהשתמשת ב-Scene Builder
+    private Accordion accordion;
 
 
+    // Style:
+
+    // view styling:
+    @FXML
+    private Slider rowHeightSlider; // slider of row height
+    @FXML
+    private Slider colWidthSlider; // slider of col width
+
+    // cell styling:
+    @FXML
+    private ComboBox<Object> alignmentBox;
     @FXML
     private ColorPicker backgroundPicker;
     @FXML
     private ColorPicker fontPicker;
 
-    @FXML
-    private TabPane mainTabPane;
+
+
+    // Sort:
 
     @FXML
-    private Tab currentSheetTab;
+    private Button sort;
 
     @FXML
-    private Tab prevSheetTab;
+    private Button resetsort;
+
+
+    private String draggedItem;  // keeping dragged item for drag and drop
+
+
+
+    // Filtering:
 
     @FXML
-    private VBox topPane;
-
+    private Button resetFiltersButton;
 
     @FXML
-    private BorderPane sheetViewfinderRootPane;
+    private ListView<String> colList; // ListView for cols for sorting or filtering
 
-
-
-    private Slider excludedSlider = null; //in movement in dynamic will make sure things dong mess up
 
 
     //Dynamic Analysis:
+
+    private Slider excludedSlider = null; //in movement in dynamic will make sure things dong mess up
 
     @FXML
     private TableView<Map.Entry<String, Slider>> sliderTable;
@@ -225,7 +193,6 @@ public class SheetViewfinderController {
 
     @FXML
     private TableColumn<Map.Entry<String, Slider>, Slider> sliderCol;
-
 
     @FXML
     private TextField sliderFromTextfield;
@@ -248,11 +215,69 @@ public class SheetViewfinderController {
     private ObservableList<Map.Entry<String, Slider>> sliderData = FXCollections.observableArrayList();
 
 
+
+
+
+    // Range and selection:
+
+    // range:
+
+    @FXML
+    private TextField rangeNameTextBox;
+
+    @FXML
+    private TextField cellInputContentTextField;
+
+    @FXML
+    private TabPane columnTabPane;
+
+    @FXML
+    private Button addOrDeleteRange;
+
+    @FXML
+    private Label rangeErrorMassage;
+
+    @FXML
+    private ListView<String> listOfRanges;
+
+
+
+    // selection:
+
+    @FXML
+    private TextField topLeftBox;
+
+    @FXML
+    private TextField bottomRightBox;
+
+    @FXML
+    private Button reSelect;
+
+    @FXML
+    private Label errorSelectMassage;
+
+
+
+
+
+
+/*
+    @FXML
+    private GridPane hiddenItems;
+    private List<String> currentColsSelected;
+    private Label selectedLabel = null;
+    private boolean responsiveMode = false;
+    @FXML
+    private Button LoadButton;
+
+ */
+
+
+
+
+
     @FXML
     private void initialize() {
-
-
-//
 
         // Listener לשינויי הבחירה של התא
         sheetComponentController.selectedCellProperty().addListener((observable, oldLabel, newLabel) -> {

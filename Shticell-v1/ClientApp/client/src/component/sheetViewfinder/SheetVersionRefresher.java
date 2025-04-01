@@ -10,7 +10,8 @@ import java.io.IOException;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-//
+
+
 public class SheetVersionRefresher extends TimerTask {
 
     private final Supplier<Integer> localSheetVersionSupplier;
@@ -24,12 +25,12 @@ public class SheetVersionRefresher extends TimerTask {
     @Override
     public void run() {
         int localSheetVersion = localSheetVersionSupplier.get();
-        // קריאה לשרת לבדוק אם הגרסה תואמת
+        // checks if version matches the server version
         checkVersionWithServer(localSheetVersion);
     }
 
     private void checkVersionWithServer(int localSheetVersion) {
-        // יצירת בקשה לשרת - חשוב לעדכן את ה-URL שלך!
+        // creating req to server
         String url = Constants.VERSION_CHECK_URL + "?sheetVersion=" + localSheetVersion;
 
         Request request = new Request.Builder()
@@ -44,8 +45,8 @@ public class SheetVersionRefresher extends TimerTask {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                boolean isUpToDate = response.isSuccessful(); // בדיקה אם הגרסה תואמת
-                versionCheckHandler.accept(isUpToDate); // הפעלה של הפונקציה שמטפלת בתוצאה
+                boolean isUpToDate = response.isSuccessful(); // checks if version matched
+                versionCheckHandler.accept(isUpToDate); // handles the result (updates if needed - according to response mode)
                 response.close();
             }
         });
