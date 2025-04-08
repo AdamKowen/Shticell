@@ -1,7 +1,7 @@
 package servlets;
 
 import com.google.gson.Gson;
-import dto.SheetInfoDto;  // ייבוא ה-DTO
+import dto.SheetInfoDto;
 import utils.ServletUtils;
 import utils.SessionUtils;
 import users.UserManager;
@@ -62,7 +62,7 @@ public class GetSheetsServlet extends HttpServlet {
             }
         }
 
-        // המרת הרשימה ל-JSON ושליחתה ללקוח
+        // converts list to json and sends to client
         Gson gson = new Gson();
         String jsonResponse = gson.toJson(sheetList);
         response.setContentType("application/json");

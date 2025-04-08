@@ -67,7 +67,7 @@ public class CommandsController {
 
         if (file != null) {
             try {
-                // שליחת הקובץ לשרת
+                // sending file to client
                 uploadFileToServer(file);
             } catch (IOException e) {
                 e.printStackTrace();

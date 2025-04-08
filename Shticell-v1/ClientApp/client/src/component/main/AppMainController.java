@@ -156,7 +156,7 @@ public class AppMainController implements Closeable, HttpStatusUpdate {
 
 
     public void switchToAccountArea() {
-        mainBorderPane.setCenter(accountAreaComponent);  // חזרה למסך ה-account
+        mainBorderPane.setCenter(accountAreaComponent);  // back to account page
         viewfinderController.setInActive();
     }
 

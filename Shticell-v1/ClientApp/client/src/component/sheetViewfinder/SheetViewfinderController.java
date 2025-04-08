@@ -62,7 +62,6 @@ public class SheetViewfinderController {
 
 
 
-
     // Main sheet controller:
 
     @FXML private SheetController sheetComponentController;
@@ -143,12 +142,14 @@ public class SheetViewfinderController {
     // Style:
 
     // view styling:
+
     @FXML
     private Slider rowHeightSlider; // slider of row height
     @FXML
     private Slider colWidthSlider; // slider of col width
 
     // cell styling:
+
     @FXML
     private ComboBox<Object> alignmentBox;
     @FXML
@@ -260,20 +261,8 @@ public class SheetViewfinderController {
 
 
 
-/*
-    @FXML
-    private GridPane hiddenItems;
-    private List<String> currentColsSelected;
-    private Label selectedLabel = null;
-    private boolean responsiveMode = false;
-    @FXML
-    private Button LoadButton;
 
- */
-
-
-
-
+    // view finder initialization and general settings:
 
     @FXML
     private void initialize() {
@@ -383,7 +372,6 @@ public class SheetViewfinderController {
 
         // listener for ComboBox selection
         versionComboBox.setOnAction(event -> {
-            // קבל את האינדקס של הבחירה (האינדקס תואם לסדר של הגרסאות)
             // Getting the index of choice (will match the num of version presented)
             int selectedIndex = versionComboBox.getSelectionModel().getSelectedIndex();
 
@@ -489,7 +477,7 @@ public class SheetViewfinderController {
             if (newValue) {
                 System.out.println("Responsive mode is ON");
                 updateValueButton.setVisible(false);
-                // קוד להפעלת מצב רספונסיבי
+                // starting responsive mode
             } else {
                 System.out.println("Responsive mode is OFF");
                 updateValueButton.setVisible(true);
@@ -528,6 +516,46 @@ public class SheetViewfinderController {
 
 
     }
+
+    public void setAppMainController(AppMainController appMainControll) {
+        this.appMainController = appMainControll;
+
+        // setting dark mode toggle according to current mode
+        darkModeToggle.setSelected(appMainController.isDarkMode());
+
+        // listener for chances in toggle
+        darkModeToggle.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            appMainController.setDarkMode(newValue); // updated darkMode in appMainController
+        });
+    }
+
+    @FXML
+    private void goBackToSheetList() {
+        appMainController.switchToAccountArea();  // going back to account area, with auto update of lists
+    }
+
+    // getting responsive mode state
+    public boolean isResponsiveMode() {
+        return isResponsive.get();
+    }
+
+    // apply theme according to dark mode state
+    public void applyTheme(boolean darkMode) {
+        if (sheetViewfinderRootPane != null) {
+            sheetViewfinderRootPane.getStylesheets().clear();
+            if (darkMode) {
+                sheetViewfinderRootPane.getStylesheets().add(getClass().getResource("/component/sheetViewfinder/stylesDarkMode.css").toExternalForm());
+            } else {
+                sheetViewfinderRootPane.getStylesheets().add(getClass().getResource("/component/sheetViewfinder/styles.css").toExternalForm());
+            }
+        }
+    }
+
+    // set dark mose according to state
+    public void setDarkMode(boolean darkMode) {
+        darkModeToggle.setSelected(darkMode);
+    }
+
 
 
 
@@ -1081,6 +1109,7 @@ public class SheetViewfinderController {
         int blue = (int) (color.getBlue() * 255);
         return String.format("#%02X%02X%02X", red, green, blue);
     }
+
     public void sendUpdateCellsStyleRequest(List<String> columns, List<Integer> rows, String styleType, String styleValue) {
         String url = Constants.UPDATE_CELLS_STYLE_URL;
 
@@ -1125,7 +1154,6 @@ public class SheetViewfinderController {
             }
         });
     }
-
 
     @FXML
     private void changeBackgroundColor() {
@@ -1281,7 +1309,6 @@ public class SheetViewfinderController {
         sliderTable.setItems(sliderData);
     }
 
-
     @FXML
     private void addSliderForCell() {
         // reading values from text field
@@ -1409,7 +1436,6 @@ public class SheetViewfinderController {
         }
     }
 
-
     private boolean isValidRange(double fromValue, double toValue, double stepSize) {
         return (fromValue < toValue) && ((toValue - fromValue) >= (5 * stepSize));
     }
@@ -1434,7 +1460,6 @@ public class SheetViewfinderController {
 
         stepSizeChoice.setValue(1.0); // default is 1
     }
-
 
     // Async post req for cell updating in temp sheet - returns updated sheet dto
     private void updateCellInTemporarySheet(String cellId, String newValue, Consumer<SheetDto> onSuccess, Consumer<String> onError) {
@@ -1485,275 +1510,6 @@ public class SheetViewfinderController {
         });
     }
 
-
-
-
-/*
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-
-
-    // פונקציה לטעינת העמודות לתוך הרשימה
-    private void initializeColumnList(List<String> columns) {
-        colList.getItems().clear(); // ניקוי הרשימה אם יש פריטים קודמים
-        colList.getItems().addAll(columns); // הוספת שמות העמודות
-    }
-
- */
-
-
-
-
-    public void setAppMainController(AppMainController appMainControll) {
-        this.appMainController = appMainControll;
-
-        // setting dark mode toggle according to current mode
-        darkModeToggle.setSelected(appMainController.isDarkMode());
-
-        // listener for chances in toggle
-        darkModeToggle.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            appMainController.setDarkMode(newValue); // updated darkMode in appMainController
-        });
-    }
-
-    // refreshing displayed sheet
-    private void refreshSheetDisplay() {
-        sheetComponentController.loadSheetCurrent();
-    }
-
-
-    public void setSheet(String sheetName) {
-        System.out.println("Displaying sheet: " + sheetName);
-        fileNameLabel.setText(sheetName);
-
-        try {
-            setCurrentSheet(sheetName, log -> System.out.println(log)); // sending req for updating
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // async to get the updated SheetDto
-        getCurrentSheet(sheetDto -> {
-            if (sheetDto != null) {
-                System.out.println("Sheet loaded successfully: " + sheetName);
-                sheetComponentController.setPresentedSheet(sheetDto);
-                updateListOfRanges();
-                refreshVersionComboBox();
-                currentSheetVersion = sheetComponentController.getCurrentSheetVersion();
-
-                // starting to check version updated only after SheetDto is updated (to prevent locking ui elements for vain)
-                setActive();
-            }
-        }, errorMessage -> {
-            System.out.println("Error: " + errorMessage);
-        });
-    }
-
-
-    @FXML
-    private void goBackToSheetList() {
-        appMainController.switchToAccountArea();  // going back to account area, with auto update of lists
-    }
-
-
-    // post req to set the current sheet according to sheet name
-    public static void setCurrentSheet(String sheetName, Consumer<String> httpRequestLogger) throws IOException {
-        // creating req
-        RequestBody formBody = new FormBody.Builder()
-                .add("sheetName", sheetName)  // adding param SheetName
-                .build();
-
-        Request request = new Request.Builder()
-                .url(SET_SHEET_URL)
-                .post(formBody)
-                .build();
-
-        // sending async req to not block UI
-        HttpClientUtil.runAsync(request, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                httpRequestLogger.accept("Error setting current sheet: " + e.getMessage());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                // using try-with-resources so req will close automatically
-                try (response) {
-                    if (response.isSuccessful()) {
-                        httpRequestLogger.accept("Successfully set current sheet to: " + sheetName);
-                    } else {
-                        httpRequestLogger.accept("Failed to set current sheet. Response code: " + response.code());
-                    }
-                }
-            }
-        });
-    }
-
-
-
-    // get the current sheet DTO with async get req
-    public void getCurrentSheet(Consumer<SheetDto> onSuccess, Consumer<String> onError) {
-        String finalUrl = HttpUrl
-                .parse(String.valueOf(URI.create(Constants.SHEET_URL)))
-                .toString();
-
-
-        // creating get req
-        Request request = new Request.Builder()
-                .url(finalUrl)
-                .build();
-
-        // send the rew async
-        HttpClientUtil.runAsync(request, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                // in case of failure show massage to user
-                Platform.runLater(() -> onError.accept("Error fetching sheet: " + e.getMessage()));
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful() && response.body() != null) {
-                    // converts response to sheetDTO using JSONUtils
-                    String responseBody = response.body().string();
-                    SheetDto sheetDto = JSONUtils.fromJson(responseBody, SheetDtoImpl.class);
-
-                    //  on success calling UI Thread accept func and saving sheet
-                    Platform.runLater(() -> onSuccess.accept(sheetDto));
-                } else {
-                    // in case of failure show error massage
-                    String errorMessage = "Failed to fetch current sheet. Response code: " + response.code();
-                    Platform.runLater(() -> onError.accept(errorMessage));
-                }
-            }
-        });
-    }
-
-
-    private void refreshSheet() {
-        // calling the sheet dto req from server
-        getCurrentSheet(sheetDto -> {
-            sheetComponentController.setPresentedSheet(sheetDto);
-
-            updateListOfRanges(); // set new list
-            refreshVersionComboBox(); // set new version list
-            updateSlidersPosition(); // set sliders position reset
-
-            currentSheetVersion = sheetComponentController.getCurrentSheetVersion();
-            // changing button to "Update" text again after the sheet updated to new version
-            updateValueButton.setText("Update");
-
-            System.out.println("Updated sheet to version: " + sheetDto.getVersion());
-
-        }, errorMessage -> {
-            System.out.println("Error refreshing sheet: " + errorMessage);
-        });
-    }
-
-
-
-    public void getSheetVersion(int version, Consumer<SheetDto> onSuccess, Consumer<String> onError) {
-        String finalUrl = HttpUrl
-                .parse(String.valueOf(URI.create(Constants.GET_SHEET_VERSION_URL)))
-                .newBuilder()
-                .addQueryParameter("version", String.valueOf(version)) // adding version number as parameter
-                .toString();
-
-
-        // creating get req
-        Request request = new Request.Builder()
-                .url(finalUrl)
-                .build();
-
-        // sending async req
-        HttpClientUtil.runAsync(request, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                // in case of failure show massage
-                Platform.runLater(() -> onError.accept("Error fetching sheet version: " + e.getMessage()));
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful() && response.body() != null) {
-                    // converting json to sheet dto
-                    String responseBody = response.body().string();
-                    SheetDto sheetDto = JSONUtils.fromJson(responseBody, SheetDtoImpl.class);
-
-                    // setting the sheet version
-                    Platform.runLater(() -> onSuccess.accept(sheetDto));
-                } else {
-                    // display error massage
-                    String errorMessage = "Failed to fetch sheet version. Response code: " + response.code();
-                    Platform.runLater(() -> onError.accept(errorMessage));
-                }
-            }
-        });
-    }
-
-
-
-
-    // starts automatic check to keep sheet updated to new version
-    public void startVersionCheck() {
-        versionCheckTimer = new Timer(true);
-        versionCheckTimer.schedule(new SheetVersionRefresher(this::getCurrentLocalSheetVersion, this::handleVersionCheck), Constants.REFRESH_RATE, Constants.REFRESH_RATE);
-    }
-
-    // returns current version of sheet displayed
-    private int getCurrentLocalSheetVersion() {
-        return sheetComponentController.getCurrentSheetVersion(); // getting current version displayed in sheet element
-    }
-
-    // stopping automatic check of version of sheet
-    public void stopVersionCheck() {
-        if (versionCheckTimer != null) {
-            versionCheckTimer.cancel();
-            versionCheckTimer = null;
-        }
-    }
-
-    // When there is a new version will call this version
-    private void handleVersionCheck(boolean isUpdated) {
-        if (!isUpdated) {
-            Platform.runLater(() -> {
-                if (isResponsiveMode())
-                {
-                    refreshSheet();
-                }
-                else {
-                    updateValueButton.setText("Refresh");  // changing text of button to refresh if sheet not updated
-                    updateValueButton.setDisable(false);
-                    setUpdatingControlsDisabled(true);
-                }
-            });
-        }
-    }
-
-
-    public void setActive() {
-        startVersionCheck(); // starting version check
-    }
-
-    public void setInActive() {
-        stopVersionCheck(); // stopping version check
-    }
-
-
-
-    // getting responsive mode state
-    public boolean isResponsiveMode() {
-        return isResponsive.get();
-    }
-
-
     // resets temp sheet of dynamic analysis
     public void resetDynamicAnalysis() {
         String url = RESET_DYNAMIC_ANALYSIS_URL; // servlet address
@@ -1801,23 +1557,220 @@ public class SheetViewfinderController {
     }
 
 
-    // apply theme according to dark mode state
-    public void applyTheme(boolean darkMode) {
-        if (sheetViewfinderRootPane != null) {
-            sheetViewfinderRootPane.getStylesheets().clear();
-            if (darkMode) {
-                sheetViewfinderRootPane.getStylesheets().add(getClass().getResource("/component/sheetViewfinder/stylesDarkMode.css").toExternalForm());
-            } else {
-                sheetViewfinderRootPane.getStylesheets().add(getClass().getResource("/component/sheetViewfinder/styles.css").toExternalForm());
-            }
-        }
+
+
+
+    // Updating and managing sheet:
+
+
+    // refreshing displayed sheet
+    private void refreshSheetDisplay() {
+        sheetComponentController.loadSheetCurrent();
     }
 
 
+    // set the sheet user controls - calls setCurrentSheet for server call
+    public void setSheet(String sheetName) {
+        System.out.println("Displaying sheet: " + sheetName);
+        fileNameLabel.setText(sheetName);
 
-    // set dark mose according to state
-    public void setDarkMode(boolean darkMode) {
-        darkModeToggle.setSelected(darkMode);
+        try {
+            setCurrentSheet(sheetName, log -> System.out.println(log)); // sending req for updating
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // async to get the updated SheetDto
+        getCurrentSheet(sheetDto -> {
+            if (sheetDto != null) {
+                System.out.println("Sheet loaded successfully: " + sheetName);
+                sheetComponentController.setPresentedSheet(sheetDto);
+                updateListOfRanges();
+                refreshVersionComboBox();
+                currentSheetVersion = sheetComponentController.getCurrentSheetVersion();
+
+                // starting to check version updated only after SheetDto is updated (to prevent locking ui elements for vain)
+                setActive();
+            }
+        }, errorMessage -> {
+            System.out.println("Error: " + errorMessage);
+        });
+    }
+
+    // post req to set the current sheet according to sheet name
+    public static void setCurrentSheet(String sheetName, Consumer<String> httpRequestLogger) throws IOException {
+        // creating req
+        RequestBody formBody = new FormBody.Builder()
+                .add("sheetName", sheetName)  // adding param SheetName
+                .build();
+
+        Request request = new Request.Builder()
+                .url(SET_SHEET_URL)
+                .post(formBody)
+                .build();
+
+        // sending async req to not block UI
+        HttpClientUtil.runAsync(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                httpRequestLogger.accept("Error setting current sheet: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                // using try-with-resources so req will close automatically
+                try (response) {
+                    if (response.isSuccessful()) {
+                        httpRequestLogger.accept("Successfully set current sheet to: " + sheetName);
+                    } else {
+                        httpRequestLogger.accept("Failed to set current sheet. Response code: " + response.code());
+                    }
+                }
+            }
+        });
+    }
+
+    // get the current sheet DTO with async get req
+    public void getCurrentSheet(Consumer<SheetDto> onSuccess, Consumer<String> onError) {
+        String finalUrl = HttpUrl
+                .parse(String.valueOf(URI.create(Constants.SHEET_URL)))
+                .toString();
+
+
+        // creating get req
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
+        // send the rew async
+        HttpClientUtil.runAsync(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // in case of failure show massage to user
+                Platform.runLater(() -> onError.accept("Error fetching sheet: " + e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful() && response.body() != null) {
+                    // converts response to sheetDTO using JSONUtils
+                    String responseBody = response.body().string();
+                    SheetDto sheetDto = JSONUtils.fromJson(responseBody, SheetDtoImpl.class);
+
+                    //  on success calling UI Thread accept func and saving sheet
+                    Platform.runLater(() -> onSuccess.accept(sheetDto));
+                } else {
+                    // in case of failure show error massage
+                    String errorMessage = "Failed to fetch current sheet. Response code: " + response.code();
+                    Platform.runLater(() -> onError.accept(errorMessage));
+                }
+            }
+        });
+    }
+
+
+    // returns current version of sheet in server
+    public void getSheetVersion(int version, Consumer<SheetDto> onSuccess, Consumer<String> onError) {
+        String finalUrl = HttpUrl
+                .parse(String.valueOf(URI.create(Constants.GET_SHEET_VERSION_URL)))
+                .newBuilder()
+                .addQueryParameter("version", String.valueOf(version)) // adding version number as parameter
+                .toString();
+
+
+        // creating get req
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
+        // sending async req
+        HttpClientUtil.runAsync(request, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // in case of failure show massage
+                Platform.runLater(() -> onError.accept("Error fetching sheet version: " + e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful() && response.body() != null) {
+                    // converting json to sheet dto
+                    String responseBody = response.body().string();
+                    SheetDto sheetDto = JSONUtils.fromJson(responseBody, SheetDtoImpl.class);
+
+                    // setting the sheet version
+                    Platform.runLater(() -> onSuccess.accept(sheetDto));
+                } else {
+                    // display error massage
+                    String errorMessage = "Failed to fetch sheet version. Response code: " + response.code();
+                    Platform.runLater(() -> onError.accept(errorMessage));
+                }
+            }
+        });
+    }
+
+    // returns current version of sheet displayed
+    private int getCurrentLocalSheetVersion() {
+        return sheetComponentController.getCurrentSheetVersion(); // getting current version displayed in sheet element
+    }
+
+    // starts automatic check to keep sheet updated to new version
+    public void startVersionCheck() {
+        versionCheckTimer = new Timer(true);
+        versionCheckTimer.schedule(new SheetVersionRefresher(this::getCurrentLocalSheetVersion, this::handleVersionCheck), Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
+
+    // stopping automatic check of version of sheet
+    public void stopVersionCheck() {
+        if (versionCheckTimer != null) {
+            versionCheckTimer.cancel();
+            versionCheckTimer = null;
+        }
+    }
+
+    public void setActive() {
+        startVersionCheck(); // starting version check
+    }
+
+    public void setInActive() {
+        stopVersionCheck(); // stopping version check
+    }
+
+    // handle answer of if version not up to date to perform operations needed in case of not up to date
+    private void handleVersionCheck(boolean isUpdated) {
+        if (!isUpdated) {
+            Platform.runLater(() -> {
+                if (isResponsiveMode())
+                {
+                    refreshSheet();
+                }
+                else {
+                    updateValueButton.setText("Refresh");  // changing text of button to refresh if sheet not updated
+                    updateValueButton.setDisable(false);
+                    setUpdatingControlsDisabled(true);
+                }
+            });
+        }
+    }
+
+    private void refreshSheet() {
+        // calling the sheet dto req from server
+        getCurrentSheet(sheetDto -> {
+            sheetComponentController.setPresentedSheet(sheetDto);
+
+            updateListOfRanges(); // set new list
+            refreshVersionComboBox(); // set new version list
+            updateSlidersPosition(); // set sliders position reset
+
+            currentSheetVersion = sheetComponentController.getCurrentSheetVersion();
+            // changing button to "Update" text again after the sheet updated to new version
+            updateValueButton.setText("Update");
+
+            System.out.println("Updated sheet to version: " + sheetDto.getVersion());
+
+        }, errorMessage -> {
+            System.out.println("Error refreshing sheet: " + errorMessage);
+        });
     }
 
 

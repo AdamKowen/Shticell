@@ -405,7 +405,7 @@ public class SheetControllerImpl implements SheetController {
 
         // col headers
         for (int col = 0; col < DisplayedSheet.getNumOfColumns(); col++) {
-            char columnLetter = (char) ('A' + col); // A, B, C וכו'
+            char columnLetter = (char) ('A' + col); // A, B, C
             Label columnHeader = new Label(String.valueOf(columnLetter));
             columnHeader.getStyleClass().add("sheet-header-text");
             columnHeader.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
@@ -700,7 +700,7 @@ public class SheetControllerImpl implements SheetController {
             // calculating the row according to row order
             int gridRowDataIndex = sortedRowOrder.indexOf(originalRowNum);
             if (gridRowDataIndex == -1) {
-                // אם השורה לא נמצאת ב-sortedRowOrder, נזרוק חריגה
+                // if the row in noe present in sortedRowOrder will throw exception
                 throw new RuntimeException("Row " + originalRowNum + " is not currently displayed.");
             }
 
@@ -1365,7 +1365,7 @@ public class SheetControllerImpl implements SheetController {
 
     public void setReadOnly(boolean readOnly) {
         for (Node node : sheetGridPane.getChildren()) {
-            node.setMouseTransparent(readOnly); // מבטל אינטראקציות עכבר
+            node.setMouseTransparent(readOnly); // cancels mouse events on grid
         }
         isReadOnly = true;
     }
