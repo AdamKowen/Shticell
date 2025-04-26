@@ -20,6 +20,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.Node;
+import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
@@ -214,6 +215,22 @@ public class SheetViewfinderController {
 
     private ObservableList<Map.Entry<String, Slider>> sliderData = FXCollections.observableArrayList();
 
+
+
+    // Chart:
+
+    private Coordinate xTopLeft, xBottomRight;
+
+    private Coordinate yTopLeft, yBottomRight;
+
+    @FXML
+    private Tab chartTab; // Tab for chart
+
+    @FXML
+    private Button selectXButton, clearXButton, selectYButton, clearYButton, generateChart; // Button for generating chart
+
+    @FXML
+    private Label selectedx, selectedy; // labels to print selected cells
 
 
 
@@ -1555,6 +1572,132 @@ public class SheetViewfinderController {
             }
         });
     }
+
+
+
+
+
+    // Chart Generation:
+
+
+    // Selection of X axis
+    @FXML
+    private void selectXAction(ActionEvent event) {
+        // משתמש ב-topLeft ו-bottomRight שהוזנו ע"י ליסטנר ה-range
+        if (topLeft != null && bottomRight != null && topLeft.getColumn() == bottomRight.getColumn()) {
+            xTopLeft = topLeft;
+            xBottomRight = bottomRight;
+            String from = sheetComponentController.actualCellPlacedOnGrid(xTopLeft).toString();
+            String to   = sheetComponentController.actualCellPlacedOnGrid(xBottomRight).toString();
+            selectedx.setText(from + " to " + to);
+        }
+    }
+
+    // Clearing X axis selection
+    @FXML
+    private void clearXAction(ActionEvent event) {
+        xTopLeft = xBottomRight = null;
+        selectedx.setText("");
+    }
+
+    // Selection of Y axis
+    @FXML
+    private void selectYAction(ActionEvent event) {
+        if (topLeft != null && bottomRight != null && topLeft.getColumn() == bottomRight.getColumn()) {
+            yTopLeft = topLeft;
+            yBottomRight = bottomRight;
+            String from = sheetComponentController.actualCellPlacedOnGrid(yTopLeft).toString();
+            String to   = sheetComponentController.actualCellPlacedOnGrid(yBottomRight).toString();
+            selectedy.setText(from + " to " + to);
+        }
+    }
+
+    // Clearing Y axis selection
+    @FXML
+    private void clearYAction(ActionEvent event) {
+        yTopLeft = yBottomRight = null;
+        selectedy.setText("");
+    }
+
+    // Creating the graph in the tab
+    @FXML
+    private void generateChartAction(ActionEvent event) {
+        // if one is nor selected will not perform
+        if (xTopLeft == null || yTopLeft == null) return;
+
+        // line chart
+        boolean isBarChart = false;
+        Node chartNode = buildChart(isBarChart);
+
+        // putting chart in tab
+        BorderPane pane = new BorderPane(chartNode);
+        pane.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        chartTab.setContent(pane);
+    }
+
+    // creating the chart from the library, from Chat GPT
+    private Node buildChart(boolean isBarChart) {
+        if (isBarChart) {
+            // connecting data from x to y
+            CategoryAxis xAxis = new CategoryAxis();
+            NumberAxis yAxis = new NumberAxis();
+            BarChart<String, Number> chart = new BarChart<>(xAxis, yAxis);
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName("Data");
+
+
+            // getting the data from the selected cells
+            for (int r = xTopLeft.getRow(); r <= xBottomRight.getRow(); r++) {
+                // building string for x
+                char colLetterX = (char)('A' + xTopLeft.getColumn() - 1);
+                String cellRefX = colLetterX + String.valueOf(r);
+                String xCat = sheetComponentController.getCellValue(cellRefX);
+
+                //for y
+                char colLetterY = (char)('A' + yTopLeft.getColumn() - 1);
+                String cellRefY = colLetterY + String.valueOf(r);
+                String yStr = sheetComponentController.getCellValue(cellRefY);
+
+                // parsing to line chart
+                Number yVal = isNumeric(yStr) ? Double.parseDouble(yStr) : 0;
+                series.getData().add(new XYChart.Data<>(xCat, yVal));
+            }
+
+            chart.getData().add(series);
+            return chart;
+
+        } else {
+            // if there are numbers on two axis
+            NumberAxis xAxis = new NumberAxis();
+            NumberAxis yAxis = new NumberAxis();
+            LineChart<Number, Number> chart = new LineChart<>(xAxis, yAxis);
+            XYChart.Series<Number, Number> series = new XYChart.Series<>();
+            series.setName("Data");
+
+            for (int r = xTopLeft.getRow(); r <= xBottomRight.getRow(); r++) {
+                //string for x
+                char colLetterX = (char)('A' + xTopLeft.getColumn() - 1);
+                String cellRefX = colLetterX + String.valueOf(r);
+                String xStr     = sheetComponentController.getCellValue(cellRefX);
+
+                // string for y
+                char colLetterY = (char)('A' + yTopLeft.getColumn() - 1);
+                String cellRefY = colLetterY + String.valueOf(r);
+                String yStr     = sheetComponentController.getCellValue(cellRefY);
+
+                // adds a dot is both are numbers
+                if (isNumeric(xStr) && isNumeric(yStr)) {
+                    double xv = Double.parseDouble(xStr);
+                    double yv = Double.parseDouble(yStr);
+                    series.getData().add(new XYChart.Data<>(xv, yv));
+                }
+            }
+
+            chart.getData().add(series);
+            return chart;
+        }
+    }
+
 
 
 
