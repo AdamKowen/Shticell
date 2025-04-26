@@ -6,7 +6,9 @@ An advanced spreadsheet management system built with JavaFX, featuring a rich gr
 ## Description
 
 Shticell is a dynamic spreadsheet platform enabling real-time data editing, multi-user collaboration, dynamic analysis with sliders, and version management.  
+The system utilizes JSON and XML serialization to manage and optimize data communication between client and server modules.  
 The project emphasizes a responsive and intuitive user interface built with JavaFX and a clean modular architecture.
+
 
 ## Features
 
