@@ -22,10 +22,11 @@ The project emphasizes a responsive and intuitive user interface built with Java
 
 ## Technologies Used
 
-- Java 17
+- Java
 - JavaFX (FXML + CSS)
-- Servlets (HTTP request handling)
+- OkHttp (HTTP client library for server communication)
 - GSON (JSON parsing)
+- JAXB (XML serialization and deserialization)
 - Multi-Module Architecture (ClientApp and ServerApp separation)
 
 ## System Architecture
