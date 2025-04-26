@@ -2,7 +2,6 @@
 
 An advanced spreadsheet management system built with JavaFX, featuring a rich graphical user interface and full client-server communication.
 
-![Screenshot](your-image-link-here)
 
 ## Description
 
@@ -37,15 +36,7 @@ The project emphasizes a responsive and intuitive user interface built with Java
 
 ## Screenshots
 
-![Login Screen](your-login-image-link-here)
 
-![Spreadsheet and Chat Area](your-spreadsheet-chat-image-link-here)
-
-![Dynamic Analysis with Sliders](your-sliders-image-link-here)
-
-![Cell Styling Panel](your-cell-styling-image-link-here)
-
-![Version History Tab](your-version-history-image-link-here)
 
 ## Installation
 
@@ -65,4 +56,5 @@ Shticell showcases advanced Java development with an emphasis on real-time data 
 ## Contact
 
 Adam Gilboa Kowen — [adam.kowen@gmail.com](mailto:adam.kowen@gmail.com)
+
 Ron Alima - [Ronalima256@gmail.com](mailto:Ronalima256@gmail.com)
