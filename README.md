@@ -38,6 +38,22 @@ The project emphasizes a responsive and intuitive user interface built with Java
 - ServerApp - WebEngine — HTTP layer, handling servlet-based communication and user sessions
 
 ## Screenshots
+<img width="837" alt="Screenshot 2025-04-27 at 11 34 48" src="https://github.com/user-attachments/assets/7284f0a3-63ea-41e7-b287-4a700587363a" />
+<img width="837" alt="Screenshot 2025-04-27 at 11 42 44" src="https://github.com/user-attachments/assets/8723793d-368a-4d11-b788-f94e9545999b" />
+<img width="837" alt="Screenshot 2025-04-27 at 11 38 41" src="https://github.com/user-attachments/assets/69a4a076-65ed-410f-a10a-0226798ff31a" />
+<img width="837" alt="Screenshot 2025-04-27 at 11 39 40" src="https://github.com/user-attachments/assets/ccac4b5c-8077-4217-a15e-23a858d13cf3" />
+<img width="837" alt="Screenshot 2025-04-27 at 11 40 32" src="https://github.com/user-attachments/assets/7bed5cd5-1c0e-4fac-a1f4-3dbb9ac07ca7" />
+<img width="837" alt="Screenshot 2025-04-27 at 11 40 57" src="https://github.com/user-attachments/assets/0a3860ce-4874-432c-a7ce-c7aeb52981e7" />
+<img width="837" alt="Screenshot 2025-04-27 at 11 41 35" src="https://github.com/user-attachments/assets/1f259fce-2890-4fb4-945d-66dc0535eab2" />
+
+
+
+
+
+
+
+
+
 
 
 
